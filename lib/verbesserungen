@@ -1,0 +1,4 @@
+Bugs:
+- Hauptmenü: Datum wird nicht angezeigt. 
+- Hauptmenü: einstellige zeit nicht richtig angezeigt
+- Hauptmenü: Absturz wenn keine Eingabe vom User
