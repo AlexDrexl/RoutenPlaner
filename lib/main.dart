@@ -35,14 +35,10 @@ class RoutePlaner extends StatelessWidget {
           create: (_) => TravelProfileCollection(),
         ),
         ChangeNotifierProvider<UserProfileCollection>(
-          create: (_) => UserProfileCollection(),
+          create: (context) => UserProfileCollection(context),
         ),
-        // Detail Modifier benötigt das TP Collection Objekt
         ChangeNotifierProvider<TravelProfileDetailModifier>(
-          create: (context) => TravelProfileDetailModifier(
-            collection:
-                Provider.of<TravelProfileCollection>(context, listen: false),
-          ),
+          create: (_) => TravelProfileDetailModifier(),
         ),
         // Sammlung RoutenDaten
         ChangeNotifierProvider<FinalRoutes>(

@@ -1,36 +1,85 @@
 import 'package:flutter/material.dart';
 import 'travel_profiles_collection.dart';
+import 'package:provider/provider.dart';
 
-// Travel Profile Details, Extra Klasse, die gewisse Profile aktualisiert
-// Erhöt einerseits den Index, anderer Seits das TravelProfileCollection Objekt, dass
-// in main erzeugt wurde
+// travel Proile Modifier speichert die eingegebenen Daten in dieser
+// datei. Sollte der User speichern wollen, werden diese durch die funktion
+// save in travel Profile collection gepushed
 class TravelProfileDetailModifier with ChangeNotifier {
-  TravelProfileCollection collection;
-  TravelProfileDetailModifier({@required this.collection});
+  // TravelProfileCollection collection;
+  TravelProfileDetailModifier() {
+    print("COnstructor");
+  }
+  TravelProfileData localTravelProfile = TravelProfileData();
+  int indexTriangleLocal, maxDetourLocal;
+  double minDurationAutomSegmentLocal;
+
+  // init FUnktion, setzt die Werte auf den Start, der von Collection gegeben
+  // wird. DIe Werte werden aber noch nicht übertragen
+  void init({@required int indexProfile, @required BuildContext context}) {
+    localTravelProfile =
+        Provider.of<TravelProfileCollection>(context, listen: false)
+            .getProfile(indexProfile: indexProfile);
+    // Man muss die Variablen noch einmal lokal speichern, da Provider sonst immer
+    // die Werte in Collection mit ändert, save dadurch nicht möglich
+    indexTriangleLocal = localTravelProfile.indexTriangle;
+    minDurationAutomSegmentLocal =
+        localTravelProfile.minDurationAutomSegment.toDouble();
+    maxDetourLocal = localTravelProfile.maxDetour;
+  }
 
   // Setter Methoden
-  void setMinAutomLength({int indexProfile, int length}) {
-    collection.travelProfileCollection[indexProfile].minDurationAutomSegment =
-        length.toDouble();
+  void safe(int indexProfile, BuildContext context) {
+    print("SAVE CALLED");
+    // Wenn gesaved werden soll, wird das gewünschte Profil in der Collection
+    // geändert. Die lokalen Daten werden also in Collection gepushed
+    Provider.of<TravelProfileCollection>(context, listen: false).modifyProfile(
+      profileIndex: indexProfile,
+      maxDetour: maxDetourLocal,
+      minDurationAutomSegment: minDurationAutomSegmentLocal,
+      indexTriangle: indexTriangleLocal,
+    );
+  }
+
+  // In folgenden Setter kein index mehr benötigt, da ohnehin
+  // alles nur lokal gespeichert wird
+  void setMinAutomLength({int length}) {
+    minDurationAutomSegmentLocal = length.toDouble();
     notifyListeners();
   }
 
-  void setMaxDetour({int indexProfile, int length}) {
-    collection.travelProfileCollection[indexProfile].maxDetour = length;
+  void setMaxDetour({int length}) {
+    maxDetourLocal = length;
     notifyListeners();
   }
 
-  void setIndexTriangle({int indexProfile, int indexTriangle}) {
-    collection.travelProfileCollection[indexProfile].indexTriangle =
-        indexTriangle;
+  void setIndexTriangle({int indexTriangle}) {
+    indexTriangleLocal = indexTriangle;
   }
 
   // getter methoden
-  int getMinAutomLength({int indexProfile}) =>
-      collection.travelProfileCollection[indexProfile].minDurationAutomSegment
-          .toInt();
-  int getMaxDetour({int indexProfile}) =>
-      collection.travelProfileCollection[indexProfile].maxDetour.toInt();
-  int getIndexTriangle({int indexProfile}) =>
-      collection.travelProfileCollection[indexProfile].indexTriangle;
+  int getMinAutomLength() {
+    return minDurationAutomSegmentLocal.toInt();
+  }
+
+  int getMaxDetour() {
+    return maxDetourLocal.toInt();
+  }
+
+  int getIndexTriangle() {
+    return indexTriangleLocal;
+  }
 }
+
+/*
+    // Hole das zu bearbeitende Objekt aus der Collection, kopiere, bearbeite lokal
+    // speichere dann, wenn user das will
+    localTravelProfile = Provider.of<TravelProfileCollection>(context)
+        .travelProfileCollection[indexProfile];
+    // notifyListeners();
+    print("init called");
+    print(localTravelProfile.indexTriangle);
+    print(Provider.of<TravelProfileCollection>(context)
+        .travelProfileCollection[indexProfile]
+        .indexTriangle);
+*/

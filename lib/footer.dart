@@ -10,7 +10,7 @@ class Footer extends StatelessWidget {
     return BottomAppBar(
       color: Colors.white.withOpacity(0),
       child: Container(
-        padding: EdgeInsets.only(top: 5, bottom: 5, left: 65, right: 65),
+        padding: EdgeInsets.only(top: 5, bottom: 5, left: 5, right: 5),
         decoration: BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topCenter,

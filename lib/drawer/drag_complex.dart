@@ -6,8 +6,8 @@ import 'dart:math';
 import 'package:routenplaner/provider_classes/travel_profiles_collection.dart';
 
 class DragComplex extends StatefulWidget {
-  BuildContext context;
-  int indexProfile;
+  final BuildContext context;
+  final int indexProfile;
   DragComplex({@required this.context, @required this.indexProfile});
   @override
   _DragComplexState createState() => _DragComplexState(context, indexProfile);
@@ -48,7 +48,7 @@ class _DragComplexState extends State<DragComplex> {
     };
     // Setze den Startwert, der im Profile Objekt gespeichert wird
     var i = Provider.of<TravelProfileDetailModifier>(context, listen: false)
-        .getIndexTriangle(indexProfile: indexProfile);
+        .getIndexTriangle();
     currentDragTargetIndex = i;
     var listCoord = targetMap.keys.toList();
     targetMap.update(listCoord[i], (value) => true);
@@ -97,8 +97,7 @@ class _DragComplexState extends State<DragComplex> {
                 // Provider den Index übergeben. wird dann von diesem zu Zahlen
                 // interpretiert
                 Provider.of<TravelProfileDetailModifier>(context, listen: false)
-                    .setIndexTriangle(
-                        indexProfile: indexProfile, indexTriangle: i);
+                    .setIndexTriangle(indexTriangle: i);
 
                 targetMap.update(
                     listCoord[currentDragTargetIndex], (value) => false);
