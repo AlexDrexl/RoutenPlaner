@@ -7,20 +7,27 @@ import '../footer.dart';
 import '../data/custom_colors.dart';
 import 'package:provider/provider.dart';
 
-class TravelProfiles extends StatelessWidget {
+class TravelProfiles extends StatefulWidget {
   // Wenn ein Profile DELETED wird, dann MUSS danach der gesamte Widget neu
   // ausgebaurt werden, damit die Index wieder stimmen!!!
+  @override
+  _TravelProfilesState createState() => _TravelProfilesState();
+}
+
+class _TravelProfilesState extends State<TravelProfiles> {
   List<Widget> printTravelProfiles(
-      BuildContext context, TravelProfileCollection travelProfileCollection) {
+      TravelProfileCollection travelProfileCollection) {
     List<Widget> widgetList = List<Widget>();
     int length = travelProfileCollection.travelProfileCollection.length;
     for (int i = 0; i < length; i++) {
+      GlobalKey key = GlobalKey();
       widgetList.add(
         Column(
           children: [
             SizedBox(height: 30),
             // Container für die Karten
             Container(
+              key: key,
               padding: EdgeInsets.fromLTRB(5, 5, 5, 5),
               width: MediaQuery.of(context).size.width - 30,
               alignment: Alignment.center,
@@ -93,25 +100,124 @@ class TravelProfiles extends StatelessWidget {
                       ),
                       SizedBox(width: 10),
                       // Flexible für Button
-                      FloatingActionButton(
-                        heroTag: null,
+                      MaterialButton(
+                        // Folgende zwei Properties benötigt, um Button kleiner zu machen
+                        minWidth: 0,
+                        padding: EdgeInsets.all(0),
+                        child: Icon(
+                          Icons.more_vert,
+                          color: myMiddleTurquoise,
+                          size: 50,
+                        ),
                         onPressed: () {
-                          /*
+                          // profiles.deleteProfile(indexUserProfile: i);
+                          RenderBox box = key.currentContext.findRenderObject();
+                          Offset position = box.localToGlobal(Offset.zero);
+                          var fullHeight = MediaQuery.of(context).size.height;
+                          var fullWidth = MediaQuery.of(context).size.width;
                           showDialog(
                             context: context,
-                            // Dialog Popup
-                            builder: (context) => Builder(
-                              builder: (BuildContext context) {
-                                return Container(
-                                  height: 20,
-                                  width: 20,
-                                  color: myDarkGrey,
-                                );
-                              },
-                            ),
+                            builder: (BuildContext context) {
+                              return Dialog(
+                                insetPadding: EdgeInsets.only(
+                                  top: position.dy - 25,
+                                  right: 15,
+                                  bottom: fullHeight - position.dy - 60,
+                                  left: fullWidth - 310,
+                                ),
+                                backgroundColor: myMiddleTurquoise,
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    // Drei Container für die Drei Button
+                                    // Bearbeiten
+                                    Container(
+                                      padding: EdgeInsets.only(right: 5),
+                                      child: FloatingActionButton(
+                                        onPressed: () {
+                                          Navigator.of(context).pop(true);
+                                          showDialog(
+                                            context: context,
+                                            // Dialog Popup
+                                            builder: (context) => Builder(
+                                              builder: (BuildContext context) {
+                                                return (
+                                                    // modifyMode: true,
+                                                    // profileIndex4modify: i,
+                                                    AddTravelProfileDialogue(
+                                                  modifyMode: true,
+                                                  indexTravelProfile: i,
+                                                ));
+                                              },
+                                            ),
+                                          );
+                                        },
+                                        child: Icon(
+                                          Icons.edit,
+                                          color: myWhite,
+                                        ),
+                                      ),
+                                    ),
+                                    // Delete
+                                    Container(
+                                      padding: EdgeInsets.only(right: 5),
+                                      child: FloatingActionButton(
+                                        onPressed: () {
+                                          travelProfileCollection
+                                              .deleteTravelProfile(i);
+                                          Navigator.of(context).pop(true);
+                                        },
+                                        child: Icon(
+                                          Icons.delete,
+                                          color: myWhite,
+                                        ),
+                                      ),
+                                    ),
+                                    // Duplicate
+                                    Container(
+                                      padding: EdgeInsets.only(right: 5),
+                                      child: FloatingActionButton(
+                                        onPressed: () {
+                                          travelProfileCollection
+                                              .duplicateTravelProfile(
+                                                  indexTravelProfile: i);
+                                          Navigator.of(context).pop(true);
+                                        },
+                                        child: Icon(
+                                          Icons.copy,
+                                          color: myWhite,
+                                        ),
+                                      ),
+                                    ),
+                                    // Container für vertikalen Strich
+                                    Container(
+                                      height: 40,
+                                      width: 2,
+                                      color: myWhite,
+                                    ),
+                                    // Container für den Drei Punkte Icon, Wird
+                                    // verwendet um Höhe einzustellen
+                                    Container(
+                                      padding: EdgeInsets.only(
+                                          right: 0, top: 5, bottom: 15),
+                                      child: MaterialButton(
+                                        minWidth: 0,
+                                        onPressed: () {
+                                          Navigator.of(context).pop(true);
+                                        },
+                                        child: Icon(
+                                          Icons.more_vert,
+                                          color: myWhite,
+                                          size: 50,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            },
                           );
-                          */
-                          travelProfileCollection.deleteProfile(i);
                         },
                       ),
                     ],
@@ -150,7 +256,7 @@ class TravelProfiles extends StatelessWidget {
         ),
         child: Consumer<TravelProfileCollection>(
           builder: (context, travelProfileCollection, child) => ListView(
-            children: printTravelProfiles(context, travelProfileCollection),
+            children: printTravelProfiles(travelProfileCollection),
           ),
         ),
       ),
@@ -165,7 +271,7 @@ class TravelProfiles extends StatelessWidget {
             // Dialog Popup
             builder: (context) => Builder(
               builder: (BuildContext context) {
-                return AddProfileDialogue();
+                return AddTravelProfileDialogue(modifyMode: false);
               },
             ),
           );

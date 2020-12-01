@@ -47,13 +47,21 @@ class UserProfileCollection with ChangeNotifier {
     // profil automatisch auf den ersten Eintrag im User Profile Array
     // In Datenbank wird dann automatisch der User mit korrespondierender userID
     // Aktiviert
+    Database db = await DatabaseHelper.instance.database;
     if (selectedUserProfileIndex == indexUserProfile) {
-      Database db = await DatabaseHelper.instance.database;
       db.rawUpdate('UPDATE User SET Selected = ? WHERE ID = ?',
           [1, userProfileCollection[0].databaseID]);
       selectedUserProfileIndex = 0;
     }
-
+    // Lösche alle zugehörigen ReiseProfile, basierend auf der UserID
+    print(userProfileCollection[indexUserProfile].databaseID);
+    db.rawDelete(
+      '''
+    DELETE FROM TravelProfile
+    WHERE UserID = ?
+    ''',
+      [userProfileCollection[indexUserProfile].databaseID],
+    );
     // Lösche den User in der Datenbank
     await DatabaseHelper.instance
         .deleteUser(userID: userProfileCollection[indexUserProfile].databaseID);
@@ -70,13 +78,13 @@ class UserProfileCollection with ChangeNotifier {
   }
 
   // Füge Profil hinzu, lokal und in Datenbank
-  void addProfile({@required String name}) async {
+  Future<void> addProfile({@required String name, String email}) async {
     // In Datenbank user hinzufügen
     await DatabaseHelper.instance.addUser(
       name: name,
-      email: "bsp@mail.com",
+      email: email == null ? " " : email,
     );
-    // UserID aus Datenbank holen
+    // UserID/ID aus Datenbank holen
     Database db = await DatabaseHelper.instance.database;
     var dbID = await db.rawQuery('SELECT ID FROM User WHERE Name = ?', [name]);
     print('dbID : ${dbID[0].values.toList()[0]}');
@@ -85,7 +93,7 @@ class UserProfileCollection with ChangeNotifier {
       UserProfileData(
         databaseID: dbID[0].values.toList()[0],
         name: name,
-        email: "",
+        email: email == null ? " " : email,
       ),
     );
     print("ADD PROFILE");
@@ -95,6 +103,46 @@ class UserProfileCollection with ChangeNotifier {
       selectUserProfile(userIndex: 0);
     }
     notifyListeners();
+  }
+
+  // Dupliziere Profil,
+  // ändere Namen
+  // Füge in der Datenbank hinzu
+  // Füge lokalem Objekt hinzu
+  // Dupliziere alle zugehörigen TravelProfiles,
+  void duplicateProfile({@required int indexUserProfile}) async {
+    print("DUPLICATE");
+    var copiedProfile = userProfileCollection[indexUserProfile];
+    // Rufe lokale addUser FUnktion auf, kümmert sich um Datenbank u Lok Obj
+    await addProfile(
+        name: copiedProfile.name + " - Kopie", email: copiedProfile.email);
+    //////////////// KOPIEREN DER TRAVELPROFILES ///////////////
+    // Suche alle Travel Profile des zu kopierenden Users
+    Database db = await DatabaseHelper.instance.database;
+    print(userProfileCollection);
+    var copiedTravelProfiles = await db.rawQuery('''
+    SELECT *
+    FROM TravelProfile
+    WHERE UserID = ?
+    ''', [userProfileCollection[indexUserProfile].databaseID]);
+    // Füge leeres Profil hinzu, modifiziere es dann im Anschluss gleich,
+    // sodass es die kopierten Werte enthält
+    for (int i = 0; i < copiedTravelProfiles.length; i++) {
+      var row = copiedTravelProfiles[i];
+      Provider.of<TravelProfileCollection>(context, listen: false)
+          .addEmptyTravelProfile(
+              name: row["NameTrav"],
+              userID: userProfileCollection.last.databaseID);
+      Provider.of<TravelProfileCollection>(context, listen: false)
+          .modifyTravelProfile(
+        profileIndex: i,
+        maxDetour: row["MaxDetour"],
+        minDurationAutomSegment: row["MinSegment"].toDouble(),
+        indexTriangle: row["IndexTriangle"],
+        userID: userProfileCollection.last.databaseID,
+      );
+    }
+    /////////////////////////////////////////////////////////////
   }
 
   // Setze das ausgewählte Nutzerprofil
@@ -113,6 +161,23 @@ class UserProfileCollection with ChangeNotifier {
         userProfileCollection[selectedUserProfileIndex].databaseID;
     Provider.of<TravelProfileCollection>(context, listen: false)
         .setTravelProfiles();
+    notifyListeners();
+  }
+
+  // Ändern eines Profils
+  void modifyUserProfile(
+      {String name, String email, @required userProfileIndex}) async {
+    // lokal ändern
+    print("MODIFY USER");
+    userProfileCollection[userProfileIndex].name = name;
+    userProfileCollection[userProfileIndex].email = email;
+    // in der Datenbank ändern
+    Database db = await DatabaseHelper.instance.database;
+    db.rawUpdate('''
+    UPDATE User 
+    SET Name = ?, Email = ?
+    WHERE ID = ?
+    ''', [name, email, userProfileCollection[userProfileIndex].databaseID]);
     notifyListeners();
   }
 }

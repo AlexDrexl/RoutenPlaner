@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:routenplaner/drawer/user_profile_addUser.dart';
 import 'package:routenplaner/footer.dart';
 import 'package:routenplaner/provider_classes/user_profile_collection.dart';
-import 'user_item.dart';
 import 'drawer_home.dart';
 import '../data/custom_colors.dart';
 import 'package:provider/provider.dart';
@@ -13,14 +12,18 @@ class UserProfiles extends StatefulWidget {
 }
 
 class _UserProfilesState extends State<UserProfiles> {
+  GlobalKey key = GlobalKey();
   List<Widget> printUserProfiles(UserProfileCollection profiles) {
     List<Widget> widgetList = List<Widget>();
     for (int i = 0; i < profiles.userProfileCollection.length; i++) {
+      GlobalKey key = GlobalKey();
       widgetList.add(
         Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
+            // MAIN CONTAINER
             Container(
+              key: key,
               decoration: BoxDecoration(
                 color: myWhite,
                 borderRadius: BorderRadius.circular(14),
@@ -66,6 +69,7 @@ class _UserProfilesState extends State<UserProfiles> {
                           width: 2,
                           height: 40,
                         ),
+                        // DIese Button ersetzen durch ein Dropout Menu
                         MaterialButton(
                           // Folgende zwei Properties benötigt, um Button kleiner zu machen
                           minWidth: 0,
@@ -76,15 +80,119 @@ class _UserProfilesState extends State<UserProfiles> {
                             size: 50,
                           ),
                           onPressed: () {
-                            profiles.deleteProfile(indexUserProfile: i);
+                            // profiles.deleteProfile(indexUserProfile: i);
+                            RenderBox box =
+                                key.currentContext.findRenderObject();
+                            Offset position = box.localToGlobal(Offset.zero);
+                            var fullHeight = MediaQuery.of(context).size.height;
+                            var fullWidth = MediaQuery.of(context).size.width;
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return Dialog(
+                                  insetPadding: EdgeInsets.only(
+                                    top: position.dy - 10,
+                                    right: 25,
+                                    bottom: fullHeight - position.dy - 83,
+                                    left: fullWidth - 310,
+                                  ),
+                                  backgroundColor: myMiddleTurquoise,
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: [
+                                      // Drei Container für die Drei Button
+                                      // Bearbeiten
+                                      Container(
+                                        padding: EdgeInsets.only(right: 5),
+                                        child: FloatingActionButton(
+                                          onPressed: () {
+                                            Navigator.of(context).pop(true);
+                                            showDialog(
+                                              context: context,
+                                              // Dialog Popup
+                                              builder: (context) => Builder(
+                                                builder:
+                                                    (BuildContext context) {
+                                                  return AddUserProfileDialogue(
+                                                    modifyMode: true,
+                                                    profileIndex4modify: i,
+                                                  );
+                                                },
+                                              ),
+                                            );
+                                          },
+                                          child: Icon(
+                                            Icons.edit,
+                                            color: myWhite,
+                                          ),
+                                        ),
+                                      ),
+                                      // Delete
+                                      Container(
+                                        padding: EdgeInsets.only(right: 5),
+                                        child: FloatingActionButton(
+                                          onPressed: () {
+                                            profiles.deleteProfile(
+                                                indexUserProfile: i);
+                                            Navigator.of(context).pop(true);
+                                          },
+                                          child: Icon(
+                                            Icons.delete,
+                                            color: myWhite,
+                                          ),
+                                        ),
+                                      ),
+                                      // Duplicate
+                                      Container(
+                                        padding: EdgeInsets.only(right: 5),
+                                        child: FloatingActionButton(
+                                          onPressed: () {
+                                            profiles.duplicateProfile(
+                                                indexUserProfile: i);
+                                            Navigator.of(context).pop(true);
+                                          },
+                                          child: Icon(
+                                            Icons.copy,
+                                            color: myWhite,
+                                          ),
+                                        ),
+                                      ),
+                                      // Container für vertikalen Strich
+                                      Container(
+                                        height: 40,
+                                        width: 2,
+                                        color: myWhite,
+                                      ),
+                                      // Container für den Drei Punkte Icon, Wird
+                                      // verwendet um Höhe einzustellen
+                                      Container(
+                                        padding: EdgeInsets.only(
+                                            right: 0, top: 10, bottom: 10),
+                                        child: MaterialButton(
+                                          minWidth: 0,
+                                          onPressed: () {
+                                            Navigator.of(context).pop(true);
+                                          },
+                                          child: Icon(
+                                            Icons.more_vert,
+                                            color: myWhite,
+                                            size: 50,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              },
+                            );
                           },
                         ),
                       ],
-                    )
+                    ),
                   ],
                 ),
               ),
-            )
+            ),
           ],
         ),
       );
@@ -128,7 +236,7 @@ class _UserProfilesState extends State<UserProfiles> {
             // Dialog Popup
             builder: (context) => Builder(
               builder: (BuildContext context) {
-                return AddUserProfileDialogue();
+                return AddUserProfileDialogue(modifyMode: false);
               },
             ),
           );

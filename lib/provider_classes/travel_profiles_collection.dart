@@ -28,11 +28,12 @@ class TravelProfileCollection with ChangeNotifier {
     // User Profil, basierend auf der userID
     Database db = await DatabaseHelper.instance.database;
     var selectedTravelProfiles = await db.rawQuery('''
-    SELECT NameTrav, UserID, MaxAutom, MinTravel, ADMD, MaxDetour, MinSegment 
+    SELECT NameTrav, UserID, MaxAutom, MinTravel, ADMD, MaxDetour, MinSegment, IndexTriangle 
     FROM TravelProfile LEFT JOIN User
     ON User.ID = TravelProfile.UserID
     WHERE User.Selected = ?
       ''', [1]);
+    print(selectedTravelProfiles);
     // Schreibe die Werte aus der Datenbank in das collection Objekt
     for (int i = 0; i < selectedTravelProfiles.length; i++) {
       var valuesList = selectedTravelProfiles[i].values.toList();
@@ -45,7 +46,7 @@ class TravelProfileCollection with ChangeNotifier {
           admd: valuesList[4],
           maxDetour: valuesList[5],
           minDurationAutomSegment: valuesList[6],
-          indexTriangle: 6,
+          indexTriangle: valuesList[7],
         ),
       );
     }
@@ -54,13 +55,14 @@ class TravelProfileCollection with ChangeNotifier {
 
   // getter um Zugriff aus die Profile Liste zu bekommen
   //TravelProfileData getProfile(int index) => travelProfileCollection[index];
-  // Beim erstellen eines neuen Profils wird zunächst nur der Name Abgefragt
-  void addProfile(String name) async {
+  // Wird die User ID nicht explizit gegeben, wird automatisch das TravelProfil
+  // dem ausgewählten User zugeteilt
+  void addEmptyTravelProfile({String name, int userID}) async {
     // Initialisieren der Daten, zuerst lokal
     // Sind alles Startwerte, kann man ändern
     travelProfileCollection.add(TravelProfileData(
       name: name,
-      userID: await getCurrentUserID(),
+      userID: userID == null ? await getCurrentUserID() : userID,
       maxDetour: 10,
       minDurationAutomSegment: 10,
       maxAutomDuration: 1,
@@ -71,22 +73,36 @@ class TravelProfileCollection with ChangeNotifier {
     // Auch in der Datenbank hinzufügen
     DatabaseHelper.instance.addTravelProfile(
       name: name,
-      userID: await getCurrentUserID(),
+      userID: userID == null ? await getCurrentUserID() : userID,
       maxDetour: 10,
       minSegment: 10,
       maxAutom: 1,
       minTravel: 1,
       admd: 1,
+      indexTriangle: 6,
     );
+    // Führe notify Listeners nur aus, wenn keine UserID gegeben ist, also
+    // das UserProfil NICHT dupliziert wird
     notifyListeners();
   }
 
-  void deleteProfile(int indexProfile) {
+  void deleteTravelProfile(int indexProfile) async {
+    // In der Datenbank, basierend auf der UserID und Namen löschen
+    Database db = await DatabaseHelper.instance.database;
+    print("DELETE");
+    db.rawDelete(
+      '''
+    DELETE FROM TravelProfile 
+    WHERE UserID = ? AND NameTrav = ?
+    ''',
+      [await getCurrentUserID(), travelProfileCollection[indexProfile].name],
+    );
+    // Lokal löschen
     travelProfileCollection.removeAt(indexProfile);
     notifyListeners();
   }
 
-  TravelProfileData getProfile({@required int indexProfile}) {
+  TravelProfileData getTravelProfile({@required int indexProfile}) {
     return travelProfileCollection[indexProfile];
   }
 
@@ -97,17 +113,75 @@ class TravelProfileCollection with ChangeNotifier {
     return (table != null) ? table[0].values.toList()[0] : 1;
   }
 
-  // Ändert bisher nur lokal. Änderungen noch nicht in DB gepushed, bei neustart
-  // verloren
-  void modifyProfile(
+  // Dupliziere ein TravelProfile
+  void duplicateTravelProfile({@required int indexTravelProfile}) {
+    // Lokal Duplizieren
+    var copiedTravelProfile = travelProfileCollection[indexTravelProfile];
+    addEmptyTravelProfile(
+      name: copiedTravelProfile.name + " - Kopie",
+      userID: copiedTravelProfile.userID,
+    );
+    modifyTravelProfile(
+      profileIndex: travelProfileCollection.length - 1,
+      maxDetour: copiedTravelProfile.maxDetour,
+      minDurationAutomSegment:
+          copiedTravelProfile.minDurationAutomSegment.toDouble(),
+      indexTriangle: copiedTravelProfile.indexTriangle,
+      userID: copiedTravelProfile.userID,
+    );
+    notifyListeners();
+  }
+
+  // Ändere den Namen eines Profils
+  void changeName({int indexTravelprofile, String name}) async {
+    // In der Datenbank ändern
+    Database db = await DatabaseHelper.instance.database;
+    db.rawUpdate(
+      '''
+    UPDATE TravelProfile
+    SET NameTrav = ?
+    WHERE UserID = ? AND NameTrav = ? 
+    ''',
+      [
+        name,
+        await getCurrentUserID(),
+        travelProfileCollection[indexTravelprofile].name
+      ],
+    );
+    // lokal ändern
+    travelProfileCollection[indexTravelprofile].name = name;
+    notifyListeners();
+  }
+
+  // Ändern eines ReiseProfils, wenn keine UserID explizit gegeben, wird
+  // der aktuell ausgewählte user genommen
+  void modifyTravelProfile(
       {int profileIndex,
       int maxDetour,
       double minDurationAutomSegment,
-      int indexTriangle}) {
+      int indexTriangle,
+      int userID}) async {
+    // ändern der des Lokalen Profils
     travelProfileCollection[profileIndex].maxDetour = maxDetour;
     travelProfileCollection[profileIndex].minDurationAutomSegment =
         minDurationAutomSegment.toInt();
     travelProfileCollection[profileIndex].indexTriangle = indexTriangle;
+
+    // Änderungen in die Datenbank pushen
+    // Profil anhand der aktuellen UserID und Namen eindeutig identifizieren
+    print("Update called");
+    Database db = await DatabaseHelper.instance.database;
+    db.rawUpdate(
+      '''
+    UPDATE TravelProfile 
+    SET MaxDetour = $maxDetour, MinSegment = $minDurationAutomSegment, IndexTriangle = $indexTriangle
+    WHERE UserID = ? AND NameTrav = ?    
+    ''',
+      [
+        userID == null ? await getCurrentUserID() : userID,
+        travelProfileCollection[profileIndex].name
+      ],
+    );
   }
 }
 

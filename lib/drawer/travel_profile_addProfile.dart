@@ -2,19 +2,32 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:routenplaner/provider_classes/travel_profiles_collection.dart';
 
-class AddProfileDialogue extends StatefulWidget {
+class AddTravelProfileDialogue extends StatefulWidget {
+  final int indexTravelProfile;
+  final bool modifyMode;
+  AddTravelProfileDialogue(
+      {this.indexTravelProfile, @required this.modifyMode});
   @override
-  _AddProfileDialogueState createState() => _AddProfileDialogueState();
+  _AddTravelProfileDialogueState createState() =>
+      _AddTravelProfileDialogueState(
+        indexTravelProfile: indexTravelProfile,
+        modifyMode: modifyMode,
+      );
 }
 
-class _AddProfileDialogueState extends State<AddProfileDialogue> {
-  _AddProfileDialogueState();
+class _AddTravelProfileDialogueState extends State<AddTravelProfileDialogue> {
+  int indexTravelProfile;
+  bool modifyMode;
+  _AddTravelProfileDialogueState(
+      {this.indexTravelProfile, @required this.modifyMode});
   String name = "";
   bool showHint = false;
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text("Gebe einen Profilnamen ein"),
+      title: Text(modifyMode
+          ? "Gebe neuen Profilnamen ein"
+          : "Gebe einen Profilnamen ein"),
       content: TextField(
         decoration: InputDecoration(
           hintText: showHint ? "Eingabe erfordert" : "",
@@ -45,9 +58,18 @@ class _AddProfileDialogueState extends State<AddProfileDialogue> {
               onPressed: () {
                 if (name != "") {
                   // Name eingegeben
-                  Provider.of<TravelProfileCollection>(context, listen: false)
-                      .addProfile(name);
-                  Navigator.pop(context);
+                  if (modifyMode) {
+                    Provider.of<TravelProfileCollection>(context, listen: false)
+                        .changeName(
+                      indexTravelprofile: indexTravelProfile,
+                      name: name,
+                    );
+                    Navigator.pop(context);
+                  } else {
+                    Provider.of<TravelProfileCollection>(context, listen: false)
+                        .addEmptyTravelProfile(name: name);
+                    Navigator.pop(context);
+                  }
                 } else {
                   // Keine eingabe
                   showHint = true;

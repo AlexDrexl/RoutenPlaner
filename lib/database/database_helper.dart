@@ -86,7 +86,8 @@ class DatabaseHelper {
             MinTravel INTEGER,
             ADMD INTEGER,
             MaxDetour INTEGER,
-            MinSegment INTEGER
+            MinSegment INTEGER,
+            IndexTriangle INTEGER
           )
           ''');
   }
@@ -156,6 +157,7 @@ class DatabaseHelper {
     int admd,
     int maxDetour,
     int minSegment,
+    int indexTriangle,
     String name,
   }) async {
     var row = {
@@ -166,6 +168,7 @@ class DatabaseHelper {
       "ADMD": admd,
       "MaxDetour": maxDetour,
       "MinSegment": minSegment,
+      "IndexTriangle": indexTriangle,
     };
     Database db = await instance.database;
     return await db.insert(travelProfileTable, row);

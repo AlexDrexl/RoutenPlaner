@@ -7,9 +7,7 @@ import 'package:provider/provider.dart';
 // save in travel Profile collection gepushed
 class TravelProfileDetailModifier with ChangeNotifier {
   // TravelProfileCollection collection;
-  TravelProfileDetailModifier() {
-    print("COnstructor");
-  }
+  TravelProfileDetailModifier();
   TravelProfileData localTravelProfile = TravelProfileData();
   int indexTriangleLocal, maxDetourLocal;
   double minDurationAutomSegmentLocal;
@@ -19,7 +17,7 @@ class TravelProfileDetailModifier with ChangeNotifier {
   void init({@required int indexProfile, @required BuildContext context}) {
     localTravelProfile =
         Provider.of<TravelProfileCollection>(context, listen: false)
-            .getProfile(indexProfile: indexProfile);
+            .getTravelProfile(indexProfile: indexProfile);
     // Man muss die Variablen noch einmal lokal speichern, da Provider sonst immer
     // die Werte in Collection mit ändert, save dadurch nicht möglich
     indexTriangleLocal = localTravelProfile.indexTriangle;
@@ -33,7 +31,8 @@ class TravelProfileDetailModifier with ChangeNotifier {
     print("SAVE CALLED");
     // Wenn gesaved werden soll, wird das gewünschte Profil in der Collection
     // geändert. Die lokalen Daten werden also in Collection gepushed
-    Provider.of<TravelProfileCollection>(context, listen: false).modifyProfile(
+    Provider.of<TravelProfileCollection>(context, listen: false)
+        .modifyTravelProfile(
       profileIndex: indexProfile,
       maxDetour: maxDetourLocal,
       minDurationAutomSegment: minDurationAutomSegmentLocal,

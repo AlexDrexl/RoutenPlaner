@@ -5,6 +5,8 @@ import 'package:routenplaner/drawer/input_triangle.dart';
 import 'package:routenplaner/drawer/travel_profiles.dart';
 import 'package:routenplaner/provider_classes/travel_profile_modifier.dart';
 import 'package:routenplaner/provider_classes/travel_profiles_collection.dart';
+import 'package:routenplaner/route_planning.dart';
+import 'package:routenplaner/route_planning2.dart';
 import '../data/custom_colors.dart';
 import 'package:provider/provider.dart';
 import '../footer.dart';
@@ -21,6 +23,7 @@ class TravelDetail extends StatefulWidget {
 class _TravelDetailState extends State<TravelDetail> {
   final ScrollController _scrollController = ScrollController();
   int indexProfile;
+  bool homeButtonPressed = false;
   _TravelDetailState(this.indexProfile) {
     // Übergebe das Profi an den Modifier, als Startwert
   }
@@ -74,12 +77,22 @@ class _TravelDetailState extends State<TravelDetail> {
                     ),
                   ),
                   onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute<Widget>(
-                        builder: (BuildContext context) => TravelProfiles(),
-                      ),
-                    );
+                    if (homeButtonPressed) {
+                      homeButtonPressed = false;
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute<Widget>(
+                          builder: (BuildContext context) => RoutePlanning(),
+                        ),
+                      );
+                    } else {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute<Widget>(
+                          builder: (BuildContext context) => TravelProfiles(),
+                        ),
+                      );
+                    }
                   },
                 ),
               ),
@@ -103,12 +116,22 @@ class _TravelDetailState extends State<TravelDetail> {
                     Provider.of<TravelProfileDetailModifier>(context,
                             listen: false)
                         .safe(indexProfile, context);
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute<Widget>(
-                        builder: (BuildContext context) => TravelProfiles(),
-                      ),
-                    );
+                    if (homeButtonPressed) {
+                      homeButtonPressed = false;
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute<Widget>(
+                          builder: (BuildContext context) => RoutePlanning(),
+                        ),
+                      );
+                    } else {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute<Widget>(
+                          builder: (BuildContext context) => TravelProfiles(),
+                        ),
+                      );
+                    }
                   },
                 ),
               )
@@ -136,7 +159,49 @@ class _TravelDetailState extends State<TravelDetail> {
       drawer: DrawerHome(),
       bottomNavigationBar: Stack(
         children: [
-          Footer(),
+          // Home Button
+          BottomAppBar(
+            color: Colors.white.withOpacity(0),
+            child: Container(
+              padding: EdgeInsets.only(top: 5, bottom: 5, left: 5, right: 5),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    Colors.white.withOpacity(0.1),
+                    Colors.white.withOpacity(0.9),
+                  ],
+                ),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Container(
+                    decoration: BoxDecoration(
+                        color: myMiddleTurquoise,
+                        shape: BoxShape.circle,
+                        boxShadow: [
+                          BoxShadow(
+                              blurRadius: 10, color: myWhite, spreadRadius: 5),
+                        ]),
+                    child: CircleAvatar(
+                      radius: 30,
+                      backgroundColor: myMiddleTurquoise,
+                      child: IconButton(
+                        icon: Icon(Icons.home, color: myWhite, size: 30),
+                        onPressed: () async {
+                          homeButtonPressed = true;
+                          safeChanges();
+                          // Navigator.pushReplacementNamed(context, '/');
+                        },
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             // Mit margin hindeichseln
@@ -159,7 +224,15 @@ class _TravelDetailState extends State<TravelDetail> {
                       size: 30,
                     ),
                     onPressed: () {
-                      safeChanges();
+                      Provider.of<TravelProfileDetailModifier>(context,
+                              listen: false)
+                          .safe(indexProfile, context);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute<Widget>(
+                          builder: (BuildContext context) => TravelProfiles(),
+                        ),
+                      );
                     },
                   ),
                 ),
