@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:routenplaner/provider_classes/travel_profiles_collection.dart';
+import 'package:provider/provider.dart';
 
 class RouteDetails with ChangeNotifier {
   // Alle benötigten RoutenEingaben
   String startingLocation;
   String destinationLocation;
-  String routeProfile;
+  TravelProfileData selectedTravelProfile = TravelProfileData();
   TimeOfDay startTime = TimeOfDay.now();
   DateTime startDate = DateTime.now();
   List<String> stopovers = List<String>();
@@ -15,6 +17,22 @@ class RouteDetails with ChangeNotifier {
   // Methoden
   void refresh() {
     print("refresh");
+    notifyListeners();
+  }
+
+  // setze das TravelProfil, basierend auf dessen Namen
+  void setTravelProfile(
+      {@required String travelProfileName, @required BuildContext context}) {
+    var travelProfileCollection =
+        Provider.of<TravelProfileCollection>(context, listen: false)
+            .travelProfileCollection;
+    for (int i = 0; i < travelProfileCollection.length; i++) {
+      if (travelProfileCollection[i].name == travelProfileName) {
+        selectedTravelProfile = travelProfileCollection[i];
+        break;
+      }
+    }
+    print("SELECT TRAVEL PROFILE");
     notifyListeners();
   }
 

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:routenplaner/provider_classes/travel_profiles_collection.dart';
 import 'desired_Autom_Sections.dart';
 import 'route_details.dart';
 
@@ -59,6 +60,7 @@ class FinalRoute {
   DateTime duration = DateTime(0);
   DateTime automationDuration;
   DateTime manualDuration;
+  TravelProfileData selectedTravelProfile;
   // Orte und Zwischenstopps
   String startLocation;
   String destinationLocation;

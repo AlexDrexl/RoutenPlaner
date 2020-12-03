@@ -5,6 +5,7 @@ import 'package:routenplaner/data/custom_colors.dart';
 import 'package:routenplaner/drawer/user_profiles.dart';
 import 'package:routenplaner/home_destination_input/homeAutomationSegments.dart';
 import 'package:routenplaner/overview/overview_segment.dart';
+import 'package:routenplaner/provider_classes/final_routes.dart';
 import 'package:routenplaner/provider_classes/route_details.dart';
 import 'package:routenplaner/provider_classes/travel_profiles_collection.dart';
 import 'package:routenplaner/provider_classes/user_profile_collection.dart';
@@ -68,7 +69,7 @@ class _DestinationInputDetailsState extends State<DestinationInputDetails> {
 
   void setNameList(BuildContext context) {
     travelProfileNames.clear();
-    // Then wort benötogt, da so
+    // Hole die Travel Profilnamen aus der TravelProfileCollection
     Provider.of<TravelProfileCollection>(context, listen: false)
         .getTravelProfileNames()
         .then(
@@ -243,6 +244,11 @@ class _DestinationInputDetailsState extends State<DestinationInputDetails> {
             onPressed: () {
               if (Provider.of<RouteDetails>(context, listen: false)
                   .validInputs()) {
+                // Setze das ausgewählte TravelProfil
+                Provider.of<RouteDetails>(context, listen: false)
+                    .setTravelProfile(
+                        travelProfileName: selectedTravelProfile,
+                        context: context);
                 Navigator.push(
                   context,
                   MaterialPageRoute<Widget>(

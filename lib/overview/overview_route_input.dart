@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 
 import 'package:routenplaner/overview/overview_segment.dart';
 import 'package:routenplaner/provider_classes/route_details.dart';
+import 'package:routenplaner/provider_classes/travel_profiles_collection.dart';
 
 class OverviewRouteInput extends StatefulWidget {
   @override
@@ -12,20 +13,25 @@ class OverviewRouteInput extends StatefulWidget {
 
 class _OverviewRouteInputState extends State<OverviewRouteInput> {
   // Variablen, aus Laufzeit Datenbank
-  String start = "Garching";
-  String destination = "ZIELORT";
-  String day = "Donnerstag";
-  String startTime = "--:-- Uhr";
-  String startDate = "88.88.8888";
-  List<String> travelProfiles = ['Arbeit', 'Freizeit', 'Kinder'];
-  List<String> minAutomationLength = ['0', '5', '10', '20', '30'];
-
-  String selectedTravelProfile;
+  List<String> travelProfilenames = List<String>();
   String selectedAutomationLength;
 
   int flexFirstColumn = 5;
   int flexSecondColumn = 2;
   int flexThirdColumn = 8;
+
+  // setze die Travel ProfilNamen in ein Lokales Objekt
+  void setTravelProfiles(BuildContext context) {
+    travelProfilenames.clear();
+    var travelProfiles =
+        Provider.of<TravelProfileCollection>(context, listen: false)
+            .travelProfileCollection;
+    for (int i = 0; i < travelProfiles.length; i++) {
+      travelProfilenames.add(
+        travelProfiles[i].name,
+      );
+    }
+  }
 
   // Modulare Widgets, die immer wieder benötigt werden
   Row informationRow(
@@ -56,6 +62,9 @@ class _OverviewRouteInputState extends State<OverviewRouteInput> {
   // Eigentliches Widget
   @override
   Widget build(BuildContext context) {
+    // Zuerst die TravelProfile Setzen
+    setTravelProfiles(context);
+    print("BUILD");
     // PROVIDER FÜR PUPUP UND OVERVIEW SEGMENT
     return Column(
       children: <Widget>[
@@ -71,11 +80,15 @@ class _OverviewRouteInputState extends State<OverviewRouteInput> {
               SizedBox(height: 10),
               informationRow(
                   "Abfahrt ab:",
-                  routeDetails.weekDay() + ", " + routeDetails.formatedDate(),
+                  routeDetails.weekDay() +
+                      ", " +
+                      "${routeDetails.startDate.day.toString().padLeft(2, '0')}.${routeDetails.startDate.month.toString().padLeft(2, '0')}.${routeDetails.startDate.year.toString()}",
                   Icons.calendar_today),
               SizedBox(height: 10),
               informationRow(
-                  "", routeDetails.formatedTime(), Icons.access_time),
+                  "",
+                  "${routeDetails.startTime.hour.toString().padLeft(2, '0')}:${routeDetails.startTime.minute.toString().padLeft(2, '0')} Uhr",
+                  Icons.access_time),
               SizedBox(height: 10),
             ],
           ),
@@ -103,39 +116,39 @@ class _OverviewRouteInputState extends State<OverviewRouteInput> {
               flex: flexThirdColumn,
               child: Container(
                 margin: EdgeInsets.only(right: 50),
-                child: DropdownButton<String>(
-                  // Hint wird durch Provider Aktualisiert
-                  hint: Consumer<RouteDetails>(
-                    builder: (context, routeDetails, child) =>
-                        Text("${routeDetails.routeProfile}"),
+                child: Consumer<RouteDetails>(
+                  builder: (context, routeDetails, _) => DropdownButton<String>(
+                    // Hint wird durch Provider Aktualisiert
+                    icon: Icon(
+                      Icons.arrow_drop_down,
+                      size: 40,
+                      color: myMiddleTurquoise,
+                    ),
+                    hint: Text(routeDetails.selectedTravelProfile.name),
+                    value: routeDetails.selectedTravelProfile.name,
+                    underline: Container(
+                      height: 2,
+                      color: myMiddleGrey,
+                    ),
+                    // Wenn Geärndert, dann ändere auch den Wert im Provider
+                    onChanged: (String travelProfileName) {
+                      // RoutenProfil ändern
+                      Provider.of<RouteDetails>(context, listen: false)
+                          .setTravelProfile(
+                              travelProfileName: travelProfileName,
+                              context: context);
+                      // Aktualisieren
+                    },
+                    items: travelProfilenames.map((String i) {
+                      return DropdownMenuItem<String>(
+                        value: i,
+                        child: Text(
+                          i,
+                          style: TextStyle(color: myDarkGrey),
+                        ),
+                      );
+                    }).toList(),
                   ),
-                  icon: Icon(
-                    Icons.arrow_drop_down,
-                    size: 40,
-                    color: myMiddleTurquoise,
-                  ),
-                  value: selectedTravelProfile,
-                  underline: Container(
-                    height: 2,
-                    color: myMiddleGrey,
-                  ),
-                  // Wenn Geärndert, dann ändere auch den Wert im Provider
-                  onChanged: (String travelValue) {
-                    // RoutenProfil ändern
-                    Provider.of<RouteDetails>(context, listen: false)
-                        .routeProfile = travelValue;
-                    // Aktualisieren
-                    Provider.of<RouteDetails>(context, listen: false).refresh();
-                  },
-                  items: travelProfiles.map((String i) {
-                    return DropdownMenuItem<String>(
-                      value: i,
-                      child: Text(
-                        i,
-                        style: TextStyle(color: myDarkGrey),
-                      ),
-                    );
-                  }).toList(),
                 ),
               ),
             ),
