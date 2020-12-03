@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:routenplaner/data/custom_colors.dart';
-import 'package:routenplaner/overview/pupup_dialogue.dart';
+import 'package:routenplaner/overview/segment_pupup_dialogue.dart';
 import 'package:provider/provider.dart';
 import 'package:routenplaner/provider_classes/desired_Autom_Sections.dart';
 

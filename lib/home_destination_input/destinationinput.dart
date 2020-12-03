@@ -75,7 +75,7 @@ class _DestinationinputState extends State<Destinationinput> {
               new Flexible(
                 child: DestinationinputDestination(),
               ),
-              DestinationInputDetails(),
+              DestinationInputDetails(context),
             ],
             //onChanged: ,
           ),

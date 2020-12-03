@@ -1,7 +1,13 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:routenplaner/data/custom_colors.dart';
 import 'package:routenplaner/drawer/user_profiles.dart';
+import 'package:routenplaner/home_destination_input/homeAutomationSegments.dart';
+import 'package:routenplaner/overview/overview_segment.dart';
 import 'package:routenplaner/provider_classes/route_details.dart';
+import 'package:routenplaner/provider_classes/travel_profiles_collection.dart';
+import 'package:routenplaner/provider_classes/user_profile_collection.dart';
 import 'package:routenplaner/route_planning2.dart';
 import 'package:routenplaner/drawer/travel_profiles.dart';
 import 'package:provider/provider.dart';
@@ -9,26 +15,31 @@ import 'package:provider/provider.dart';
 import 'package:routenplaner/overview/overview_route.dart';
 
 class DestinationInputDetails extends StatefulWidget {
+  final BuildContext context;
+  DestinationInputDetails(this.context);
   @override
   _DestinationInputDetailsState createState() =>
-      _DestinationInputDetailsState();
+      _DestinationInputDetailsState(context);
 }
 
 class _DestinationInputDetailsState extends State<DestinationInputDetails> {
   var date = DateTime.now();
-  DateTime selectedDate = DateTime.now();
   DateTime pickedDate;
-  TimeOfDay time;
+  TimeOfDay pickedTime;
+  String selectedTravelProfile;
+  List<String> travelProfileNames = List<String>();
+  bool inputMissing = false;
 
-  // die ReiseProfile haben noch keine bedeutung, es sind einfach nur Strings
-  String selectedTravelProfile = 'Arbeit';
-  List<String> travel = ['Arbeit', 'Freizeit', 'Kinder'];
-
+  _DestinationInputDetailsState(BuildContext context) {
+    pickedDate = DateTime.now();
+    pickedTime = TimeOfDay.now();
+    setNameList(context);
+  }
   // Date Picker
-  _pickDate() {
-    showDatePicker(
+  _pickDate() async {
+    DateTime date = await showDatePicker(
         context: context,
-        initialDate: pickedDate,
+        initialDate: DateTime.now(),
         firstDate: DateTime(DateTime.now().year - 5),
         lastDate: DateTime(DateTime.now().year + 10));
     if (date != null)
@@ -39,147 +50,216 @@ class _DestinationInputDetailsState extends State<DestinationInputDetails> {
       });
   }
 
+  // Time Picker
   _pickTime() async {
-    TimeOfDay t = await showTimePicker(context: context, initialTime: time);
+    TimeOfDay t =
+        await showTimePicker(context: context, initialTime: TimeOfDay.now());
     if (t != null)
       setState(() {
-        // StartZeit zu Provider hinzufügen
-        DateTime locDateTime = DateTime(0, 0, 0, t.hour, t.minute);
-        Provider.of<RouteDetails>(context, listen: false).startTime =
-            locDateTime;
-        time = t;
+        Provider.of<RouteDetails>(context, listen: false).startTime = t;
+        pickedTime = t;
       });
   }
 
   void initState() {
+    // setNameList(context);
     super.initState();
-    pickedDate = DateTime.now();
-    time = TimeOfDay.now();
+  }
+
+  void setNameList(BuildContext context) {
+    travelProfileNames.clear();
+    // Then wort benötogt, da so
+    Provider.of<TravelProfileCollection>(context, listen: false)
+        .getTravelProfileNames()
+        .then(
+          (val) => setState(
+            () {
+              if (val != null) {
+                travelProfileNames = val;
+                selectedTravelProfile = val[0];
+              }
+            },
+          ),
+        );
+  }
+
+  List<DropdownMenuItem<String>> getDropDownItems(
+      TravelProfileCollection profiles) {
+    List<DropdownMenuItem<String>> widgetList =
+        List<DropdownMenuItem<String>>();
+    // Kurzes Überprüfen, ob denn überhaupt TravelProfiles da sind
+    if (travelProfileNames == null) {
+      return null;
+    }
+    for (int i = 0; i < travelProfileNames.length; i++) {
+      widgetList.add(
+        DropdownMenuItem(
+          child: Text(
+            travelProfileNames[i],
+            style: TextStyle(color: myDarkGrey),
+          ),
+          value: travelProfileNames[i],
+        ),
+      );
+    }
+    return widgetList;
   }
 
   @override
-  // Eigentliches Widget
   Widget build(BuildContext context) {
     return Container(
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
+      child:
           // Insgesamt eine Spalte
           Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+          SizedBox(
+            height: 15,
+          ),
+          // Überschrift
+          Row(children: [
+            Text(
+              'Abfahrt ab',
+              style: TextStyle(fontSize: 17, color: myDarkGrey),
+            ),
+            Text(
+              ' / Ankunft bis',
+              style: TextStyle(fontSize: 17, color: myMiddleGrey),
+            ),
+          ]),
+          SizedBox(
+            height: 8,
+          ),
+          // Erste Reihe mit Date und Time Picker
+          Row(
             children: [
+              Icon(Icons.calendar_today, color: myYellow),
+              //String convertedDateTime = "${now.year.toString()}-${now.month.toString().padLeft(2,'0')}-${now.day.toString().padLeft(2,'0')} ${now.hour.toString()}-${now.minute.toString()}";
               SizedBox(
-                height: 15,
+                width: 18.0,
               ),
-              // Überschrift
-              Row(children: [
-                Text(
-                  'Abfahrt ab',
-                  style: TextStyle(fontSize: 17, color: myDarkGrey),
+              // Button für DatePicker
+              MaterialButton(
+                color: myMiddleTurquoise,
+                textColor: myWhite,
+                child: Text(
+                  "${pickedDate.day.toString().padLeft(2, '0')}.${pickedDate.month.toString().padLeft(2, '0')}.${pickedDate.year.toString()}",
                 ),
-                Text(
-                  ' / Ankunft bis',
-                  style: TextStyle(fontSize: 17, color: myMiddleGrey),
-                ),
-              ]),
-              SizedBox(
-                height: 8,
-              ),
-              // Erste Reihe mit Date und Time Picker
-              Row(
-                children: [
-                  Icon(Icons.calendar_today, color: myYellow),
-                  //Text("${selectedDate.toLocal()}".split(' ')[0]),
-                  SizedBox(
-                    width: 18.0,
-                  ),
-                  MaterialButton(
-                    color: myMiddleTurquoise,
-                    textColor: myWhite,
-                    child: Text(
-                        "${pickedDate.day}.${pickedDate.month}.${pickedDate.year}"),
-                    onPressed: _pickDate,
-                  ),
-                  SizedBox(
-                    width: 18,
-                  ),
-                  Icon(Icons.access_time, color: myYellow),
-                  SizedBox(
-                    width: 18,
-                  ),
-                  MaterialButton(
-                    color: myMiddleTurquoise,
-                    textColor: myWhite,
-                    child: Text("${time.hour}:${time.minute} Uhr"),
-                    onPressed: _pickTime,
-                  ),
-                ],
+                onPressed: _pickDate,
               ),
               SizedBox(
-                height: 8,
+                width: 18,
               ),
-              // String "Reiseprofil"
-              Text(
-                'Reiseprofil',
-                style: TextStyle(fontSize: 17, color: myDarkGrey),
+              Icon(Icons.access_time, color: myYellow),
+              SizedBox(
+                width: 18,
               ),
-              // reiseprofileingabe
-              Row(
-                children: [
-                  Icon(
-                    Icons.card_travel,
-                    color: myYellow,
-                  ),
-                  SizedBox(
-                    width: 20,
-                  ),
-                  DropdownButton<String>(
+              // Button für den TimePicker
+              MaterialButton(
+                color: myMiddleTurquoise,
+                textColor: myWhite,
+                child: Text(
+                    "${pickedTime.hour.toString().padLeft(2, '0')}:${pickedTime.minute.toString().padLeft(2, '0')} Uhr"),
+                onPressed: _pickTime,
+              ),
+            ],
+          ),
+          SizedBox(
+            height: 8,
+          ),
+          // String "Reiseprofil"
+          Text(
+            'Reiseprofil',
+            style: TextStyle(fontSize: 17, color: myDarkGrey),
+          ),
+          // reiseprofileingabe
+          Row(
+            children: [
+              Icon(
+                Icons.card_travel,
+                color: myYellow,
+              ),
+              SizedBox(
+                width: 20,
+              ),
+              Consumer<TravelProfileCollection>(
+                builder: (context, travelProfiles, __) {
+                  return DropdownButton<String>(
                     hint: Text("Reiseprofil"),
                     icon: Icon(
                       Icons.arrow_drop_down,
                       size: 40,
                       color: myMiddleTurquoise,
                     ),
-                    value: selectedTravelProfile,
+                    value: selectedTravelProfile == null
+                        ? null
+                        : selectedTravelProfile,
                     underline: Container(
                       height: 2,
                       color: myMiddleGrey,
                     ),
                     onChanged: (String value) {
                       setState(() {
-                        // Zu Provider hinzufügen
-                        Provider.of<RouteDetails>(context, listen: false)
-                            .routeProfile = value;
                         selectedTravelProfile = value;
                       });
                     },
-                    items: travel.map((String travel) {
-                      return DropdownMenuItem<String>(
-                        value: travel,
-                        child: Text(
-                          travel,
-                          style: TextStyle(color: myDarkGrey),
-                        ),
-                      );
-                    }).toList(),
-                  ),
-                ],
+                    items: getDropDownItems(travelProfiles),
+                  );
+                },
               ),
-              // String "Autom. Fahrsegment.."
+            ],
+          ),
+          // String "Autom. Fahrsegment.."
+          Text(
+            'Autom. Fahrsegment hinzufügen',
+            style: TextStyle(fontSize: 17, color: myDarkGrey),
+          ),
+          //// Hier die Automatisierten Segmente einfügen
+          HomeAutomationSegments(),
+          ///////////////
+          SizedBox(
+            height: 8,
+          ),
+          SizedBox(
+            height: 8,
+          ),
+          // Los gets Button, startet Routenberechnung
+          MaterialButton(
+            minWidth: 300,
+            color: myDarkTurquoise,
+            textColor: myWhite,
+            child: Row(children: [
               Text(
-                'Autom. Fahrsegment hinzufügen',
-                style: TextStyle(fontSize: 17, color: myDarkGrey),
+                "Los geht's!",
+                style: TextStyle(fontSize: 17),
               ),
               SizedBox(
-                height: 8,
+                width: 10,
               ),
-              // Fahrsegment hinzufügen
-              Row(
-                children: [
-                  Icon(Icons.local_car_wash, color: myYellow),
+              Icon(Icons.arrow_forward_ios)
+            ]),
+            // Beim drücke, -> Overview
+            onPressed: () {
+              if (Provider.of<RouteDetails>(context, listen: false)
+                  .validInputs()) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute<Widget>(
+                    builder: (BuildContext context) => Overview(),
+                  ),
+                );
+              }
+            },
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/*
+Icon(Icons.local_car_wash, color: myYellow),
                   SizedBox(
                     width: 20,
                   ),
@@ -203,108 +283,4 @@ class _DestinationInputDetailsState extends State<DestinationInputDetails> {
                       },
                     ),
                   ),
-                ],
-              ),
-              SizedBox(
-                width: 20,
-              ),
-              // String "Zwischenstopp hinzufügen"
-              Text(
-                'Zwischenstopp hinzufügen',
-                style: TextStyle(fontSize: 17, color: myDarkGrey),
-              ),
-              SizedBox(
-                height: 8,
-              ),
-              // Zwischenstopp hinzufügen
-              Row(
-                children: [
-                  Icon(Icons.pin_drop, color: myYellow),
-                  SizedBox(
-                    width: 20,
-                  ),
-                  CircleAvatar(
-                    backgroundColor: myMiddleTurquoise,
-                    radius: 21,
-                    child: IconButton(
-                      icon: Icon(
-                        Icons.add,
-                        color: myWhite,
-                        size: 25,
-                      ),
-                      // Falls gedrückt -> Link zu RoutePlanning2
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute<Widget>(
-                            builder: (BuildContext context) => RoutePlanning2(),
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-                ],
-              ),
-              SizedBox(
-                height: 8,
-              ),
-              // Los gets Button, startet Routenberechnung
-              MaterialButton(
-                minWidth: 300,
-                color: myDarkTurquoise,
-                textColor: myWhite,
-                child: Row(children: [
-                  Text(
-                    "Los geht's!",
-                    style: TextStyle(fontSize: 17),
-                  ),
-                  SizedBox(
-                    width: 10,
-                  ),
-                  Icon(Icons.arrow_forward_ios)
-                ]),
-                // Beim drücke, -> Overview
-                onPressed: () {
-                  // Zuerst die Daten aus dem Provider route_details
-                  // Auf der zweiten Seite Aktualisieren
-                  // PROBLEM: Bis hierhin hat man zugriff auf provider aber nach dem Navigator push
-                  // nicht mehr
-                  Provider.of<RouteDetails>(context, listen: false).refresh();
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute<Widget>(
-                      builder: (BuildContext context) => Overview(),
-                    ),
-                  );
-                },
-              ),
-            ],
-          ),
-          /*Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              SizedBox(
-                height: 80,
-              ),
-              FloatingActionButton(
-                  backgroundColor: Hexcolor('48ACB8'),
-                  child: Icon(
-                    Icons.arrow_forward_ios,
-                    color: Colors.white,
-                    size: 30,
-                  ),
-                  onPressed: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute<Widget>(
-                            builder: (BuildContext context) =>
-                                RoutePlanning2()));
-                  })
-            ],
-          )*/
-        ],
-      ),
-    );
-  }
-}
+*/

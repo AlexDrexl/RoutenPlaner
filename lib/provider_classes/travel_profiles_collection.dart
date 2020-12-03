@@ -15,12 +15,13 @@ class TravelProfileCollection with ChangeNotifier {
 
   TravelProfileCollection() {
     print("TRAVEL PROFILES INSTATIATE");
-    setTravelProfiles();
+    // setTravelProfiles();
   }
   // init funktion. Setzt die Profile, basierend auf der userID. Holt dies
   // aus der Datenbank bzw von dem user, der Selected ist.
   // Immer dann aufrufen, wenn das Nutzerprofil geändert wurde
-  void setTravelProfiles() async {
+  // War mal mit Future, weis nicht genau, ob sich jetzt was geändert hat
+  Future<void> setTravelProfiles() async {
     print("set TravelProfiles");
     travelProfileCollection.clear();
     // Hole aus der Datenbank alle Einträge, dessen UserID selected ist
@@ -33,7 +34,6 @@ class TravelProfileCollection with ChangeNotifier {
     ON User.ID = TravelProfile.UserID
     WHERE User.Selected = ?
       ''', [1]);
-    print(selectedTravelProfiles);
     // Schreibe die Werte aus der Datenbank in das collection Objekt
     for (int i = 0; i < selectedTravelProfiles.length; i++) {
       var valuesList = selectedTravelProfiles[i].values.toList();
@@ -182,6 +182,18 @@ class TravelProfileCollection with ChangeNotifier {
         travelProfileCollection[profileIndex].name
       ],
     );
+  }
+
+  Future<List<String>> getTravelProfileNames() async {
+    List<String> names = List<String>();
+    if (travelProfileCollection.length == 0) {
+      await setTravelProfiles();
+    }
+    for (int i = 0; i < travelProfileCollection.length; i++) {
+      names.add(travelProfileCollection[i].name);
+    }
+    print(names);
+    return names;
   }
 }
 

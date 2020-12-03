@@ -12,36 +12,45 @@ class DestinationinputDestination extends StatefulWidget {
 
 class _DestinationinputDestinationState
     extends State<DestinationinputDestination> {
-  void updateUserTextDestination(String text) {
-    setState(() {
-      userTextZiel = text;
-    });
-  }
-
   String userTextZiel = '';
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: TextField(
-        maxLines: 1,
-        onChanged: (destination) {
-          updateUserTextDestination(destination);
-          // Provider benachrichtigen
-          Provider.of<RouteDetails>(context, listen: false)
-              .destinationLocation = destination;
-        }, //gibt auch onsubmitted;
-        decoration: InputDecoration(
-          border: OutlineInputBorder(),
-          icon: Icon(
-            Icons.flag,
-            color: myYellow,
+      child: Consumer<RouteDetails>(
+        builder: (context, routeDetails, _) => TextField(
+          maxLines: 1,
+          onChanged: (destination) {
+            // Provider benachrichtigen
+            routeDetails.destinationLocation = destination;
+            setState(() {
+              userTextZiel = destination;
+            });
+          }, //gibt auch onsubmitted;
+          decoration: InputDecoration(
+            border: OutlineInputBorder(),
+            icon: Icon(
+              Icons.flag,
+              color: myYellow,
+            ),
+            hintText:
+                routeDetails.destinationLocValid ? "Ziel" : "Eingabe erfordert",
+            hintStyle: routeDetails.destinationLocValid
+                ? TextStyle()
+                : TextStyle(color: Colors.red),
           ),
-          labelText: 'Ziel',
-          hintText: 'Ziel',
-          suffixIcon: Icon(Icons.keyboard, color: myMiddleGrey),
         ),
       ),
     );
   }
 }
+/*
+helperText:
+                routeDetails.destinationLocValid ? 'Ziel' : 'Eingabe erfordert',
+            hintStyle: routeDetails.destinationLocValid
+                ? TextStyle()
+                : TextStyle(color: Colors.red),
+            hintText:
+                routeDetails.destinationLocValid ? 'Ziel' : 'Eingabe erfordert',
+            suffixIcon: Icon(Icons.keyboard, color: myMiddleGrey),
+*/

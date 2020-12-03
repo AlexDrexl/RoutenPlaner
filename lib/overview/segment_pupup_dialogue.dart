@@ -168,10 +168,12 @@ class _PopUpInputState extends State<PopUpInput>
                             child: FloatingActionButton(
                               onPressed: () {
                                 // Wert wird an Provider übergeben
+                                print("POP");
                                 Provider.of<DesiredAutomSections>(context,
                                         listen: false)
                                     .addSection(beginningOfAutom,
                                         DateTime(0, 0, 0, 0, duration.toInt()));
+                                Navigator.pop(context);
                               },
                               child: Icon(
                                 Icons.arrow_forward_ios,
@@ -233,9 +235,10 @@ class _PopUpInputState extends State<PopUpInput>
                                   Provider.of<DesiredAutomSections>(context,
                                           listen: false)
                                       .addSection(
-                                          beginningOfAutom,
-                                          DateTime(
-                                              0, 0, 0, 0, duration.toInt()));
+                                    beginningOfAutom,
+                                    DateTime(0, 0, 0, 0, duration.toInt()),
+                                  );
+                                  Navigator.pop(context);
                                 },
                                 child: Icon(
                                   Icons.arrow_forward_ios,

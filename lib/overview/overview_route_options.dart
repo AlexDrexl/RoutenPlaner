@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:routenplaner/data/custom_colors.dart';
+import 'package:routenplaner/maps/maps.dart';
 
 import 'package:routenplaner/overview/overview_route_display.dart';
 import 'package:routenplaner/alternative%20routes/alternative_routes.dart';
@@ -68,6 +69,12 @@ class OverviewRouteOptions extends StatelessWidget {
                 ),
                 onPressed: () {
                   // LINK ZU DEN MAPS
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute<Widget>(
+                      builder: (BuildContext context) => Maps(),
+                    ),
+                  );
                 },
               )
             ],

@@ -59,7 +59,10 @@ class Footer extends StatelessWidget {
                 child: IconButton(
                   icon: Icon(Icons.home, color: myWhite, size: 30),
                   onPressed: () {
-                    Navigator.pushReplacementNamed(context, '/');
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => RoutePlanning()),
+                    );
                   },
                 ),
               ),

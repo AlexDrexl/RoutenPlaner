@@ -5,15 +5,25 @@ class RouteDetails with ChangeNotifier {
   String startingLocation;
   String destinationLocation;
   String routeProfile;
-  DateTime startTime = DateTime(0, 0, 0, 0, 0, 0);
-  DateTime startDate = DateTime(0);
+  TimeOfDay startTime = TimeOfDay.now();
+  DateTime startDate = DateTime.now();
   List<String> stopovers = List<String>();
   Map<DateTime, DateTime> desiredAutomSections = Map<DateTime, DateTime>();
+  bool startLocValid = true;
+  bool destinationLocValid = true;
 
   // Methoden
   void refresh() {
     print("refresh");
     notifyListeners();
+  }
+
+  bool validInputs() {
+    startLocValid = (startingLocation != null && startingLocation != "");
+    destinationLocValid =
+        (destinationLocation != null && destinationLocation != "");
+    notifyListeners();
+    return startLocValid && destinationLocValid ? true : false;
   }
 
   // Formatierung der Zeit

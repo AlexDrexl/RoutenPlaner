@@ -142,6 +142,7 @@ class _OverviewRouteInputState extends State<OverviewRouteInput> {
           ],
         ),
         // Min. Automationszeit
+        /*
         Row(
           children: <Widget>[
             Expanded(
@@ -189,6 +190,7 @@ class _OverviewRouteInputState extends State<OverviewRouteInput> {
             ),
           ],
         ),
+        */
         // Automatisierte Fahrsegmente einfügen
         OverviewSegments(),
       ],
