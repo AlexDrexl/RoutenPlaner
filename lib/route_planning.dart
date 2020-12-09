@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:routenplaner/home_favorites/favorites.dart';
 import 'data/custom_colors.dart';
 
 import 'drawer/drawer_home.dart';
@@ -43,7 +44,8 @@ class _RoutePlanningState extends State<RoutePlanning> {
             child: Column(children: [
               // Hier der eigentliche Seiteninhalt
               Destinationinput(), // Gesamte Zieleingabe
-              // FavoriteRoutes(), // Favoriten
+              // FavoriteRoutes(), // Favoriten, alt
+              Favorites(),
             ]),
           ),
         ),

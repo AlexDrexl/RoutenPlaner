@@ -40,6 +40,28 @@ class FinalRoutes with ChangeNotifier {
       ),
     );
   }
+
+  // SIMULATION: Simuliere die automatisierten Segmente. Erstelle so mit einer
+  // random Funktion FÜNF zufällige Routen und zeige diese an
+  void computeFinalRoutes(
+      RouteDetails routeDetails, DesiredAutomSections desiredAutomSections) {
+    for (int i = 0; i < 5; i++) {
+      // Erzeuge das Objekt, das der Liste hinzugefügt werden soll
+      FinalRoute route = FinalRoute(
+        // Fülle zunächst alle bereits bekannten Werte in ein FinalRoute Objekt
+        routeLetter: String.fromCharCode("A".codeUnitAt(0) + i),
+        startDate: routeDetails.startDate,
+        startTime: routeDetails.startTime,
+      );
+    }
+  }
+
+  // TODO: HIER DIE ZEIT VON GOOGLE MAPS RETURNEN, SUMULIERE
+  // EINFACH MIT FESTEM WERT
+  int getTravelTime() {
+    return 90;
+  }
+
   // Aktualisierungsfunktion
   void refresh() => notifyListeners();
   // setze gewünschte Route
@@ -53,9 +75,9 @@ class FinalRoutes with ChangeNotifier {
 // Dadurch einfach zu übergeben
 class FinalRoute {
   // Zeiten
-  DateTime startTime = DateTime(0);
+  TimeOfDay startTime = TimeOfDay(hour: 0, minute: 0);
   DateTime startDate = DateTime(0);
-  DateTime arrivalTime = DateTime(0);
+  TimeOfDay arrivalTime = TimeOfDay(hour: 0, minute: 0);
   DateTime arrivalDate = DateTime(0);
   DateTime duration = DateTime(0);
   DateTime automationDuration;

@@ -5,7 +5,9 @@ import 'package:routenplaner/data/custom_colors.dart';
 import 'package:routenplaner/drawer/user_profiles.dart';
 import 'package:routenplaner/home_destination_input/homeAutomationSegments.dart';
 import 'package:routenplaner/overview/overview_segment.dart';
+import 'package:routenplaner/provider_classes/addresses.dart';
 import 'package:routenplaner/provider_classes/final_routes.dart';
+import 'package:routenplaner/provider_classes/road_connections.dart';
 import 'package:routenplaner/provider_classes/route_details.dart';
 import 'package:routenplaner/provider_classes/travel_profiles_collection.dart';
 import 'package:routenplaner/provider_classes/user_profile_collection.dart';
@@ -75,7 +77,7 @@ class _DestinationInputDetailsState extends State<DestinationInputDetails> {
         .then(
           (val) => setState(
             () {
-              if (val != null) {
+              if (val.length != 0) {
                 travelProfileNames = val;
                 selectedTravelProfile = val[0];
               }
@@ -249,6 +251,24 @@ class _DestinationInputDetailsState extends State<DestinationInputDetails> {
                     .setTravelProfile(
                         travelProfileName: selectedTravelProfile,
                         context: context);
+                // hole die Start und Ziel Orte
+                String start = Provider.of<RouteDetails>(context, listen: false)
+                    .startingLocation;
+                String destination =
+                    Provider.of<RouteDetails>(context, listen: false)
+                        .destinationLocation;
+                // Füge die eigegebene Locations zu Address und RoadConnection hinzu
+                Provider.of<AddressCollection>(context, listen: false)
+                    .addAddress(addressName: start, timeNow: DateTime.now());
+                Provider.of<AddressCollection>(context, listen: false)
+                    .addAddress(
+                        addressName: destination, timeNow: DateTime.now());
+                Provider.of<RoadConnections>(context, listen: false)
+                    .addRoadConnection(
+                        start: start,
+                        destination: destination,
+                        timeNow: DateTime.now());
+                // Gehe zur nächsten Seite
                 Navigator.push(
                   context,
                   MaterialPageRoute<Widget>(

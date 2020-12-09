@@ -5,8 +5,10 @@ import 'package:routenplaner/drawer/drawer_home.dart';
 import 'package:routenplaner/drawer/travel_detail.dart';
 import 'package:routenplaner/drawer/travel_profiles.dart';
 import 'package:routenplaner/drawer/user_profiles.dart';
+import 'package:routenplaner/provider_classes/addresses.dart';
 import 'package:routenplaner/provider_classes/desired_Autom_Sections.dart';
 import 'package:routenplaner/provider_classes/final_routes.dart';
+import 'package:routenplaner/provider_classes/road_connections.dart';
 import 'package:routenplaner/provider_classes/travel_profiles_collection.dart';
 import 'package:routenplaner/provider_classes/travel_profile_modifier.dart';
 import 'package:routenplaner/provider_classes/user_profile_collection.dart';
@@ -25,6 +27,12 @@ class RoutePlaner extends StatelessWidget {
     // objekt, das zugriff auf die Farben gibt
     return MultiProvider(
       providers: [
+        ChangeNotifierProvider<AddressCollection>(
+          create: (_) => AddressCollection(),
+        ),
+        ChangeNotifierProvider<RoadConnections>(
+          create: (_) => RoadConnections(),
+        ),
         ChangeNotifierProvider<RouteDetails>(
           create: (_) => RouteDetails(),
         ),

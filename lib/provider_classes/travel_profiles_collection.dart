@@ -62,7 +62,9 @@ class TravelProfileCollection with ChangeNotifier {
     // Sind alles Startwerte, kann man ändern
     travelProfileCollection.add(TravelProfileData(
       name: name,
-      userID: userID == null ? await getCurrentUserID() : userID,
+      userID: userID == null
+          ? await DatabaseHelper.instance.getCurrentUserID()
+          : userID,
       maxDetour: 10,
       minDurationAutomSegment: 10,
       maxAutomDuration: 1,
@@ -73,7 +75,9 @@ class TravelProfileCollection with ChangeNotifier {
     // Auch in der Datenbank hinzufügen
     DatabaseHelper.instance.addTravelProfile(
       name: name,
-      userID: userID == null ? await getCurrentUserID() : userID,
+      userID: userID == null
+          ? await DatabaseHelper.instance.getCurrentUserID()
+          : userID,
       maxDetour: 10,
       minSegment: 10,
       maxAutom: 1,
@@ -95,7 +99,10 @@ class TravelProfileCollection with ChangeNotifier {
     DELETE FROM TravelProfile 
     WHERE UserID = ? AND NameTrav = ?
     ''',
-      [await getCurrentUserID(), travelProfileCollection[indexProfile].name],
+      [
+        await DatabaseHelper.instance.getCurrentUserID(),
+        travelProfileCollection[indexProfile].name
+      ],
     );
     // Lokal löschen
     travelProfileCollection.removeAt(indexProfile);
@@ -104,13 +111,6 @@ class TravelProfileCollection with ChangeNotifier {
 
   TravelProfileData getTravelProfile({@required int indexProfile}) {
     return travelProfileCollection[indexProfile];
-  }
-
-  Future<int> getCurrentUserID() async {
-    var db = await DatabaseHelper.instance.database;
-    var table =
-        await db.rawQuery('SELECT ID FROM User WHERE Selected = ?', [1]);
-    return (table != null) ? table[0].values.toList()[0] : 1;
   }
 
   // Dupliziere ein TravelProfile
@@ -144,7 +144,7 @@ class TravelProfileCollection with ChangeNotifier {
     ''',
       [
         name,
-        await getCurrentUserID(),
+        await DatabaseHelper.instance.getCurrentUserID(),
         travelProfileCollection[indexTravelprofile].name
       ],
     );
@@ -178,7 +178,9 @@ class TravelProfileCollection with ChangeNotifier {
     WHERE UserID = ? AND NameTrav = ?    
     ''',
       [
-        userID == null ? await getCurrentUserID() : userID,
+        userID == null
+            ? await DatabaseHelper.instance.getCurrentUserID()
+            : userID,
         travelProfileCollection[profileIndex].name
       ],
     );

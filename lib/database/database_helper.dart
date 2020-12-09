@@ -57,24 +57,19 @@ class DatabaseHelper {
       CREATE TABLE $addressTable (
             ID INTEGER PRIMARY KEY,
             UserID INTEGER NOT NULL,
-            Fav1 TEXT NOT NULL,
-            Fav2 TEXT NOT NULL,
-            Fav3 TEXT NOT NULL,
-            Last1 TEXT NOT NULL,
-            Last2 TEXT NOT NULL,
-            Last3 TEXT NOT NULL
+            AddressName TEXT,
+            AddressCalls INTEGER,
+            Date DATETIME
           )
           ''');
     await db.execute('''
           CREATE TABLE $roadConnectionTable (
             ID INTEGER PRIMARY KEY,
-            userID INTEGER NOT NULL,
-            Fav1 TEXT NOT NULL,
-            Fav2 TEXT NOT NULL,
-            Fav3 TEXT NOT NULL,
-            Last1 TEXT NOT NULL,
-            Last2 TEXT NOT NULL,
-            Last3 TEXT NOT NULL
+            UserID INTEGER,
+            StartLocation TEXT,
+            DestinationLocation TEXT, 
+            ConnectionCalls INTEGER,
+            Date DATETIME
           )
           ''');
     await db.execute('''
@@ -93,6 +88,13 @@ class DatabaseHelper {
   }
 
   // Helper Methoden für das hinzufügen einer Zeile
+  Future<int> getCurrentUserID() async {
+    var db = await DatabaseHelper.instance.database;
+    var table =
+        await db.rawQuery('SELECT ID FROM User WHERE Selected = ?', [1]);
+    return (table != null) ? table[0].values.toList()[0] : 1;
+  }
+
   // User Tabelle
   Future<int> addUser({String name, String email}) async {
     var row = {
@@ -105,22 +107,17 @@ class DatabaseHelper {
   }
 
   // Adressen Tabelle
-  Future<int> addAddressRow(
-      {int userID,
-      String fav1,
-      String fav2,
-      String fav3,
-      String last1,
-      String last2,
-      String last3}) async {
+  Future<int> addAddressRow({
+    int userID,
+    String addressName,
+    int addressCalls,
+    DateTime timeNow,
+  }) async {
     var row = {
       "UserID": userID,
-      "Fav1": fav1,
-      "Fav2": fav2,
-      "Fav3": fav3,
-      "Last1": last1,
-      "Last2": last2,
-      "Last3": last3,
+      "AddressName": addressName,
+      "AddressCalls": addressCalls,
+      "Date": timeNow.toString(),
     };
     Database db = await instance.database;
     return await db.insert(addressTable, row);
@@ -129,21 +126,17 @@ class DatabaseHelper {
   // Connection Tabelle
   Future<int> addConnectionRow({
     int userID,
-    String fav1,
-    String fav2,
-    String fav3,
-    String last1,
-    String last2,
-    String last3,
+    String startLocation,
+    String destinationLocation,
+    int connectionCalls,
+    DateTime timeNow,
   }) async {
     var row = {
       "UserID": userID,
-      "Fav1": fav1,
-      "Fav2": fav2,
-      "Fav3": fav3,
-      "Last1": last1,
-      "Last2": last2,
-      "Last3": last3,
+      "StartLocation": startLocation,
+      "DestinationLocation": destinationLocation,
+      "ConnectionCalls": connectionCalls,
+      "Date": timeNow.toString(),
     };
     Database db = await instance.database;
     return await db.insert(roadConnectionTable, row);
@@ -174,6 +167,7 @@ class DatabaseHelper {
     return await db.insert(travelProfileTable, row);
   }
 
+  // TODO: Evtl alle Delete Funktionen auch hier rein schreiben
   // weitere Funktionen
   // Gebe den gesamten Table als Liste von Maps aus
   // Jede Row ist dabei eine map mit "Zelle1" : "Wert1"
