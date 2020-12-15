@@ -82,12 +82,12 @@ class _OverviewRouteInputState extends State<OverviewRouteInput> {
                   "Abfahrt ab:",
                   routeDetails.weekDay() +
                       ", " +
-                      "${routeDetails.startDate.day.toString().padLeft(2, '0')}.${routeDetails.startDate.month.toString().padLeft(2, '0')}.${routeDetails.startDate.year.toString()}",
+                      "${routeDetails.startDateTime.day.toString().padLeft(2, '0')}.${routeDetails.startDateTime.month.toString().padLeft(2, '0')}.${routeDetails.startDateTime.year.toString()}",
                   Icons.calendar_today),
               SizedBox(height: 10),
               informationRow(
                   "",
-                  "${routeDetails.startTime.hour.toString().padLeft(2, '0')}:${routeDetails.startTime.minute.toString().padLeft(2, '0')} Uhr",
+                  "${routeDetails.startDateTime.hour.toString().padLeft(2, '0')}:${routeDetails.startDateTime.minute.toString().padLeft(2, '0')} Uhr",
                   Icons.access_time),
               SizedBox(height: 10),
             ],
@@ -124,8 +124,12 @@ class _OverviewRouteInputState extends State<OverviewRouteInput> {
                       size: 40,
                       color: myMiddleTurquoise,
                     ),
-                    hint: Text(routeDetails.selectedTravelProfile.name),
-                    value: routeDetails.selectedTravelProfile.name,
+                    hint: Text(routeDetails.selectedTravelProfile.name == null
+                        ? "Reiseprofil"
+                        : routeDetails.selectedTravelProfile.name),
+                    value: routeDetails.selectedTravelProfile.name == null
+                        ? "Reiseprofil"
+                        : routeDetails.selectedTravelProfile.name,
                     underline: Container(
                       height: 2,
                       color: myMiddleGrey,

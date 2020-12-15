@@ -35,6 +35,7 @@ class DatabaseHelper {
   _initDatabase() async {
     Directory documentsDirectory = await getApplicationDocumentsDirectory();
     String path = join(documentsDirectory.path, _databaseName);
+    print("DATABASE PATH: $path");
     // Öffnen der Datenbank
     return await openDatabase(path,
         version: _databaseVersion, onCreate: _onCreate);

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:routenplaner/drawer/user_profiles.dart';
-
+import 'package:routenplaner/provider_classes/user_profile_collection.dart';
+import 'package:provider/provider.dart';
 import 'travel_profiles.dart';
 import 'user_profiles.dart';
 import '../data/custom_colors.dart';
@@ -8,19 +9,44 @@ import '../data/custom_colors.dart';
 // Drawer an der Seite, link zu den weiteren Seiten wie Nutzerprofile,
 // Reiseprofile, Meine Karten, Einstellungen
 class DrawerHome extends StatelessWidget {
+  // Überprüfe, ob profileCollection existent und name nicht null
+  String checkName(UserProfileCollection profileCollection) {
+    if (profileCollection.userProfileCollection != null &&
+        profileCollection.userProfileCollection.length > 0 &&
+        profileCollection.selectedUserProfileIndex != null) {
+      return profileCollection
+          .userProfileCollection[profileCollection.selectedUserProfileIndex]
+          .name;
+    }
+    return '-';
+  }
+
+  String checkEmail(UserProfileCollection profileCollection) {
+    if (profileCollection.userProfileCollection != null &&
+        profileCollection.userProfileCollection.length > 0) {
+      if (profileCollection.selectedUserProfileIndex != null) {
+        return profileCollection
+            .userProfileCollection[profileCollection.selectedUserProfileIndex]
+            .email;
+      }
+    }
+    return '-';
+  }
+
   @override
   Widget build(BuildContext context) {
     return Drawer(
       child: ListView(
         children: <Widget>[
-          // Überschrift mit Nutzername und email
-          // Noch ändern, wenn Nutzerprofil geändert
-          UserAccountsDrawerHeader(
-            accountName: Text('Steffi',
-                style: TextStyle(color: Colors.white, fontSize: 20)),
-            accountEmail: Text('testemail@test.com',
-                style: TextStyle(color: Colors.white, fontSize: 20)),
-            currentAccountPicture: CircleAvatar(),
+          Consumer<UserProfileCollection>(
+            builder: (context, userProfileCollection, _) =>
+                UserAccountsDrawerHeader(
+              accountName: Text(checkName(userProfileCollection),
+                  style: TextStyle(color: Colors.white, fontSize: 20)),
+              accountEmail: Text(checkEmail(userProfileCollection),
+                  style: TextStyle(color: Colors.white, fontSize: 20)),
+              currentAccountPicture: CircleAvatar(),
+            ),
           ),
           // Listenzeile Nutzerprofile
           ListTile(

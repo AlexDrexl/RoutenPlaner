@@ -20,6 +20,7 @@ class OverviewRouteOptions extends StatelessWidget {
             ),
           ),
           //////////
+          ///// Anzeige von Linie mit automat Segmenten und der propotionales Zeitanzeige
           child: RouteDisplay(),
           //////////
         ),

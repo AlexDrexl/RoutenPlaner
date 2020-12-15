@@ -6,11 +6,6 @@ import 'package:routenplaner/provider_classes/automationSections.dart';
 import 'package:provider/provider.dart';
 import 'package:routenplaner/provider_classes/final_routes.dart';
 
-// Passendes Routendisplay wird schiwerig. Evtl Fahrdaten mit Map übergeben
-// automationPeriod{automationStart : automationEnd}
-// Durch Provider hat overview automation graphic nun zugriff auf die Provider
-// klasse automationSections
-
 class RouteDisplay extends StatelessWidget {
   // Noch mit Hilfe von Provider ersetzen, da dies hier eigentlich ein Stateles
   // Widget ist
@@ -30,7 +25,8 @@ class RouteDisplay extends StatelessWidget {
             flex: 1,
             child: Consumer<FinalRoutes>(
               builder: (context, finalRoutes, child) => Text(
-                finalRoutes.routes[0].routeLetter + ")",
+                finalRoutes.routes[finalRoutes.indexSelectedRoute].routeLetter +
+                    ")",
                 style: TextStyle(fontSize: 17, color: myDarkGrey),
               ),
             ),
@@ -43,12 +39,11 @@ class RouteDisplay extends StatelessWidget {
             child: Column(
               children: <Widget>[
                 // Platzhalter für die kommende Routen Automations Anzeige??
-                // TODo: Besseren Namen überlegen
-                //
-                AutomationGraphic(
-                  routePrioIndex: 0,
+                Consumer<FinalRoutes>(
+                  builder: (context, finalRoutes, _) => AutomationGraphic(
+                    routeIndex: finalRoutes.indexSelectedRoute,
+                  ),
                 ),
-                //
                 SizedBox(height: 10),
                 // Reihe mit den gesamteZeiten an Automation und manuell + Button
                 Row(
@@ -58,12 +53,16 @@ class RouteDisplay extends StatelessWidget {
                     //// die Route mithöchster Prio nehmen
                     Expanded(
                       flex: 3,
-                      child: Container(
-                        padding: EdgeInsets.only(right: 10),
-                        child: TimeTotals(routePrioIndex: 0),
+                      child: Consumer<FinalRoutes>(
+                        builder: (context, finalRoutes, _) => Container(
+                          padding: EdgeInsets.only(right: 10),
+                          child: TimeTotals(
+                              routeIndex: finalRoutes.indexSelectedRoute),
+                        ),
                       ),
                     ),
                     // Uhr Button
+                    /*
                     Expanded(
                       flex: 1,
                       child: FloatingActionButton(
@@ -79,8 +78,10 @@ class RouteDisplay extends StatelessWidget {
                         ),
                       ),
                     )
+                    */
                   ],
                 ),
+                SizedBox(height: 15),
                 // Reihe mit der Erklärung, was Manuell Fahrt ist
                 Row(
                   children: <Widget>[

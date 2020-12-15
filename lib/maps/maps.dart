@@ -1,19 +1,36 @@
 import 'package:flutter/material.dart';
-import 'package:routenplaner/data/custom_colors.dart';
-import 'package:routenplaner/drawer/drawer_home.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-class Maps extends StatelessWidget {
+class Maps extends StatefulWidget {
+  @override
+  _MapsState createState() => _MapsState();
+}
+
+class _MapsState extends State<Maps> {
+  GoogleMapController mapController;
+
+  final LatLng _center = const LatLng(45.521563, -122.677433);
+
+  void _onMapCreated(GoogleMapController controller) {
+    mapController = controller;
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-          title: Text(
-            'uPlan',
-            style: TextStyle(color: myWhite, fontSize: 30),
+    return MaterialApp(
+      home: Scaffold(
+        appBar: AppBar(
+          title: Text('Maps'),
+          backgroundColor: Colors.green[700],
+        ),
+        body: GoogleMap(
+          onMapCreated: _onMapCreated,
+          initialCameraPosition: CameraPosition(
+            target: _center,
+            zoom: 11.0,
           ),
-          iconTheme: IconThemeData(color: myWhite)),
-      drawer: DrawerHome(), // Drawer in externer Klasse
-      body: Container(),
+        ),
+      ),
     );
   }
 }

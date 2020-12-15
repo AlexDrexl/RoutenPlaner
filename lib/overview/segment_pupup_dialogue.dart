@@ -35,10 +35,20 @@ class _PopUpInputState extends State<PopUpInput>
     if (locTimeVar != null) {
       setState(() {
         if (start) {
-          beginningOfAutom =
-              DateTime(0, 0, 0, locTimeVar.hour, locTimeVar.minute);
+          beginningOfAutom = DateTime(
+              beginningOfAutom.year,
+              beginningOfAutom.month,
+              beginningOfAutom.day,
+              locTimeVar.hour,
+              locTimeVar.minute);
         } else {
-          endOfAutom = DateTime(0, 0, 0, locTimeVar.hour, locTimeVar.minute);
+          endOfAutom = DateTime(
+            endOfAutom.year,
+            endOfAutom.month,
+            endOfAutom.day,
+            locTimeVar.hour,
+            locTimeVar.minute,
+          );
         }
       });
     }
@@ -168,11 +178,14 @@ class _PopUpInputState extends State<PopUpInput>
                             child: FloatingActionButton(
                               onPressed: () {
                                 // Wert wird an Provider übergeben
-                                print("POP");
+                                // SETZE IN NICHT GETIMED SECTIONS
                                 Provider.of<DesiredAutomSections>(context,
                                         listen: false)
-                                    .addSection(beginningOfAutom,
-                                        DateTime(0, 0, 0, 0, duration.toInt()));
+                                    .addSection(
+                                  Duration(
+                                    minutes: duration.toInt(),
+                                  ),
+                                );
                                 Navigator.pop(context);
                               },
                               child: Icon(
@@ -202,7 +215,8 @@ class _PopUpInputState extends State<PopUpInput>
                                   setState(() {});
                                 },
                                 child: Text(
-                                    "${beginningOfAutom.hour} : ${beginningOfAutom.minute}"),
+                                    // pickedDate.day.toString().padLeft(2, '0')
+                                    "${beginningOfAutom.hour.toString().padLeft(2, '0')} : ${beginningOfAutom.minute.toString().padLeft(2, '0')}"),
                               ),
                               Text(
                                 "-",
@@ -211,7 +225,6 @@ class _PopUpInputState extends State<PopUpInput>
                                   color: myDarkGrey,
                                 ),
                               ),
-                              // Zweite Zeiteingabe
                               MaterialButton(
                                 color: myMiddleTurquoise,
                                 textColor: myWhite,
@@ -220,7 +233,7 @@ class _PopUpInputState extends State<PopUpInput>
                                   setState(() {});
                                 },
                                 child: Text(
-                                    "${endOfAutom.hour} : ${endOfAutom.minute}"),
+                                    "${endOfAutom.hour.toString().padLeft(2, '0')} : ${endOfAutom.minute.toString().padLeft(2, '0')}"),
                               ),
                               // Zurück Button
                             ],
@@ -234,10 +247,8 @@ class _PopUpInputState extends State<PopUpInput>
                                   // IMPLEMENTIERUNG
                                   Provider.of<DesiredAutomSections>(context,
                                           listen: false)
-                                      .addSection(
-                                    beginningOfAutom,
-                                    DateTime(0, 0, 0, 0, duration.toInt()),
-                                  );
+                                      .addTimedSection(
+                                          beginningOfAutom, endOfAutom);
                                   Navigator.pop(context);
                                 },
                                 child: Icon(

@@ -48,7 +48,8 @@ class _DestinationInputDetailsState extends State<DestinationInputDetails> {
     if (date != null)
       setState(() {
         // Datum in Provider Einfügen
-        Provider.of<RouteDetails>(context, listen: false).startDate = date;
+        Provider.of<RouteDetails>(context, listen: false)
+            .setStartDate(date.year, date.month, date.day);
         pickedDate = date;
       });
   }
@@ -59,7 +60,8 @@ class _DestinationInputDetailsState extends State<DestinationInputDetails> {
         await showTimePicker(context: context, initialTime: TimeOfDay.now());
     if (t != null)
       setState(() {
-        Provider.of<RouteDetails>(context, listen: false).startTime = t;
+        Provider.of<RouteDetails>(context, listen: false)
+            .setStartTime(hour: t.hour, min: t.minute);
         pickedTime = t;
       });
   }
@@ -244,6 +246,7 @@ class _DestinationInputDetailsState extends State<DestinationInputDetails> {
             ]),
             // Beim drücke, -> Overview
             onPressed: () {
+              // Überprüfe, ob die Eingaben gültig sind
               if (Provider.of<RouteDetails>(context, listen: false)
                   .validInputs()) {
                 // Setze das ausgewählte TravelProfil
@@ -258,6 +261,7 @@ class _DestinationInputDetailsState extends State<DestinationInputDetails> {
                     Provider.of<RouteDetails>(context, listen: false)
                         .destinationLocation;
                 // Füge die eigegebene Locations zu Address und RoadConnection hinzu
+                // Evlt async
                 Provider.of<AddressCollection>(context, listen: false)
                     .addAddress(addressName: start, timeNow: DateTime.now());
                 Provider.of<AddressCollection>(context, listen: false)
@@ -268,7 +272,11 @@ class _DestinationInputDetailsState extends State<DestinationInputDetails> {
                         start: start,
                         destination: destination,
                         timeNow: DateTime.now());
+                // Starte die Routenberechnung
+                Provider.of<FinalRoutes>(context, listen: false)
+                    .computeFinalRoutes(context);
                 // Gehe zur nächsten Seite
+                print("GO TO OVERVIEW");
                 Navigator.push(
                   context,
                   MaterialPageRoute<Widget>(

@@ -7,8 +7,7 @@ class RouteDetails with ChangeNotifier {
   String startingLocation;
   String destinationLocation;
   TravelProfileData selectedTravelProfile = TravelProfileData();
-  TimeOfDay startTime = TimeOfDay.now();
-  DateTime startDate = DateTime.now();
+  DateTime startDateTime = DateTime.now();
   List<String> stopovers = List<String>();
   Map<DateTime, DateTime> desiredAutomSections = Map<DateTime, DateTime>();
   bool startLocValid = true;
@@ -44,14 +43,9 @@ class RouteDetails with ChangeNotifier {
     return startLocValid && destinationLocValid ? true : false;
   }
 
-  // Formatierung der Zeit
-  String formatedTime() {
-    return "${startTime.hour}:${startTime.minute} Uhr";
-  }
-
   // Formatierung des Datums
   String formatedDate() {
-    return "${startDate.day}.${startDate.month}.${startDate.year}";
+    return "${startDateTime.day}.${startDateTime.month}.${startDateTime.year}";
   }
 
   // Ausgabe des Wochentags
@@ -65,6 +59,20 @@ class RouteDetails with ChangeNotifier {
       "Samstag",
       "Sonntag"
     ];
-    return weekDays[(startDate.weekday) - 1];
+    return weekDays[(startDateTime.weekday) - 1];
+  }
+
+  // Setze die Start minuten und stunden
+  void setStartTime({int min, int hour}) {
+    // kopieren des bisherigen stands, geht nicht anders
+    var localDateTime = startDateTime;
+    startDateTime = DateTime(localDateTime.year, localDateTime.month,
+        localDateTime.day, hour, min, 0);
+  }
+
+  void setStartDate(int year, int month, int day) {
+    var localDateTime = startDateTime;
+    startDateTime =
+        DateTime(year, month, day, localDateTime.hour, localDateTime.minute);
   }
 }

@@ -13,8 +13,8 @@ class AutomationGraphic extends StatelessWidget {
   // Map mit Liste an Start/Ende Zeitabschnitte, und dazugehörig bool ob Autom oder nicht
   // zeit in Min
   final routeLetter = "A";
-  final int routePrioIndex;
-  AutomationGraphic({@required this.routePrioIndex});
+  final int routeIndex;
+  AutomationGraphic({@required this.routeIndex});
 
   Widget graphLine(Map<List<int>, bool> automationSections) {
     double myHeight;
@@ -77,9 +77,10 @@ class AutomationGraphic extends StatelessWidget {
             ],
           ),
           // Linie, zur Anzeige der Fahrabschnitte
+          // Im moment wird einfach das erste Element dargestellt
           Consumer<FinalRoutes>(
             builder: (context, finalRoutes, child) =>
-                graphLine(finalRoutes.routes[0].automationSections),
+                graphLine(finalRoutes.routes[routeIndex].automationSections),
           ),
         ],
       ),
@@ -92,18 +93,18 @@ class AutomationGraphic extends StatelessWidget {
 class TimeTotals extends StatelessWidget {
   // Funktion, mit der die Dauer der nicht autom und Autom. Fahrzeit ausgegeben wird
   //  Muss Konstructor haben, damit die datei wieder verwertbar ist
-  final int routePrioIndex;
-  TimeTotals({@required this.routePrioIndex});
+  final int routeIndex;
+  TimeTotals({@required this.routeIndex});
 
   List<int> getFlexValues(BuildContext context) {
-    DateTime totalManual = Provider.of<FinalRoutes>(context, listen: false)
-        .routes[routePrioIndex]
+    Duration totalManual = Provider.of<FinalRoutes>(context, listen: false)
+        .routes[routeIndex]
         .manualDuration;
-    DateTime totalAutom = Provider.of<FinalRoutes>(context, listen: false)
-        .routes[routePrioIndex]
+    Duration totalAutom = Provider.of<FinalRoutes>(context, listen: false)
+        .routes[routeIndex]
         .automationDuration;
-    int flexManual = totalManual.minute + totalManual.hour * 60;
-    int flexAutom = totalAutom.minute + totalAutom.hour * 60;
+    int flexManual = totalManual.inMinutes;
+    int flexAutom = totalAutom.inMinutes;
 
     // Manual doppelt so groß wie Autom
     if (flexManual > 2 * flexAutom) {
@@ -119,7 +120,7 @@ class TimeTotals extends StatelessWidget {
   }
 
   String getFormattedTime(DateTime t) {
-    return "${t.hour}:${t.minute}h";
+    return "${t.hour.toString().padLeft(2, '0')}:${t.minute.toString().padLeft(2, '0')}h";
   }
 
   @override
@@ -144,10 +145,8 @@ class TimeTotals extends StatelessWidget {
                 ),
                 child: Center(
                   child: Text(
-                    getFormattedTime(
-                        Provider.of<FinalRoutes>(context, listen: false)
-                            .routes[routePrioIndex]
-                            .manualDuration),
+                    finalRoutes.getFormattedTime(
+                        finalRoutes.routes[routeIndex].manualDuration),
                     style: TextStyle(fontSize: 17, color: myWhite),
                   ),
                 ),
@@ -167,10 +166,8 @@ class TimeTotals extends StatelessWidget {
                 ),
                 child: Center(
                   child: Text(
-                    getFormattedTime(
-                        Provider.of<FinalRoutes>(context, listen: false)
-                            .routes[routePrioIndex]
-                            .automationDuration),
+                    finalRoutes.getFormattedTime(
+                        finalRoutes.routes[routeIndex].automationDuration),
                     style: TextStyle(fontSize: 17, color: myWhite),
                   ),
                 ),

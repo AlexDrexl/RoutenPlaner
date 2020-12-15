@@ -14,11 +14,10 @@ class _OverviewSegmentsState extends State<OverviewSegments> {
   int flexSecondColumn = 2;
   int flexThirdColumn = 8;
   int automatedDrivingLength = 12;
-  var listOfSegments = List<Widget>();
 
-  Column segmentRow(DateTime keyWhen, DateTime valueDuration) {
+  Column segmentRow({DateTime keyWhen, Duration valueDuration, int index}) {
     // Dauer in int umrechnen(in minuten)
-    int automationLength = valueDuration.minute + valueDuration.hour * 60;
+    int automationLength = valueDuration.inMinutes;
     return Column(
       children: <Widget>[
         SizedBox(height: 10), // Nur um ein wenig Abstand zu schaffen
@@ -40,7 +39,7 @@ class _OverviewSegmentsState extends State<OverviewSegments> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
                   Text(
-                    "$automationLength" + " min",
+                    "${automationLength.toString().padLeft(2, '0')}" + " min",
                     style: TextStyle(fontSize: 17, color: myDarkGrey),
                   ),
                   RawMaterialButton(
@@ -48,12 +47,22 @@ class _OverviewSegmentsState extends State<OverviewSegments> {
                     highlightColor: myWhite,
                     onPressed: () {
                       // LÖSCHE WIDGET
-                      Provider.of<DesiredAutomSections>(context, listen: false)
-                          .deleteSection(keyWhen, valueDuration);
+                      // wenn getimed
+                      if (keyWhen != null) {
+                        Provider.of<DesiredAutomSections>(context,
+                                listen: false)
+                            .deleteTimedSection(keyWhen);
+                      } else {
+                        // wenn nicht getimed
+                        Provider.of<DesiredAutomSections>(context,
+                                listen: false)
+                            .deleteSection(index);
+                      }
                     },
                     child: Icon(
-                      Icons.do_disturb_on_sharp,
-                      color: myYellow,
+                      Icons.delete,
+                      color: myMiddleTurquoise,
+                      size: 30,
                     ),
                   )
                 ],
@@ -65,16 +74,25 @@ class _OverviewSegmentsState extends State<OverviewSegments> {
     );
   }
 
-  List<Widget> printAllSegments(Map<DateTime, DateTime> sections) {
+  List<Widget> printAllSegments(
+      {Map<DateTime, Duration> timedSections, List<Duration> sections}) {
     // Liste mit den Duration Einträgen, noch in DateTime
-    var valueList = sections.values.toList();
+    var valueList = timedSections.values.toList();
     // Liste mit den Keys
-    var keyList = sections.keys.toList();
+    var keyList = timedSections.keys.toList();
     // Liste für die Widgets
     var allSegments = List<Widget>();
+
+    // Füge die timedSections hinzu
     for (int i = 0; i < valueList.length; i++) {
-      allSegments.add(segmentRow(keyList[i], valueList[i]));
+      allSegments
+          .add(segmentRow(keyWhen: keyList[i], valueDuration: valueList[i]));
     }
+    // Füge die normalen Sections hinzu, ohne timing
+    for (int i = 0; i < sections.length; i++) {
+      allSegments.add(segmentRow(valueDuration: sections[i], index: i));
+    }
+
     return allSegments;
   }
 
@@ -111,8 +129,10 @@ class _OverviewSegmentsState extends State<OverviewSegments> {
               ///////// LISTE VON SEGMENT ROWS ////////
               Consumer<DesiredAutomSections>(
                 builder: (context, desiredAutomationSections, child) => Column(
-                  children:
-                      printAllSegments(desiredAutomationSections.sections),
+                  children: printAllSegments(
+                    timedSections: desiredAutomationSections.timedSections,
+                    sections: desiredAutomationSections.sections,
+                  ),
                 ),
               ),
               ////////LISTE VON SEGMENT ROWS////////

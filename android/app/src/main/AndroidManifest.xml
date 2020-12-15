@@ -9,6 +9,8 @@
         android:name="io.flutter.app.FlutterApplication"
         android:label="routenplaner"
         android:icon="@mipmap/ic_launcher">
+        <meta-data android:name="com.google.android.maps.v2.API_KEY"
+          android:value="AIzaSyC0DgP0BdEXEybFlEReSj_ghex8jTDOeWE" />
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"

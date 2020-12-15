@@ -10,57 +10,44 @@ class HomeAutomationSegments extends StatefulWidget {
 }
 
 class _HomeAutomationSegmentsState extends State<HomeAutomationSegments> {
-  // Eine Reihe eines Autom. Segments
-  Column segmentRow(DateTime keyWhen, DateTime valueDuration) {
+  Column segmentRow({DateTime keyWhen, Duration valueDuration, int index}) {
     // Dauer in int umrechnen(in minuten)
-    int automationLength = valueDuration.minute + valueDuration.hour * 60;
+    int automationLength = valueDuration.inMinutes;
     return Column(
       children: <Widget>[
         SizedBox(height: 10), // Nur um ein wenig Abstand zu schaffen
         // Eigentliche Row
         Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
-            // Auto Sympol
-            Expanded(
-              flex: 1,
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Icon(
-                  Icons.directions_car_rounded,
-                  color: myYellow,
-                ),
-              ),
+            Icon(
+              Icons.directions_car_rounded,
+              color: myYellow,
             ),
             // Minuten Anzahl und Löschen Button
-            Expanded(
-              flex: 1,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: <Widget>[
-                  Text(
-                    "$automationLength" + " min",
-                    style: TextStyle(fontSize: 17, color: myDarkGrey),
-                  ),
-                ],
-              ),
+            Text(
+              "$automationLength" + " min",
+              style: TextStyle(fontSize: 17, color: myDarkGrey),
             ),
-            Expanded(
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: RawMaterialButton(
-                  shape: CircleBorder(),
-                  highlightColor: myWhite,
-                  onPressed: () {
-                    // LÖSCHE WIDGET
-                    Provider.of<DesiredAutomSections>(context, listen: false)
-                        .deleteSection(keyWhen, valueDuration);
-                  },
-                  child: Icon(
-                    Icons.do_disturb_on_sharp,
-                    color: myYellow,
-                    size: 30,
-                  ),
-                ),
+            RawMaterialButton(
+              shape: CircleBorder(),
+              highlightColor: myWhite,
+              onPressed: () {
+                // LÖSCHE WIDGET
+                // wenn getimed
+                if (keyWhen != null) {
+                  Provider.of<DesiredAutomSections>(context, listen: false)
+                      .deleteTimedSection(keyWhen);
+                } else {
+                  // wenn nicht getimed
+                  Provider.of<DesiredAutomSections>(context, listen: false)
+                      .deleteSection(index);
+                }
+              },
+              child: Icon(
+                Icons.delete,
+                size: 30,
+                color: myMiddleTurquoise,
               ),
             )
           ],
@@ -69,17 +56,25 @@ class _HomeAutomationSegmentsState extends State<HomeAutomationSegments> {
     );
   }
 
-  // Alle Segmente printen
-  List<Widget> printAllSegments(Map<DateTime, DateTime> sections) {
+  List<Widget> printAllSegments(
+      {Map<DateTime, Duration> timedSections, List<Duration> sections}) {
     // Liste mit den Duration Einträgen, noch in DateTime
-    var valueList = sections.values.toList();
+    var valueList = timedSections.values.toList();
     // Liste mit den Keys
-    var keyList = sections.keys.toList();
+    var keyList = timedSections.keys.toList();
     // Liste für die Widgets
     var allSegments = List<Widget>();
+
+    // Füge die timedSections hinzu
     for (int i = 0; i < valueList.length; i++) {
-      allSegments.add(segmentRow(keyList[i], valueList[i]));
+      allSegments
+          .add(segmentRow(keyWhen: keyList[i], valueDuration: valueList[i]));
     }
+    // Füge die normalen Sections hinzu, ohne timing
+    for (int i = 0; i < sections.length; i++) {
+      allSegments.add(segmentRow(valueDuration: sections[i], index: i));
+    }
+
     return allSegments;
   }
 
@@ -92,7 +87,10 @@ class _HomeAutomationSegmentsState extends State<HomeAutomationSegments> {
         // Hier die Segment rows
         Consumer<DesiredAutomSections>(
           builder: (context, desiredAutomationSections, child) => Column(
-            children: printAllSegments(desiredAutomationSections.sections),
+            children: printAllSegments(
+              timedSections: desiredAutomationSections.timedSections,
+              sections: desiredAutomationSections.sections,
+            ),
           ),
         ),
         // Gesamte Reihe zum hinzufügen eines Elements
@@ -152,3 +150,65 @@ class _HomeAutomationSegmentsState extends State<HomeAutomationSegments> {
     );
   }
 }
+
+/*
+Column segmentRow(DateTime keyWhen, DateTime valueDuration) {
+    // Dauer in int umrechnen(in minuten)
+    int automationLength = valueDuration.minute + valueDuration.hour * 60;
+    return Column(
+      children: <Widget>[
+        SizedBox(height: 10), // Nur um ein wenig Abstand zu schaffen
+        // Eigentliche Row
+        Row(
+          children: <Widget>[
+            // Auto Sympol
+            Expanded(
+              flex: 1,
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Icon(
+                  Icons.directions_car_rounded,
+                  color: myYellow,
+                ),
+              ),
+            ),
+            // Minuten Anzahl und Löschen Button
+            Expanded(
+              flex: 1,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: <Widget>[
+                  Text(
+                    "$automationLength" + " min",
+                    style: TextStyle(fontSize: 17, color: myDarkGrey),
+                  ),
+                ],
+              ),
+            ),
+            Expanded(
+              
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: RawMaterialButton(
+                  shape: CircleBorder(),
+                  highlightColor: myWhite,
+                  onPressed: () {
+                    // LÖSCHE WIDGET
+                    Provider.of<DesiredAutomSections>(context, listen: false)
+                        .deleteSection(keyWhen, valueDuration);
+                  },
+                  child: Icon(
+                    Icons.do_disturb_on_sharp,
+                    color: myYellow,
+                    size: 30,
+                  ),
+                ),
+              ),
+            )
+          ],
+        ),
+      ],
+    );
+  }
+
+ */
