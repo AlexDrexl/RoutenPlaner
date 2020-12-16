@@ -260,6 +260,8 @@ class _DestinationInputDetailsState extends State<DestinationInputDetails> {
                 String destination =
                     Provider.of<RouteDetails>(context, listen: false)
                         .destinationLocation;
+                print(start);
+                print(destination);
                 // Füge die eigegebene Locations zu Address und RoadConnection hinzu
                 // Evlt async
                 Provider.of<AddressCollection>(context, listen: false)

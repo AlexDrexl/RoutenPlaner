@@ -40,6 +40,9 @@ class RouteDetails with ChangeNotifier {
     destinationLocValid =
         (destinationLocation != null && destinationLocation != "");
     notifyListeners();
+    startLocValid && destinationLocValid
+        ? print("INPUT VALID")
+        : print("INPUT INVALID");
     return startLocValid && destinationLocValid ? true : false;
   }
 

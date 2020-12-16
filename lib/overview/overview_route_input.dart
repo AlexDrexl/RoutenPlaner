@@ -40,8 +40,10 @@ class _OverviewRouteInputState extends State<OverviewRouteInput> {
       children: <Widget>[
         Expanded(
           flex: flexFirstColumn,
-          child: Text(firstElement,
-              style: TextStyle(fontSize: 17, color: myDarkGrey)),
+          child: Text(
+            firstElement,
+            style: TextStyle(fontSize: 17, color: myDarkGrey),
+          ),
         ),
         Expanded(
           flex: flexSecondColumn,
@@ -52,8 +54,10 @@ class _OverviewRouteInputState extends State<OverviewRouteInput> {
         ),
         Expanded(
           flex: flexThirdColumn,
-          child: Text(secondElement,
-              style: TextStyle(fontSize: 17, color: myDarkGrey)),
+          child: Text(
+            secondElement,
+            style: TextStyle(fontSize: 17, color: myDarkGrey),
+          ),
         ),
       ],
     );

@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:routenplaner/data/custom_colors.dart';
-
+import 'package:provider/provider.dart';
 import 'package:routenplaner/footer.dart';
 import 'package:routenplaner/drawer/drawer_home.dart';
+import 'package:routenplaner/provider_classes/route_details.dart';
 import 'overview_route_input.dart';
 import 'package:routenplaner/overview/overview_route_options.dart';
 // Noch nichts implementiert. hier gehts weiter, wenn der User noch einen
@@ -21,7 +22,16 @@ class Overview extends StatelessWidget {
         ),
         iconTheme: new IconThemeData(color: Colors.white),
       ),
-      bottomNavigationBar: Footer(),
+      bottomNavigationBar: Footer(functions: [
+        // Wenn man zurück zum Hauptmenü will, dann muss man
+        // Eingaben löschen, Zu Adresse hinzufügen, Autom Sections löschen
+        /*
+        Provider.of<RouteDetails>(context, listen: false).startingLocation =
+            null,
+        Provider.of<RouteDetails>(context, listen: false).destinationLocation =
+            null,
+            */
+      ]),
       drawer: DrawerHome(),
       body: Scrollbar(
         controller: _scrollController,

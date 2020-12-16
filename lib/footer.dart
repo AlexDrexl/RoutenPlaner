@@ -19,7 +19,7 @@ class Footer extends StatelessWidget {
   }
 
   void doFunctions() {
-    if (toDoFunctions != null) {
+    if (toDoFunctions != null && toDoFunctions.length > 0) {
       for (int i = 0; i < toDoFunctions.length; i++) {
         toDoFunctions[i].call();
       }
@@ -28,7 +28,6 @@ class Footer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    doFunctions();
     return BottomAppBar(
       color: Colors.white.withOpacity(0),
       child: Container(
@@ -68,10 +67,13 @@ class Footer extends StatelessWidget {
                     */
                     // setze das eingegebene Ziel und Start wieder auf null, damit
                     // man wieder neu eingeben MUSS
+                    /*
                     Provider.of<RouteDetails>(context, listen: false)
                         .startingLocation = null;
                     Provider.of<RouteDetails>(context, listen: false)
                         .destinationLocation = null;
+                    */
+                    doFunctions();
                     Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => RoutePlanning()),

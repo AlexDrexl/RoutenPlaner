@@ -24,9 +24,11 @@ class _DestinationinputStartState extends State<DestinationinputStart> {
           onChanged: (startingLocation) {
             Provider.of<RouteDetails>(context, listen: false).startingLocation =
                 startingLocation;
-            setState(() {
-              userTextStart = startingLocation;
-            });
+            setState(
+              () {
+                userTextStart = startingLocation;
+              },
+            );
           }, //onChanged or onSubmitted
           decoration: InputDecoration(
             border: OutlineInputBorder(),
