@@ -74,7 +74,9 @@ class AlternativeRoutesList extends StatelessWidget {
             ),
           ),
           onPressed: () {
+            print("ALTERNATIVE ROUTE SELECTED");
             finalRoutes.selectRoute(i);
+            Navigator.pop(context);
           },
         ),
       );
@@ -84,7 +86,7 @@ class AlternativeRoutesList extends StatelessWidget {
 
   Future<List<Widget>> getAlternativeRoutes(
       BuildContext context, FinalRoutes finalRoutes) async {
-    return Future<List<Widget>>.delayed(Duration(seconds: 10),
+    return Future<List<Widget>>.delayed(Duration(seconds: 3),
         () => printAlternativeRoutes(context, finalRoutes));
   }
 
@@ -109,7 +111,7 @@ class AlternativeRoutesList extends StatelessWidget {
               Widget child;
               // Wenn Fertig
               if (snapshot.hasData) {
-                print("HAS DATA");
+                print("ALTERNATIVE ROUTES LOADED");
                 child = ListView(
                   // Snapshot data enthält das fertige Widget
                   children: snapshot.data,
@@ -122,7 +124,7 @@ class AlternativeRoutesList extends StatelessWidget {
               }
               // Daten werden noch geladen
               else {
-                print("LOADING");
+                print("LOADING ALTERANTIVE ROUTES");
                 child = Align(
                   alignment: Alignment.center,
                   child: SizedBox(

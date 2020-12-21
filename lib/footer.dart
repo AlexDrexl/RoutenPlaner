@@ -7,6 +7,7 @@ import 'route_planning.dart';
 import 'data/custom_colors.dart';
 import 'package:provider/provider.dart';
 import 'package:routenplaner/provider_classes/route_details.dart';
+import 'package:routenplaner/provider_classes/desired_Autom_Sections.dart';
 
 class Footer extends StatelessWidget {
   // Manchmal ist es Unterschiedlich, was denn beim Footer betätigen gemacht werden soll
@@ -67,17 +68,23 @@ class Footer extends StatelessWidget {
                     */
                     // setze das eingegebene Ziel und Start wieder auf null, damit
                     // man wieder neu eingeben MUSS
-                    /*
-                    Provider.of<RouteDetails>(context, listen: false)
-                        .startingLocation = null;
-                    Provider.of<RouteDetails>(context, listen: false)
-                        .destinationLocation = null;
-                    */
-                    doFunctions();
+
+                    // doFunctions();
+                    // autom Segmente zurücksetzen
+                    Provider.of<DesiredAutomSections>(context, listen: false)
+                        .sections
+                        .clear();
+                    Provider.of<DesiredAutomSections>(context, listen: false)
+                        .timedSections
+                        .clear();
+                    // Zum hauptmenü
                     Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => RoutePlanning()),
                     );
+                    // Start ziel Zurücksetzen
+                    Provider.of<RouteDetails>(context, listen: false)
+                        .resetRouteDetails();
                   },
                 ),
               ),

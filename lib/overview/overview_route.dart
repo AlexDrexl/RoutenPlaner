@@ -5,6 +5,7 @@ import 'package:routenplaner/footer.dart';
 import 'package:routenplaner/drawer/drawer_home.dart';
 import 'package:routenplaner/provider_classes/route_details.dart';
 import 'overview_route_input.dart';
+import 'package:routenplaner/provider_classes/desired_Autom_Sections.dart';
 import 'package:routenplaner/overview/overview_route_options.dart';
 // Noch nichts implementiert. hier gehts weiter, wenn der User noch einen
 // zwischenstopp einlegen möchte, oder ein Autom. Fahrsegment
@@ -22,16 +23,7 @@ class Overview extends StatelessWidget {
         ),
         iconTheme: new IconThemeData(color: Colors.white),
       ),
-      bottomNavigationBar: Footer(functions: [
-        // Wenn man zurück zum Hauptmenü will, dann muss man
-        // Eingaben löschen, Zu Adresse hinzufügen, Autom Sections löschen
-        /*
-        Provider.of<RouteDetails>(context, listen: false).startingLocation =
-            null,
-        Provider.of<RouteDetails>(context, listen: false).destinationLocation =
-            null,
-            */
-      ]),
+      bottomNavigationBar: Footer(),
       drawer: DrawerHome(),
       body: Scrollbar(
         controller: _scrollController,

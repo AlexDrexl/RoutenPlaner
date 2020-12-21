@@ -1,19 +1,13 @@
-Nächste Besprechnung:
+Tobis Verbesserungsvorschläge:
+- bei Nutzerprofil bearbeiten werden bisher eingegeben Daten nicht angezeigt+
+- Hilfe Icon bei dem Dreieck
+- Letzte Seite muss es noch einen Button geben, der Dummy Mäßig die Route an das Auto Übergibt 
+- Im Hauptmenü die Reisezeit und das ganze mit den Automatisierte Segmenten in einem Dropout menü
 
-Änderungen in User Profile und Travel Profile(copy delete modify)
-Änderungen in Hauptmenü bzw in der Routeneingabe 
 
-Änderungen in der Favoriten und Letzte Ziele Datenbank, wie wird das alles berechnet
-Soll in dieser auch noch der Favorit oder Letzte Ziele auswählbar sein
-
-Ansprechen von Future Builder, da:
-- Spätestens sobald die Routenausgabe geladen wird, müssen ALLE DatenbankTabellen geladen werden(vermutlich so gegen 4 o 5)
-- ALLE Provider Klassen bzw deren Objekte müssen geladen werden bzw mit der Datenbank gefüllt werden
-- (Hoffentlich) muss Google Maps mit der Routenberechnung beginnen, braucht ZEIT!
-- Die RandomFunktion zur zufälligen Festlegung von automatisierten Segmenten muss ausgeführt werden 
-- und natürlichd der einfache Aufbau aller Widgets auf dieser Seite 
--> FutureBuilder zeigt, solange die Daten noch nicht vollstädnig sind ein alternatives Widget (bsp.: Ladeicon), 
-   sobald alle Ladevorgänge abgeschlossen, wird die fertige Seite angezeigt. Dafür die RouteOverview oder wie das heist als 
-   Future beschreiben 
--> Problem: Hinzufügen von automatisierten Segmenten in Overview triggert Routenberechnung erneut. Kann noch nicht abschätzen
-            infiefern das ein Problem darstellen kann  
+Eigene Verbesserungsvorschläge
+- bei Home Menü evtl noch den Favoriten Komplex besser anpassen
+- Future Builder von der ersten auf die zweite Seite wichtig, da bei schlechtem Internet es etwas dauer kann
+- hierbei auch einen Error mit beachten, falls die Berechnugn fehl schlägt
+- Problem: Wenn im Overview noch Automatisierte Segmente hinzugefügt werden, dann muss der Routenplanungsprozess 
+- erneut gestartet werden, evtl dann ein Ladeicon bei der ROutenanzeige 

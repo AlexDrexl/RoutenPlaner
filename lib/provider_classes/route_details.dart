@@ -1,17 +1,54 @@
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:routenplaner/data/custom_colors.dart';
 import 'package:routenplaner/provider_classes/travel_profiles_collection.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_google_places/flutter_google_places.dart';
 
 class RouteDetails with ChangeNotifier {
   // Alle benötigten RoutenEingaben
   String startingLocation;
   String destinationLocation;
-  TravelProfileData selectedTravelProfile = TravelProfileData();
+  // TravelProfileData selectedTravelProfile = TravelProfileData();
   DateTime startDateTime = DateTime.now();
-  List<String> stopovers = List<String>();
-  Map<DateTime, DateTime> desiredAutomSections = Map<DateTime, DateTime>();
+  LatLng geoCoordStart;
+  LatLng geoCoordDestination;
   bool startLocValid = true;
   bool destinationLocValid = true;
+
+  // Paar variablen für Home mit der Eingabe von Ziel und Start
+  String hintTextStart = "Start";
+  Color hintColorStart = myDarkGrey;
+  String hintTextDestination = "Ziel";
+  Color hintColorDestination = myDarkGrey;
+
+  // reset aller Eingaben
+  void resetRouteDetails() {
+    hintTextStart = "Start";
+    hintColorStart = myDarkGrey;
+    hintTextDestination = "Ziel";
+    hintColorDestination = myDarkGrey;
+    startLocValid = true;
+    destinationLocValid = true;
+    startingLocation = "";
+    destinationLocation = "";
+  }
+
+  // setze den Start:
+  void setStart(String start) {
+    hintTextStart = start;
+    hintColorStart = myDarkGrey;
+    startingLocation = start;
+    notifyListeners();
+  }
+
+  // Setze das Ziel
+  void setDestination(String destination) {
+    hintTextDestination = destination;
+    hintColorDestination = myDarkGrey;
+    destinationLocation = destination;
+    notifyListeners();
+  }
 
   // Methoden
   void refresh() {
@@ -19,6 +56,7 @@ class RouteDetails with ChangeNotifier {
     notifyListeners();
   }
 
+  /*
   // setze das TravelProfil, basierend auf dessen Namen
   void setTravelProfile(
       {@required String travelProfileName, @required BuildContext context}) {
@@ -34,15 +72,30 @@ class RouteDetails with ChangeNotifier {
     print("SELECT TRAVEL PROFILE");
     notifyListeners();
   }
+  */
 
   bool validInputs() {
     startLocValid = (startingLocation != null && startingLocation != "");
     destinationLocValid =
         (destinationLocation != null && destinationLocation != "");
-    notifyListeners();
     startLocValid && destinationLocValid
         ? print("INPUT VALID")
         : print("INPUT INVALID");
+    // Setze die hint Texte und farben
+    if (!startLocValid) {
+      hintTextStart = "Eingabe erfordert";
+      hintColorStart = Colors.red;
+    } else {
+      hintColorStart = myDarkGrey;
+    }
+    if (!destinationLocValid) {
+      hintTextDestination = "Eingabe erfordert";
+      hintColorDestination = Colors.red;
+    } else {
+      hintColorDestination = myDarkGrey;
+    }
+
+    notifyListeners();
     return startLocValid && destinationLocValid ? true : false;
   }
 
@@ -77,5 +130,24 @@ class RouteDetails with ChangeNotifier {
     var localDateTime = startDateTime;
     startDateTime =
         DateTime(year, month, day, localDateTime.hour, localDateTime.minute);
+  }
+
+  String getHintString({@required bool start}) {
+    // Für start
+    if (start) {
+      if (startingLocation != null && startingLocation != "") {
+        return startingLocation;
+      } else {
+        return "Eingabe erfordert";
+      }
+    }
+    if (!start) {
+      if (destinationLocation != null && destinationLocation != "") {
+        return destinationLocation;
+      } else {
+        return "Eingabe erfordert";
+      }
+    }
+    return "ERROR";
   }
 }

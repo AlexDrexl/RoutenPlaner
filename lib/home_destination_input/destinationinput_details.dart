@@ -206,6 +206,7 @@ class _DestinationInputDetailsState extends State<DestinationInputDetails> {
                     ),
                     onChanged: (String value) {
                       setState(() {
+                        // Setze ein Reiseprofil, auch in Provider
                         selectedTravelProfile = value;
                       });
                     },
@@ -245,15 +246,13 @@ class _DestinationInputDetailsState extends State<DestinationInputDetails> {
               Icon(Icons.arrow_forward_ios)
             ]),
             // Beim drücke, -> Overview
-            onPressed: () {
+            onPressed: () async {
               // Überprüfe, ob die Eingaben gültig sind
               if (Provider.of<RouteDetails>(context, listen: false)
                   .validInputs()) {
                 // Setze das ausgewählte TravelProfil
-                Provider.of<RouteDetails>(context, listen: false)
-                    .setTravelProfile(
-                        travelProfileName: selectedTravelProfile,
-                        context: context);
+                Provider.of<TravelProfileCollection>(context, listen: false)
+                    .selectTravelProfile(name: selectedTravelProfile);
                 // hole die Start und Ziel Orte
                 String start = Provider.of<RouteDetails>(context, listen: false)
                     .startingLocation;
@@ -275,7 +274,7 @@ class _DestinationInputDetailsState extends State<DestinationInputDetails> {
                         destination: destination,
                         timeNow: DateTime.now());
                 // Starte die Routenberechnung
-                Provider.of<FinalRoutes>(context, listen: false)
+                await Provider.of<FinalRoutes>(context, listen: false)
                     .computeFinalRoutes(context);
                 // Gehe zur nächsten Seite
                 print("GO TO OVERVIEW");

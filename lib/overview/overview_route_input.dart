@@ -120,20 +120,21 @@ class _OverviewRouteInputState extends State<OverviewRouteInput> {
               flex: flexThirdColumn,
               child: Container(
                 margin: EdgeInsets.only(right: 50),
-                child: Consumer<RouteDetails>(
-                  builder: (context, routeDetails, _) => DropdownButton<String>(
+                child: Consumer<TravelProfileCollection>(
+                  builder: (context, travelProfiles, _) =>
+                      DropdownButton<String>(
                     // Hint wird durch Provider Aktualisiert
                     icon: Icon(
                       Icons.arrow_drop_down,
                       size: 40,
                       color: myMiddleTurquoise,
                     ),
-                    hint: Text(routeDetails.selectedTravelProfile.name == null
+                    hint: Text(travelProfiles.selectedTravelProfile.name == null
                         ? "Reiseprofil"
-                        : routeDetails.selectedTravelProfile.name),
-                    value: routeDetails.selectedTravelProfile.name == null
+                        : travelProfiles.selectedTravelProfile.name),
+                    value: travelProfiles.selectedTravelProfile.name == null
                         ? "Reiseprofil"
-                        : routeDetails.selectedTravelProfile.name,
+                        : travelProfiles.selectedTravelProfile.name,
                     underline: Container(
                       height: 2,
                       color: myMiddleGrey,
@@ -141,10 +142,11 @@ class _OverviewRouteInputState extends State<OverviewRouteInput> {
                     // Wenn Geärndert, dann ändere auch den Wert im Provider
                     onChanged: (String travelProfileName) {
                       // RoutenProfil ändern
-                      Provider.of<RouteDetails>(context, listen: false)
-                          .setTravelProfile(
-                              travelProfileName: travelProfileName,
-                              context: context);
+                      Provider.of<TravelProfileCollection>(context,
+                              listen: false)
+                          .selectTravelProfile(
+                        name: travelProfileName,
+                      );
                       // Aktualisieren
                     },
                     items: travelProfilenames.map((String i) {

@@ -29,7 +29,8 @@ class AutomationGraphic extends StatelessWidget {
     List<int> flexValues = [];
 
     for (int i = 0; i < listOfSections.length; i++) {
-      flexValues.add(listOfSections[i][1] - listOfSections[i][0]); // Flex Val
+      flexValues
+          .add(listOfSections[i][1] - listOfSections[i][0] + 1); // Flex Val
       // If Else um herauszufinden, ob denn blau oder net
       if (listOfAutomation[i] == true) {
         // BLAU / AUTOM

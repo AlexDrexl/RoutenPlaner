@@ -11,7 +11,7 @@ import 'package:sqflite/sqflite.dart';
 // aus der Datenbank holen
 class TravelProfileCollection with ChangeNotifier {
   List<TravelProfileData> travelProfileCollection = List<TravelProfileData>();
-  // int currentUserID = 1;
+  TravelProfileData selectedTravelProfile = TravelProfileData();
 
   TravelProfileCollection() {
     print("TRAVEL PROFILES INSTATIATE");
@@ -49,6 +49,10 @@ class TravelProfileCollection with ChangeNotifier {
           indexTriangle: valuesList[7],
         ),
       );
+    }
+    // Setze das ausgewählte Travel Profil auf 0, als standart
+    if (travelProfileCollection.length > 0) {
+      selectedTravelProfile = travelProfileCollection[0];
     }
     notifyListeners();
   }
@@ -150,6 +154,18 @@ class TravelProfileCollection with ChangeNotifier {
     );
     // lokal ändern
     travelProfileCollection[indexTravelprofile].name = name;
+    notifyListeners();
+  }
+
+  // wähle ein Travel Profile aus
+  void selectTravelProfile({int index, String name}) {
+    if (name != null) {
+      selectedTravelProfile =
+          travelProfileCollection.firstWhere((element) => element.name == name);
+    } else {
+      selectedTravelProfile = travelProfileCollection[index];
+    }
+    print("SELECTED TRAVEL PROFILE: ${selectedTravelProfile.name}");
     notifyListeners();
   }
 

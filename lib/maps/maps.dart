@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:routenplaner/provider_classes/final_routes.dart';
+import 'package:provider/provider.dart';
+import 'package:routenplaner/provider_classes/route_details.dart';
+import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 
 class Maps extends StatefulWidget {
   @override
@@ -8,8 +12,6 @@ class Maps extends StatefulWidget {
 
 class _MapsState extends State<Maps> {
   GoogleMapController mapController;
-
-  final LatLng _center = const LatLng(45.521563, -122.677433);
 
   void _onMapCreated(GoogleMapController controller) {
     mapController = controller;
@@ -26,9 +28,23 @@ class _MapsState extends State<Maps> {
         body: GoogleMap(
           onMapCreated: _onMapCreated,
           initialCameraPosition: CameraPosition(
-            target: _center,
-            zoom: 11.0,
+            target:
+                Provider.of<RouteDetails>(context, listen: false).geoCoordStart,
+            zoom: 8,
           ),
+          myLocationEnabled: true,
+          tiltGesturesEnabled: true,
+          compassEnabled: true,
+          scrollGesturesEnabled: true,
+          zoomGesturesEnabled: true,
+          mapType: MapType.normal,
+          markers: Set<Marker>.of(
+            Provider.of<FinalRoutes>(context, listen: false).markers.values,
+          ),
+          polylines: Set<Polyline>.of(
+              Provider.of<FinalRoutes>(context, listen: false)
+                  .polylines
+                  .values),
         ),
       ),
     );

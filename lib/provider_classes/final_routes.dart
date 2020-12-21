@@ -1,17 +1,27 @@
 import 'dart:math';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
+import 'package:routenplaner/home_destination_input/destinationinput_destination.dart';
 import 'package:routenplaner/provider_classes/travel_profiles_collection.dart';
 import 'desired_Autom_Sections.dart';
 import 'route_details.dart';
-
+import 'package:flutter_google_places/flutter_google_places.dart';
+import 'package:flutter_polyline_points/flutter_polyline_points.dart';
+import 'package:google_directions_api/google_directions_api.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:dio/dio.dart';
+import 'dart:math' show cos, sqrt, asin;
 // Übergestellte Klasse, erhält alle daten aus den verschiedenen provider Klassen
 // verwendet sie um finale Routen zu berechnen
 // Hier auch die Nutzerprofile mit einbeziehen
 // Routen werden nach Prio geordnet in einem Array gespeichert
 // zudem gibt es das Attribut selected Route, das die manuell geänderte Route
 // hält
+
 class FinalRoutes with ChangeNotifier {
+  // In dieser Polyline ist die routen gespeichert
+
   // Liste mit den verfügbaren Routen
   List<FinalRoute> routes = List<FinalRoute>();
   int indexSelectedRoute = 0;
@@ -25,6 +35,14 @@ class FinalRoutes with ChangeNotifier {
   // MinMax Segmentlänge, kann mit bereits bestehenden Segmenten überlappen
   int minRandomSegment = 5; // Min länge eines Zufälligen Segments
   int maxRandomSegment = 15; // Max Länge eines zufälligen Segments
+
+  // Variablen für die Routenberechnung
+  // Marker Map für Start und Ziel Marker
+  Map<MarkerId, Marker> markers = {};
+  // Map enhält die Polylines, die durch das Verbinden wzeier Punkte entstanden ist
+  Map<PolylineId, Polyline> polylines = {};
+  // Koordinaten, die man verbinden muss
+  List<LatLng> polylineCoordinates = [];
 
   // Benötigte Provider Dateien im Konstruktor mit einbinden
   FinalRoutes(
@@ -93,14 +111,24 @@ class FinalRoutes with ChangeNotifier {
 
   // SIMULATION: Simuliere die automatisierten Segmente. Erstelle so mit einer
   // random Funktion FÜNF zufällige Routen und zeige diese an
-  void computeFinalRoutes(BuildContext context) {
+  Future<void> computeFinalRoutes(BuildContext context) async {
     print("START ROUTE COMPUTATION");
     routes.clear();
-    // Random Number Generator
+    // Random Number generator
+    Random rng = Random();
+    // Hole alle benötigten Provider Dateien:
     var routeDetails = Provider.of<RouteDetails>(context, listen: false);
     var desiredAutomSections =
         Provider.of<DesiredAutomSections>(context, listen: false);
-    var rng = Random();
+    var travelProfile =
+        Provider.of<TravelProfileCollection>(context, listen: false)
+            .selectedTravelProfile;
+    // Starte die Berechnung der Maps Daten
+    await computePolylines(
+        routeDetails.geoCoordStart, routeDetails.geoCoordDestination);
+    // Berechne die theoretische Reisezeit, ist immer gleich
+    Duration travelTime = getTravelTime(polylineCoordinates);
+    print(travelTime);
     for (int i = 0; i < 5; i++) {
       // Für die Linie ist nur die Map Mit automatisierten Segmenten nötig
       // in overview automation graphic, bereits mit finalRoutes verbunden
@@ -112,13 +140,19 @@ class FinalRoutes with ChangeNotifier {
       // XautomSections, XautomMintes
 
       // Variiere die ReiseDauer, um 0% bis 20%
+      /*
       Duration duration = getTravelTime() +
           Duration(
             minutes: rng.nextInt(
               (getTravelTime().inMinutes * durationFactor).toInt(),
             ),
           );
-
+       */
+      // Hole die Reisezeit und variiere sie dann
+      Duration duration = Duration(
+          minutes: (travelTime.inMinutes *
+                  (1 + (rng.nextInt((100 * durationFactor).toInt()) / 100)))
+              .toInt());
       // Berechne Ankunftszeit
       DateTime arrivalDateTime = DateTime.now().add(duration);
 
@@ -150,20 +184,64 @@ class FinalRoutes with ChangeNotifier {
           manualDuration: manualDuration,
           startLocation: routeDetails.startingLocation,
           destinationLocation: routeDetails.destinationLocation,
+          geoCoordStart: routeDetails.geoCoordStart,
+          geoCoordDestination: routeDetails.geoCoordDestination,
           automMinutes: automMinutes,
           automationSections: automSections,
         ),
       );
     }
     // Am end noch die Routen Ranken, da auch die Buchstaben hinzufügen
-    rankRoutes();
+    rankRoutes(travelProfile, travelTime);
   }
 
   // Hier die Routen basierend auf Reiseprofil Ranken,
-  void rankRoutes() {
+  void rankRoutes(
+      TravelProfileData travelProfile, Duration theoreticalDuration) {
     print("RANKING ROUTES");
-    ////// SORTIERE DIE ROUTEN
-    ///// SORTIERPROZESS
+    // SORTIERE DIE ROUTEN
+    // Stelle eine Punktebewertung auf. Jede Route wird dann anhand der Kriterien bewertet
+    // Sortiere dann nach Punketzahl
+    List<double> points = List<double>.filled(routes.length, 0);
+    // Einzelne Faktoren, die auf den Wert draufmulitpliziert werden, vor der Addition
+    // Dadurch kann man gewissen Kriterien größere Geweichtung geben
+    double segmentFactor = 1;
+    double detourFactor = 1;
+
+    // Überprüfe, ob die minimale Segmentlänge bei ALLEN autom Segmenten erreicht wurde
+    // Gebe Prozentualwert an, wie viele von allen segmenten erfüllen die Anforderungen?
+    int minSegmentDuration = travelProfile.minDurationAutomSegment;
+    for (int i = 0; i < routes.length; i++) {
+      // iteration zwischen routen
+      var automDriving = routes[i].automationSections.values.toList();
+      var sections = routes[i].automationSections.keys.toList();
+      int totalSectionCount = 0;
+      int validSectionCount = 0;
+      for (int j = 0; j < routes[i].automationSections.length; j++) {
+        if (automDriving[j] == true) {
+          // Automatisiertes segment erkannt
+          totalSectionCount++;
+          if (sections[j][1] - sections[j][0] >= minSegmentDuration) {
+            // Valides Segment erkannt
+            validSectionCount++;
+          }
+        }
+      }
+      // Füge die prozentuale Bewertung in die punkteListe mit ein
+      points[i] = (validSectionCount / totalSectionCount) * segmentFactor;
+    }
+
+    // Bewertung der maximalen abweichung von der theoretischen Dauer
+    // Berechne prozentuale Abweichung der tatsächlichen Zeit von der theretischen Zeit
+    for (int i = 0; i < routes.length; i++) {
+      // Gewollte Reisezeit
+      double maxDuration = (1 + (travelProfile.maxDetour / 100)) *
+          theoreticalDuration.inMinutes.toDouble(); // in minuten
+      // differenz gewollt und tatsächlich
+      double diff = (routes[i].duration.inMinutes - maxDuration).abs();
+      // Prozentuale Abweichung vom gewollten Wert auf die Punkte aufaddiert
+      points[i] += (maxDuration / (maxDuration + diff)) * detourFactor;
+    }
 
     // Füge den Routen absteigend einen Buchstaben zu
     int letter = "A".codeUnitAt(0);
@@ -288,20 +366,103 @@ class FinalRoutes with ChangeNotifier {
     return automMinutes;
   }
 
-  // TODO: HIER DIE ZEIT VON GOOGLE MAPS RETURNEN, SUMULIERE
   // EINFACH MIT FESTEM WERT
-  Duration getTravelTime() {
-    return Duration(hours: 1, minutes: 30);
+  Duration getTravelTime(List<LatLng> polylineCoordinates) {
+    /*
+    DirectionsService.init('AIzaSyC0DgP0BdEXEybFlEReSj_ghex8jTDOeWE');
+
+    final directinosService = DirectionsService();
+    final request = DirectionsRequest(
+      origin: '${start.latitude},${start.longitude}',
+      destination: '${destination.latitude},${destination.longitude}',
+    );
+    directinosService.route(request,
+        (DirectionsResult response, DirectionsStatus status) {
+      if (status == DirectionsStatus.ok) {
+        // do something with successful response
+      } else {
+        // do something with error response
+      }
+    });
+    */
+    // Berechne zunächst nur die gesamte distanz, die zurückgelegt werden muss
+    // in kilometer
+    Random rng = Random();
+    double totalDistance = 0;
+    for (int i = 0; i < (polylineCoordinates.length - 1); i++) {
+      totalDistance += coordinateDistance(
+          polylineCoordinates[i].latitude,
+          polylineCoordinates[i].longitude,
+          polylineCoordinates[i + 1].latitude,
+          polylineCoordinates[i + 1].longitude);
+    }
+    // Nehme eine durchschnittsgeschwindigkeit von 50 km/h bzw
+    double durationInMin = 60 * totalDistance / (50);
+    // Variiere die Dauer
+    return Duration(minutes: durationInMin.floor());
+  }
+
+  // einfache funktion, die die Distanz zwischen zwei geografischen Koordinaten berechnet
+  double coordinateDistance(lat1, lon1, lat2, lon2) {
+    var p = 0.017453292519943295;
+    var c = cos;
+    var a = 0.5 -
+        c((lat2 - lat1) * p) / 2 +
+        c(lat1 * p) * c(lat2 * p) * (1 - c((lon2 - lon1) * p)) / 2;
+    return 12742 * asin(sqrt(a));
+  }
+
+  Future<void> computePolylines(LatLng start, LatLng destiantion) async {
+    print("START MAP CALCULATION");
+    // Objekte Clearen
+    polylineCoordinates.clear();
+    // Polyline objekt
+    PolylinePoints polylinePoints = PolylinePoints();
+    // Füge den Start und Zielmarker hinzu
+    MarkerId markerIdStart = MarkerId("origin");
+    Marker markerStart = Marker(
+        markerId: markerIdStart,
+        icon: BitmapDescriptor.defaultMarker,
+        position: start);
+    MarkerId markerIdDestination = MarkerId("destination");
+    Marker markerDestination = Marker(
+        markerId: markerIdDestination,
+        icon: BitmapDescriptor.defaultMarkerWithHue(90),
+        position: destiantion);
+    // hinzufügen
+    markers[markerIdStart] = markerStart;
+    markers[markerIdDestination] = markerDestination;
+
+    // Erstellung der Polyline
+    polylinePoints = PolylinePoints();
+    // Etgentliche Polyline Berechnung
+    PolylineResult result = await polylinePoints.getRouteBetweenCoordinates(
+      apiKey,
+      PointLatLng(start.latitude, start.longitude), // start
+      PointLatLng(destiantion.latitude, destiantion.longitude), // Ziel
+    );
+    // Füge der polyline Koordinatenliste hinzu
+    if (result.points.isNotEmpty) {
+      result.points.forEach((PointLatLng point) {
+        polylineCoordinates.add(LatLng(point.latitude, point.longitude));
+      });
+    }
+    // Füge die Fertige Polylines in die variable
+    PolylineId id = PolylineId("poly");
+    Polyline polyline = Polyline(
+      polylineId: id,
+      color: Colors.blue,
+      points: polylineCoordinates,
+      width: 3,
+    );
+    polylines[id] = polyline;
   }
 }
 
 // Erzeuger für das RoutenObjekt, hält im Endeffekt nur die einzelnen Parameter
 // Dadurch einfach zu übergeben
 class FinalRoute {
-  // Zeiten
-  // TimeOfDay startTime = TimeOfDay(hour: 0, minute: 0);
   DateTime startDateTime = DateTime(0);
-  // TimeOfDay arrivalTime = TimeOfDay(hour: 0, minute: 0);
   DateTime arrivalDateTime = DateTime(0);
   Duration duration = Duration();
   Duration automationDuration;
@@ -310,6 +471,8 @@ class FinalRoute {
   // Orte und Zwischenstopps
   String startLocation;
   String destinationLocation;
+  LatLng geoCoordStart;
+  LatLng geoCoordDestination;
   // Weitere Routen Zugaben
   List<int> automMinutes = List<int>();
   String routeLetter;
@@ -331,6 +494,8 @@ class FinalRoute {
     this.manualDuration,
     this.startLocation,
     this.destinationLocation,
+    this.geoCoordStart,
+    this.geoCoordDestination,
     this.automMinutes,
     this.automationSections,
     this.routeLetter,
