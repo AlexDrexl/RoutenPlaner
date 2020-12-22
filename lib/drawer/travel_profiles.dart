@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:routenplaner/drawer/delete_pupup.dart';
 import 'package:routenplaner/drawer/travel_detail.dart';
 import 'package:routenplaner/drawer/travel_profile_addProfile.dart';
 import 'package:routenplaner/provider_classes/travel_profiles_collection.dart';
@@ -163,10 +164,26 @@ class _TravelProfilesState extends State<TravelProfiles> {
                                     Container(
                                       padding: EdgeInsets.only(right: 5),
                                       child: FloatingActionButton(
-                                        onPressed: () {
+                                        onPressed: () async {
+                                          /*
                                           travelProfileCollection
                                               .deleteTravelProfile(i);
                                           Navigator.of(context).pop(true);
+                                          */
+                                          Navigator.of(context).pop(true);
+                                          await showDialog(
+                                            context: context,
+                                            // Dialog Popup, fragt den user nach bestätigung
+                                            builder: (context) => Builder(
+                                              builder: (BuildContext context) {
+                                                return DeletePopUp(
+                                                  index: i,
+                                                  travelProfileCollection:
+                                                      travelProfileCollection,
+                                                );
+                                              },
+                                            ),
+                                          );
                                         },
                                         child: Icon(
                                           Icons.delete,

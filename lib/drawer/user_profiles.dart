@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:routenplaner/drawer/user_profile_addUser.dart';
 import 'package:routenplaner/footer.dart';
 import 'package:routenplaner/provider_classes/user_profile_collection.dart';
+import 'delete_pupup.dart';
 import 'drawer_home.dart';
 import '../data/custom_colors.dart';
 import 'package:provider/provider.dart';
@@ -131,10 +132,29 @@ class _UserProfilesState extends State<UserProfiles> {
                                       Container(
                                         padding: EdgeInsets.only(right: 5),
                                         child: FloatingActionButton(
-                                          onPressed: () {
+                                          onPressed: () async {
+                                            /*
                                             profiles.deleteProfile(
                                                 indexUserProfile: i);
                                             Navigator.of(context).pop(true);
+                                            */
+                                            Navigator.of(context).pop(true);
+                                            await showDialog(
+                                              context: context,
+                                              // Dialog Popup, fragt den user nach bestätigung
+                                              builder: (context) => Builder(
+                                                builder:
+                                                    (BuildContext context) {
+                                                  return DeletePopUp(
+                                                    index: i,
+                                                    userProfileCollection: Provider
+                                                        .of<UserProfileCollection>(
+                                                            context,
+                                                            listen: false),
+                                                  );
+                                                },
+                                              ),
+                                            );
                                           },
                                           child: Icon(
                                             Icons.delete,
