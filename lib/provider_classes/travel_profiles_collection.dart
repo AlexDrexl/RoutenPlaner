@@ -11,7 +11,7 @@ import 'package:sqflite/sqflite.dart';
 // aus der Datenbank holen
 class TravelProfileCollection with ChangeNotifier {
   List<TravelProfileData> travelProfileCollection = List<TravelProfileData>();
-  TravelProfileData selectedTravelProfile = TravelProfileData();
+  TravelProfileData selectedTravelProfile;
 
   TravelProfileCollection() {
     print("TRAVEL PROFILES INSTATIATE");
@@ -159,6 +159,12 @@ class TravelProfileCollection with ChangeNotifier {
 
   // wähle ein Travel Profile aus
   void selectTravelProfile({int index, String name}) {
+    // Schaue, ob denn Überhaupt ein Travel Profil vorhanden
+    if (travelProfileCollection == null ||
+        travelProfileCollection.length == 0) {
+      print("NO TRAVEL PROFILE EXISTEND");
+      return;
+    }
     if (name != null) {
       selectedTravelProfile =
           travelProfileCollection.firstWhere((element) => element.name == name);

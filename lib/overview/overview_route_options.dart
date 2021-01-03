@@ -9,6 +9,7 @@ class OverviewRouteOptions extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
+      // mainAxisSize: MainAxisSize.max,
       children: <Widget>[
         // Grau hinterlegte Karte, mit den Routen Daten bzgl Manueller Fahrt
         Container(
@@ -80,7 +81,39 @@ class OverviewRouteOptions extends StatelessWidget {
               )
             ],
           ),
-        )
+        ),
+        // Button für das Übertragen an das Fahrzeug
+        SizedBox(
+          height: 20,
+        ),
+        Container(
+          child: MaterialButton(
+            onPressed: () {
+              ///////
+              ///Übertragen an das Fahrzeug
+            },
+            child: Container(
+              padding: EdgeInsets.all(15),
+              decoration: BoxDecoration(
+                color: myMiddleTurquoise,
+                border: Border.all(width: 0, color: myDarkGrey),
+                borderRadius: BorderRadius.all(
+                  Radius.circular(14),
+                ),
+              ),
+              child: Align(
+                alignment: Alignment.center,
+                child: Text(
+                  "Route an Fahrzeug übertragen",
+                  style: TextStyle(
+                    color: myWhite,
+                    fontSize: 15,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
       ],
     );
   }

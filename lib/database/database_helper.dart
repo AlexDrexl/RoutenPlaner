@@ -93,7 +93,11 @@ class DatabaseHelper {
     var db = await DatabaseHelper.instance.database;
     var table =
         await db.rawQuery('SELECT ID FROM User WHERE Selected = ?', [1]);
-    return (table != null) ? table[0].values.toList()[0] : 1;
+    if (table == null || table.length == 0) {
+      return null;
+    } else {
+      return table[0].values.toList()[0];
+    }
   }
 
   // User Tabelle

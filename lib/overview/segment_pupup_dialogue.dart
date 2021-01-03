@@ -6,13 +6,18 @@ import 'package:flutter/material.dart';
 import 'package:routenplaner/data/custom_colors.dart';
 import 'package:provider/provider.dart';
 import 'package:routenplaner/provider_classes/desired_Autom_Sections.dart';
+import 'package:routenplaner/provider_classes/overview_change.dart';
 
 class PopUpInput extends StatefulWidget {
   final BuildContext segmentContext;
+  final bool overviewMode;
   // onstructor
-  PopUpInput({Key key, @required this.segmentContext}) : super(key: key);
+  PopUpInput(
+      {Key key, @required this.segmentContext, @required this.overviewMode})
+      : super(key: key);
   @override
-  _PopUpInputState createState() => _PopUpInputState(segmentContext);
+  _PopUpInputState createState() =>
+      _PopUpInputState(segmentContext, overviewMode);
 }
 
 class _PopUpInputState extends State<PopUpInput>
@@ -24,7 +29,8 @@ class _PopUpInputState extends State<PopUpInput>
   DateTime endOfAutom = DateTime.now();
   // initialize Context
   BuildContext segmentContext;
-  _PopUpInputState(this.segmentContext);
+  bool overviewMode;
+  _PopUpInputState(this.segmentContext, this.overviewMode);
 
   // Methoden
   Future<Null> selectTime(BuildContext context, bool start) async {
@@ -187,6 +193,13 @@ class _PopUpInputState extends State<PopUpInput>
                                   ),
                                 );
                                 Navigator.pop(context);
+                                // Wenn im Overview ein Element hinzugefügt wird,
+                                // muss die Routenberechnung neu gestartet werden
+                                if (overviewMode) {
+                                  Provider.of<OverviewChange>(context,
+                                          listen: false)
+                                      .refresh();
+                                }
                               },
                               child: Icon(
                                 Icons.arrow_forward_ios,
@@ -250,6 +263,11 @@ class _PopUpInputState extends State<PopUpInput>
                                       .addTimedSection(
                                           beginningOfAutom, endOfAutom);
                                   Navigator.pop(context);
+                                  if (overviewMode) {
+                                    Provider.of<OverviewChange>(context,
+                                            listen: false)
+                                        .refresh();
+                                  }
                                 },
                                 child: Icon(
                                   Icons.arrow_forward_ios,

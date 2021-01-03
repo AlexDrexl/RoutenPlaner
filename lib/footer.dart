@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:routenplaner/provider_classes/addresses.dart';
 import 'package:routenplaner/provider_classes/road_connections.dart';
-import 'package:routenplaner/route_planning2.dart';
 import 'route_planning.dart';
 import 'data/custom_colors.dart';
 import 'package:provider/provider.dart';
@@ -12,20 +11,6 @@ import 'package:routenplaner/provider_classes/desired_Autom_Sections.dart';
 class Footer extends StatelessWidget {
   // Manchmal ist es Unterschiedlich, was denn beim Footer betätigen gemacht werden soll
   // übergebe die ToDos als List von Funktionen, wird dann vom Footer aufgerufen
-  static List<Function> toDoFunctions;
-  Footer({List<Function> functions}) {
-    if (functions != null && functions.length != 0) {
-      toDoFunctions = functions;
-    }
-  }
-
-  void doFunctions() {
-    if (toDoFunctions != null && toDoFunctions.length > 0) {
-      for (int i = 0; i < toDoFunctions.length; i++) {
-        toDoFunctions[i].call();
-      }
-    }
-  }
 
   @override
   Widget build(BuildContext context) {

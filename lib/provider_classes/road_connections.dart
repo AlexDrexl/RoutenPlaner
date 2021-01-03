@@ -17,36 +17,6 @@ class RoadConnections with ChangeNotifier {
     favoriteConnections.clear();
     lastConnections.clear();
     Database db = await DatabaseHelper.instance.database;
-
-    // NUR FÜRS TESTEN TODO: LÖSCHEN
-    /*
-    await db.rawDelete('''
-    DELETE FROM RoadConnection
-    WHERE UserID = ?
-    ''', [1]);
-    await DatabaseHelper.instance.addConnectionRow(
-        userID: 1,
-        startLocation: "S1",
-        destinationLocation: "D1",
-        connectionCalls: 1);
-    await DatabaseHelper.instance.addConnectionRow(
-        userID: 1,
-        startLocation: "S2",
-        destinationLocation: "D2",
-        connectionCalls: 2);
-    await DatabaseHelper.instance.addConnectionRow(
-        userID: 1,
-        startLocation: "S3",
-        destinationLocation: "D3",
-        connectionCalls: 3);
-    await DatabaseHelper.instance.addConnectionRow(
-        userID: 1,
-        startLocation: "S4",
-        destinationLocation: "D4",
-        connectionCalls: 1);
-        */
-    // NUR FÜRS TESTEN
-
     // Suche zunächst die Verbindungen, die am meisten verwendet wurden
     var favCon = await db.rawQuery('''
     SELECT StartLocation, DestinationLocation
@@ -74,14 +44,15 @@ class RoadConnections with ChangeNotifier {
       lastConnections.add(
           "${lastCon[i]["StartLocation"]} > ${lastCon[i]["DestinationLocation"]}");
     }
-    notifyListeners();
+    // notifyListeners();
   }
 
   // Falls die Adresse nicht gespeichert, füge hinzu, erhöhe sonst nur den Aufrufwert um 1
-  void addRoadConnection(
+  Future<bool> addRoadConnection(
       {String start, String destination, @required DateTime timeNow}) async {
     Database db = await DatabaseHelper.instance.database;
     int selectedUserID = await DatabaseHelper.instance.getCurrentUserID();
+    if (selectedUserID == null) return false;
     var updatedRoadConnections = await db.rawUpdate('''
     UPDATE RoadConnection 
     SET ConnectionCalls = ConnectionCalls + 1, Date = '${timeNow.toString()}'
@@ -97,21 +68,16 @@ class RoadConnections with ChangeNotifier {
         timeNow: timeNow,
       );
     }
+    setRoadConnections();
+    return true;
+  }
+
+  // Lösche die Einträge eines Users
+  void deleteRoadConnections({@required int userID}) async {
+    Database db = await DatabaseHelper.instance.database;
+    db.rawDelete('''
+    DELETE FROM RoadConnection
+    WHERE UserID = ?
+    ''', [userID]);
   }
 }
-/*
-Database db = await DatabaseHelper.instance.database;
-    int selectedUserID = await DatabaseHelper.instance.getCurrentUserID();
-    var updatedAddresses = await db.rawUpdate('''
-    UPDATE Address
-    SET AddressCalls = AddressCalls + 1
-    WHERE UserID = ? AND AddressName = ?
-    ''', [selectedUserID, addressName]);
-    // Falls updatedAddresses = 0, Eintrag noch nicht vorhanden, füge hinzu
-    if (updatedAddresses == 0) {
-      DatabaseHelper.instance.addAddressRow(
-        userID: selectedUserID,
-        addressName: addressName,
-        addressCalls: 1,
-      );
- */

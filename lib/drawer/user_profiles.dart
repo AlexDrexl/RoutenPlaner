@@ -59,7 +59,7 @@ class _UserProfilesState extends State<UserProfiles> {
                       profiles.userProfileCollection[i].name,
                       style: TextStyle(
                         color: myDarkGrey,
-                        fontSize: 25,
+                        fontSize: 20,
                       ),
                     ),
                     // Reihe, um Divider und Punkte näher aneinander zu bringen
@@ -133,11 +133,6 @@ class _UserProfilesState extends State<UserProfiles> {
                                         padding: EdgeInsets.only(right: 5),
                                         child: FloatingActionButton(
                                           onPressed: () async {
-                                            /*
-                                            profiles.deleteProfile(
-                                                indexUserProfile: i);
-                                            Navigator.of(context).pop(true);
-                                            */
                                             Navigator.of(context).pop(true);
                                             await showDialog(
                                               context: context,

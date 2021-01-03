@@ -56,24 +56,6 @@ class RouteDetails with ChangeNotifier {
     notifyListeners();
   }
 
-  /*
-  // setze das TravelProfil, basierend auf dessen Namen
-  void setTravelProfile(
-      {@required String travelProfileName, @required BuildContext context}) {
-    var travelProfileCollection =
-        Provider.of<TravelProfileCollection>(context, listen: false)
-            .travelProfileCollection;
-    for (int i = 0; i < travelProfileCollection.length; i++) {
-      if (travelProfileCollection[i].name == travelProfileName) {
-        selectedTravelProfile = travelProfileCollection[i];
-        break;
-      }
-    }
-    print("SELECT TRAVEL PROFILE");
-    notifyListeners();
-  }
-  */
-
   bool validInputs() {
     startLocValid = (startingLocation != null && startingLocation != "");
     destinationLocValid =

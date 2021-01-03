@@ -18,14 +18,35 @@ class _AddUserProfileDialogueState extends State<AddUserProfileDialogue> {
   String email = "";
   bool showHint = false;
   bool modify = false;
+  bool duplicate = false;
   int profileIndex4Modify;
   _AddUserProfileDialogueState(bool modify, int index) {
     this.modify = modify;
     profileIndex4Modify = index;
-    print("CALLED");
   }
+
+  bool check4duplicate(UserProfileCollection collection, String name) {
+    for (int i = 0; i < collection.userProfileCollection.length; i++) {
+      print(collection.userProfileCollection[i].name);
+      if (collection.userProfileCollection[i].name == name) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   @override
   Widget build(BuildContext context) {
+    // Wenn Modify, dann setze Gleich den Namen und email
+    if (modify) {
+      name = Provider.of<UserProfileCollection>(context, listen: false)
+          .userProfileCollection[profileIndex4Modify]
+          .name;
+      email = Provider.of<UserProfileCollection>(context, listen: false)
+          .userProfileCollection[profileIndex4Modify]
+          .email;
+      email == null ? email = "" : email = email;
+    }
     return AlertDialog(
       title: Text(modify ? "Profil bearbeiten" : "Profil erstellen"),
       content: Column(
@@ -43,9 +64,13 @@ class _AddUserProfileDialogueState extends State<AddUserProfileDialogue> {
           ),
           TextField(
             decoration: InputDecoration(
-              hintText: showHint ? "Eingabe erfordert" : "",
-              hintStyle: TextStyle(color: Colors.red),
+              hintText: showHint ? "Eingabe erfordert" : name,
+              hintStyle: showHint ? TextStyle(color: Colors.red) : TextStyle(),
+              helperText: duplicate ? "Profilname bereits vorhanden" : "",
+              helperStyle:
+                  duplicate ? TextStyle(color: Colors.red) : TextStyle(),
             ),
+            maxLength: 12,
             onChanged: (name) {
               this.name = name;
             },
@@ -63,7 +88,7 @@ class _AddUserProfileDialogueState extends State<AddUserProfileDialogue> {
           ),
           TextField(
             decoration: InputDecoration(
-              hintStyle: TextStyle(color: Colors.red),
+              hintText: email,
             ),
             onChanged: (email) {
               this.email = email;
@@ -90,7 +115,11 @@ class _AddUserProfileDialogueState extends State<AddUserProfileDialogue> {
             // Profil erstellen
             FlatButton(
               onPressed: () {
-                if (name != "") {
+                showHint = (name == null || name == "");
+                duplicate = check4duplicate(
+                    Provider.of<UserProfileCollection>(context, listen: false),
+                    name);
+                if (!showHint && !duplicate) {
                   // Name eingegeben
                   if (modify) {
                     // Ändern, nicht erstellen
@@ -107,8 +136,7 @@ class _AddUserProfileDialogueState extends State<AddUserProfileDialogue> {
                     Navigator.pop(context);
                   }
                 } else {
-                  // Keine eingabe
-                  showHint = true;
+                  // Eingabe entweder nicht vorhanden oder doppelt
                   setState(() {});
                 }
               },

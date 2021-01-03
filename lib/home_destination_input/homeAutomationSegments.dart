@@ -125,7 +125,8 @@ class _HomeAutomationSegmentsState extends State<HomeAutomationSegments> {
                             borderRadius:
                                 BorderRadius.all(Radius.circular(14.0))),
                         contentPadding: EdgeInsets.fromLTRB(0, 0, 0, 0),
-                        content: PopUpInput(segmentContext: context),
+                        content: PopUpInput(
+                            segmentContext: context, overviewMode: false),
                       ),
                     );
                   },

@@ -56,6 +56,7 @@ flutter:
   assets:
     - assets/images/citybackground.jpg
     - assets/images/citybackground.png
+    - assets/images/DreieckHelper_groß_zugeschnitten.gif
 
 
   # An image asset can refer to one or more resolution-specific "variants", see

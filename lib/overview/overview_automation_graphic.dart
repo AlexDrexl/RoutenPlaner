@@ -28,6 +28,15 @@ class AutomationGraphic extends StatelessWidget {
     // Einzelnen Flex Werte
     List<int> flexValues = [];
 
+    // Füge das Start Icon am Anfang der Linie hinzu
+    widgetList.add(
+      Icon(
+        Icons.location_on,
+        color: myDarkGrey,
+        size: 20,
+      ),
+    );
+
     for (int i = 0; i < listOfSections.length; i++) {
       flexValues
           .add(listOfSections[i][1] - listOfSections[i][0] + 1); // Flex Val
@@ -51,6 +60,14 @@ class AutomationGraphic extends StatelessWidget {
         ),
       );
     }
+    // Füge die Fahne am Ende hinzu
+    widgetList.add(
+      Icon(
+        Icons.flag_rounded,
+        color: myDarkGrey,
+        size: 20,
+      ),
+    );
     // Liste An Widgets erstellen
     // Liste von Abschnitten erstellen, Liste aus Flexible mit gegebenen Flex Wert
     return Row(children: widgetList);
@@ -62,6 +79,7 @@ class AutomationGraphic extends StatelessWidget {
       child: Column(
         children: <Widget>[
           // Erste Reihe mit den zwei Icons am Ende
+          /*
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
@@ -77,12 +95,11 @@ class AutomationGraphic extends StatelessWidget {
               )
             ],
           ),
+          */
           // Linie, zur Anzeige der Fahrabschnitte
-          // Im moment wird einfach das erste Element dargestellt
-          Consumer<FinalRoutes>(
-            builder: (context, finalRoutes, child) =>
-                graphLine(finalRoutes.routes[routeIndex].automationSections),
-          ),
+          graphLine(Provider.of<FinalRoutes>(context, listen: false)
+              .routes[routeIndex]
+              .automationSections)
         ],
       ),
     );
@@ -129,48 +146,66 @@ class TimeTotals extends StatelessWidget {
     return Container(
       width: 50,
       child: Consumer<FinalRoutes>(
-        builder: (context, finalRoutes, child) => Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        builder: (context, finalRoutes, child) => Column(
           children: [
-            // MANUAL
-            Expanded(
-              // [0] enthält wert für manual
-              flex: getFlexValues(context)[0],
-              child: Container(
-                decoration: BoxDecoration(
-                  color: myDarkGrey,
-                  borderRadius: BorderRadius.only(
-                    bottomLeft: Radius.circular(10),
-                    topLeft: Radius.circular(10),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // MANUAL
+                Expanded(
+                  // [0] enthält wert für manual
+                  flex: getFlexValues(context)[0],
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: myDarkGrey,
+                      borderRadius: BorderRadius.only(
+                        bottomLeft: Radius.circular(10),
+                        topLeft: Radius.circular(10),
+                      ),
+                    ),
+                    child: Center(
+                      child: Text(
+                        finalRoutes.getFormattedTime(
+                            finalRoutes.routes[routeIndex].manualDuration),
+                        style: TextStyle(fontSize: 17, color: myWhite),
+                      ),
+                    ),
                   ),
                 ),
-                child: Center(
-                  child: Text(
-                    finalRoutes.getFormattedTime(
-                        finalRoutes.routes[routeIndex].manualDuration),
-                    style: TextStyle(fontSize: 17, color: myWhite),
+                // AUTOM
+                Expanded(
+                  // [1] enthält flex für Autom
+                  flex: getFlexValues(context)[1],
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: myMiddleTurquoise,
+                      borderRadius: BorderRadius.only(
+                        bottomRight: Radius.circular(10),
+                        topRight: Radius.circular(10),
+                      ),
+                    ),
+                    child: Center(
+                      child: Text(
+                        finalRoutes.getFormattedTime(
+                            finalRoutes.routes[routeIndex].automationDuration),
+                        style: TextStyle(fontSize: 17, color: myWhite),
+                      ),
+                    ),
                   ),
                 ),
-              ),
+              ],
             ),
-            // AUTOM
-            Expanded(
-              // [1] enthält flex für Autom
-              flex: getFlexValues(context)[1],
-              child: Container(
-                decoration: BoxDecoration(
-                  color: myMiddleTurquoise,
-                  borderRadius: BorderRadius.only(
-                    bottomRight: Radius.circular(10),
-                    topRight: Radius.circular(10),
-                  ),
-                ),
-                child: Center(
-                  child: Text(
-                    finalRoutes.getFormattedTime(
-                        finalRoutes.routes[routeIndex].automationDuration),
-                    style: TextStyle(fontSize: 17, color: myWhite),
-                  ),
+            // Gesamte Fahrzeit
+            SizedBox(
+              height: 10,
+            ),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                "Gesamtfahrzeit: ${finalRoutes.getFormattedTime(finalRoutes.routes[routeIndex].duration)} h",
+                style: TextStyle(
+                  color: myDarkGrey,
+                  fontSize: 15,
                 ),
               ),
             ),

@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:routenplaner/drawer/drawer_home.dart';
 import 'package:routenplaner/drawer/input_triangle.dart';
 import 'package:routenplaner/drawer/travel_profiles.dart';
+import 'package:routenplaner/drawer/triangle_help.dart';
 import 'package:routenplaner/provider_classes/travel_profile_modifier.dart';
 import 'package:routenplaner/provider_classes/travel_profiles_collection.dart';
 import 'package:routenplaner/route_planning.dart';
-import 'package:routenplaner/route_planning2.dart';
 import '../data/custom_colors.dart';
 import 'package:provider/provider.dart';
 import '../footer.dart';
@@ -303,47 +303,91 @@ class _TravelDetailState extends State<TravelDetail> {
                             padding: EdgeInsets.only(
                                 left: 25, right: 25, top: 25, bottom: 25),
                             decoration: BoxDecoration(
-                                border:
-                                    Border.all(width: 0, color: myMiddleGrey),
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(14)),
-                                color: myWhite,
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: myMiddleGrey,
-                                    blurRadius: 4,
-                                  )
-                                ]),
-                            child: Column(children: [
-                              Text(
-                                'Max. Automationsdauer',
-                                style: TextStyle(fontSize: 17),
-                              ),
-                              // HIER DAS DREIECK
-                              AspectRatio(
-                                aspectRatio: 1 / (0.5 * sqrt(3)),
-                                child: Container(
-                                  child: InputTriangle(
-                                    indexProfile: widget.indexProfile,
+                              border: Border.all(width: 0, color: myMiddleGrey),
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(14)),
+                              color: myWhite,
+                              boxShadow: [
+                                BoxShadow(
+                                  color: myMiddleGrey,
+                                  blurRadius: 4,
+                                )
+                              ],
+                            ),
+                            child: Column(
+                              children: [
+                                Container(
+                                  margin: EdgeInsets.only(left: 10, right: 10),
+                                  child: Row(
+                                    children: [
+                                      Expanded(
+                                        flex: 1,
+                                        child: Container(),
+                                      ),
+                                      Expanded(
+                                        flex: 6,
+                                        child: Center(
+                                          child: Text(
+                                            'Max. Automationsdauer',
+                                            style: TextStyle(fontSize: 17),
+                                          ),
+                                        ),
+                                      ),
+                                      Expanded(
+                                        flex: 1,
+                                        child: FloatingActionButton(
+                                          child: Text(
+                                            "?",
+                                            style: TextStyle(
+                                              color: myWhite,
+                                              fontSize: 30,
+                                            ),
+                                          ),
+                                          onPressed: () {
+                                            print("helper");
+                                            showDialog(
+                                              context: context,
+                                              // Dialog Popup, fragt den user nach bestätigung
+                                              builder: (context) => Builder(
+                                                builder:
+                                                    (BuildContext context) {
+                                                  return TriangleHelper();
+                                                },
+                                              ),
+                                            );
+                                          },
+                                        ),
+                                        // Popup das das dreieck erklären soll
+                                      ),
+                                    ],
                                   ),
                                 ),
-                              ),
-                              // HIER DAS DREIECK
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    'Min. Reisezeit',
-                                    style: TextStyle(fontSize: 17),
+                                // HIER DAS DREIECK
+                                AspectRatio(
+                                  aspectRatio: 1 / (0.5 * sqrt(3)),
+                                  child: Container(
+                                    child: InputTriangle(
+                                      indexProfile: widget.indexProfile,
+                                    ),
                                   ),
-                                  Text(
-                                    'Wenig Wechsel\n        AD/MD',
-                                    style: TextStyle(fontSize: 17),
-                                  ),
-                                ],
-                              ),
-                            ]),
+                                ),
+                                // HIER DAS DREIECK
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      'Min. Reisezeit',
+                                      style: TextStyle(fontSize: 17),
+                                    ),
+                                    Text(
+                                      'Wenig Wechsel\n        AD/MD',
+                                      style: TextStyle(fontSize: 17),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ],

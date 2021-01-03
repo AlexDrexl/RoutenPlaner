@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:routenplaner/provider_classes/addresses.dart';
+import 'package:routenplaner/provider_classes/road_connections.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:routenplaner/database/database_helper.dart';
 import 'package:provider/provider.dart';
@@ -54,14 +56,20 @@ class UserProfileCollection with ChangeNotifier {
       selectedUserProfileIndex = 0;
     }
     // Lösche alle zugehörigen ReiseProfile, basierend auf der UserID
-    print(userProfileCollection[indexUserProfile].databaseID);
-    db.rawDelete(
-      '''
+    db.rawDelete('''
     DELETE FROM TravelProfile
     WHERE UserID = ?
-    ''',
-      [userProfileCollection[indexUserProfile].databaseID],
-    );
+    ''', [userProfileCollection[indexUserProfile].databaseID]);
+    // Lösche alle Adressen, basierend auf der UserID
+    db.rawDelete('''
+    DELETE FROM Address 
+    WHERE UserID = ?
+    ''', [userProfileCollection[indexUserProfile].databaseID]);
+    // Lösche alle Verbindungen, basierend auf der UserID
+    db.rawDelete('''
+    DELETE FROM RoadConnection
+    WHERE UserID = ?
+    ''', [userProfileCollection[indexUserProfile].databaseID]);
     // Lösche den User in der Datenbank
     await DatabaseHelper.instance
         .deleteUser(userID: userProfileCollection[indexUserProfile].databaseID);
@@ -93,7 +101,7 @@ class UserProfileCollection with ChangeNotifier {
       UserProfileData(
         databaseID: dbID[0].values.toList()[0],
         name: name,
-        email: email == null ? " " : email,
+        email: email == null ? "" : email,
       ),
     );
     print("ADD PROFILE");
@@ -155,12 +163,12 @@ class UserProfileCollection with ChangeNotifier {
         [1, userProfileCollection[userIndex].databaseID]);
     // Lokales setzen des Profile Index
     selectedUserProfileIndex = userIndex;
-    // Rufe die init Funktion der travelprofile Klasse auf, um
-    // dort die Travelprofile zu setzen
-    int databaseUserID =
-        userProfileCollection[selectedUserProfileIndex].databaseID;
+    // Setze Reiseprofile
     Provider.of<TravelProfileCollection>(context, listen: false)
         .setTravelProfiles();
+    // Setze die Adressen und Verbindungen
+    Provider.of<AddressCollection>(context, listen: false).setAddresses();
+    Provider.of<RoadConnections>(context, listen: false).setRoadConnections();
     notifyListeners();
   }
 

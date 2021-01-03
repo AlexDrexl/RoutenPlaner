@@ -32,7 +32,7 @@ class _DestinationinputDestinationState
     // show input autocomplete with selected mode
     // then get the Prediction selected
     Prediction p = await PlacesAutocomplete.show(
-      hint: "Start:",
+      hint: "Ziel:",
       context: context,
       apiKey: apiKey,
       onError: onError,

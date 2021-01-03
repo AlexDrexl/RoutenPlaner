@@ -3,6 +3,7 @@ import 'package:routenplaner/data/custom_colors.dart';
 import 'package:routenplaner/overview/segment_pupup_dialogue.dart';
 import 'package:provider/provider.dart';
 import 'package:routenplaner/provider_classes/desired_Autom_Sections.dart';
+import 'package:routenplaner/provider_classes/overview_change.dart';
 
 class OverviewSegments extends StatefulWidget {
   @override
@@ -52,11 +53,16 @@ class _OverviewSegmentsState extends State<OverviewSegments> {
                         Provider.of<DesiredAutomSections>(context,
                                 listen: false)
                             .deleteTimedSection(keyWhen);
+                        // Routenerstellungsprozess muss wieder erneut gestartet werden
+                        Provider.of<OverviewChange>(context, listen: false)
+                            .refresh();
                       } else {
                         // wenn nicht getimed
                         Provider.of<DesiredAutomSections>(context,
                                 listen: false)
                             .deleteSection(index);
+                        Provider.of<OverviewChange>(context, listen: false)
+                            .refresh();
                       }
                     },
                     child: Icon(
@@ -161,7 +167,10 @@ class _OverviewSegmentsState extends State<OverviewSegments> {
                                 borderRadius:
                                     BorderRadius.all(Radius.circular(14.0))),
                             contentPadding: EdgeInsets.fromLTRB(0, 0, 0, 0),
-                            content: PopUpInput(segmentContext: context),
+                            content: PopUpInput(
+                              segmentContext: context,
+                              overviewMode: true,
+                            ),
                           ),
                         );
                       },

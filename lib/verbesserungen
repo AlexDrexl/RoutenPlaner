@@ -7,7 +7,26 @@ Tobis Verbesserungsvorschläge:
 
 Eigene Verbesserungsvorschläge
 - bei Home Menü evtl noch den Favoriten Komplex besser anpassen
-- Future Builder von der ersten auf die zweite Seite wichtig, da bei schlechtem Internet es etwas dauer kann
-- hierbei auch einen Error mit beachten, falls die Berechnugn fehl schlägt
 - Problem: Wenn im Overview noch Automatisierte Segmente hinzugefügt werden, dann muss der Routenplanungsprozess 
 - erneut gestartet werden, evtl dann ein Ladeicon bei der ROutenanzeige 
+
+TODO:
+- DONE Sortieralgorytmus fertig, 
+- DONE Hilfeicon über Dreieck mit einem GIF, 
+- DONE Adressen /Verbindungen immer laden bei seitenwechsel, passiert im moment noch nicht 
+- DONE Dixclaimer über los gehts "Durch kurzfristige Änderungen bei Verkehr und Umgebungsbedingungen kann es zu Abweichungen von Planung und tatsächlichem Fahrtverlauf kommen"
+- Start Button am Ende 
+- DONE Wenn von Overview zurück auf Home, Abfrage, ob wirklich die Route verworfen werden soll
+- DONE Startzeit nicht im Dropout menü, sondern davor 
+- DONE Gesamtzeit hinzufügen
+- DONE wenn in overview etwas geändernt. routenberechnung neu starten 
+- DONE Bei „Nutzerprofil bearbeiten“: bisher eingegebenen Daten werden nicht dargestellt
+- Adressen Verbindungen Löschen, wenn das Nutzerprofil gelöscht 
+- Adressen verbindungen kopieren, wenn das Nutzerprofil kopiert
+
+Test am Smartphone:
+- Plus button ist das Plus noch nicht ganz in der Mitte
+- Max. Profilnamenlänge wird nicht durchgesetzt. Man kann mehr eingeben als erlaubt
+- Favoriten und Letrzte Verbindungen Kasten noch anpassen. Im Moment noch zu groß
+- Favoriten und Letrzte Verbindungen Kasten zu klein, am besten dynamisch gestalten
+- Bei Wechsel des Profils werden die Adressen nicht aktualisiert

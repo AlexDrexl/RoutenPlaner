@@ -86,7 +86,7 @@ class AlternativeRoutesList extends StatelessWidget {
 
   Future<List<Widget>> getAlternativeRoutes(
       BuildContext context, FinalRoutes finalRoutes) async {
-    return Future<List<Widget>>.delayed(Duration(seconds: 3),
+    return Future<List<Widget>>.delayed(Duration(seconds: 0),
         () => printAlternativeRoutes(context, finalRoutes));
   }
 

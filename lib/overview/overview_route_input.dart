@@ -3,6 +3,8 @@ import 'package:routenplaner/data/custom_colors.dart';
 import 'package:provider/provider.dart';
 
 import 'package:routenplaner/overview/overview_segment.dart';
+import 'package:routenplaner/provider_classes/final_routes.dart';
+import 'package:routenplaner/provider_classes/overview_change.dart';
 import 'package:routenplaner/provider_classes/route_details.dart';
 import 'package:routenplaner/provider_classes/travel_profiles_collection.dart';
 
@@ -14,7 +16,7 @@ class OverviewRouteInput extends StatefulWidget {
 class _OverviewRouteInputState extends State<OverviewRouteInput> {
   // Variablen, aus Laufzeit Datenbank
   List<String> travelProfilenames = List<String>();
-  String selectedAutomationLength;
+  // String selectedAutomationLength;
 
   int flexFirstColumn = 5;
   int flexSecondColumn = 2;
@@ -68,7 +70,6 @@ class _OverviewRouteInputState extends State<OverviewRouteInput> {
   Widget build(BuildContext context) {
     // Zuerst die TravelProfile Setzen
     setTravelProfiles(context);
-    print("BUILD");
     // PROVIDER FÜR PUPUP UND OVERVIEW SEGMENT
     return Column(
       children: <Widget>[
@@ -129,10 +130,10 @@ class _OverviewRouteInputState extends State<OverviewRouteInput> {
                       size: 40,
                       color: myMiddleTurquoise,
                     ),
-                    hint: Text(travelProfiles.selectedTravelProfile.name == null
+                    hint: Text(travelProfiles.selectedTravelProfile == null
                         ? "Reiseprofil"
                         : travelProfiles.selectedTravelProfile.name),
-                    value: travelProfiles.selectedTravelProfile.name == null
+                    value: travelProfiles.selectedTravelProfile == null
                         ? "Reiseprofil"
                         : travelProfiles.selectedTravelProfile.name,
                     underline: Container(
@@ -147,9 +148,12 @@ class _OverviewRouteInputState extends State<OverviewRouteInput> {
                           .selectTravelProfile(
                         name: travelProfileName,
                       );
-                      // Aktualisieren
+                      // Aktualisieren, STartet die Routenberechnung erneut
+                      Provider.of<OverviewChange>(context, listen: false)
+                          .refresh();
                     },
                     items: travelProfilenames.map((String i) {
+                      print(travelProfilenames);
                       return DropdownMenuItem<String>(
                         value: i,
                         child: Text(

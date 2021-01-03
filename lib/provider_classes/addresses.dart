@@ -16,30 +16,8 @@ class AddressCollection with ChangeNotifier {
 
   //init Funktion, holt alle Adressen aus der Datenbank, basierend auf der
   // UserID
-  // Idee: Speichere Start/Ziel Ort (insgesamt 50 oder so), gebe jederm Ort
-  // das Attribut wie oft aufgerufen, basierend darauf dann die Favoriten
-  // Angabe, bei Aufruf, erhöhe den Wert um 1
-  // folgender befehl sucht top 3: select top 3 * from Test order by f1 desc
   void setAddresses() async {
     print("SET ADDRESSES");
-
-    // NUR ZUM TESTEN TODO: LÖSCHEN
-    /*
-    Database db1 = await DatabaseHelper.instance.database;
-    await db1.rawDelete('''
-    DELETE FROM Address
-    ''');
-    DatabaseHelper.instance
-        .addAddressRow(userID: 1, addressName: "A", addressCalls: 1);
-    DatabaseHelper.instance
-        .addAddressRow(userID: 1, addressName: "B", addressCalls: 1);
-    DatabaseHelper.instance
-        .addAddressRow(userID: 1, addressName: "C", addressCalls: 2);
-    DatabaseHelper.instance
-        .addAddressRow(userID: 1, addressName: "D", addressCalls: 2);
-    print("SET ADDRESSES");
-    */
-    // NUR ZUM TESTEN
 
     // Lösche bisherige Einträge, um Verdopplung zu vermeiden
     favoriteAddress.clear();
@@ -70,14 +48,16 @@ class AddressCollection with ChangeNotifier {
       favoriteAddress.add(favAdresses[i]["AddressName"]);
       lastAddress.add(lastAddresses[i]["AddressName"]);
     }
-    notifyListeners();
+    // notifyListeners();
   }
 
   // Falls die Adresse noch nicht gespeichert, füge diese hinzu
-  void addAddress(
+  Future<bool> addAddress(
       {@required String addressName, @required DateTime timeNow}) async {
     Database db = await DatabaseHelper.instance.database;
     int selectedUserID = await DatabaseHelper.instance.getCurrentUserID();
+    print("USER ID IST: $selectedUserID");
+    if (selectedUserID == null) return false;
     var updatedAddresses = await db.rawUpdate('''
     UPDATE Address
     SET AddressCalls = AddressCalls + 1, Date = '${timeNow.toString()}'
@@ -92,6 +72,9 @@ class AddressCollection with ChangeNotifier {
         timeNow: timeNow,
       );
     }
+    print("ADDRESS ADDED");
+    setAddresses();
+    return true;
   }
 
   // Lösche alle Adressen, basierend auf der UserID
@@ -101,5 +84,6 @@ class AddressCollection with ChangeNotifier {
     DELETE FROM Address
     WHERE UserID = ?
     ''', [userID]);
+    setAddresses();
   }
 }
