@@ -16,7 +16,7 @@ class AddressCollection with ChangeNotifier {
 
   //init Funktion, holt alle Adressen aus der Datenbank, basierend auf der
   // UserID
-  void setAddresses() async {
+  Future<bool> setAddresses() async {
     print("SET ADDRESSES");
 
     // Lösche bisherige Einträge, um Verdopplung zu vermeiden
@@ -48,7 +48,8 @@ class AddressCollection with ChangeNotifier {
       favoriteAddress.add(favAdresses[i]["AddressName"]);
       lastAddress.add(lastAddresses[i]["AddressName"]);
     }
-    // notifyListeners();
+    notifyListeners();
+    return true;
   }
 
   // Falls die Adresse noch nicht gespeichert, füge diese hinzu

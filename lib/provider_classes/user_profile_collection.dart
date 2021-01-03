@@ -86,9 +86,9 @@ class UserProfileCollection with ChangeNotifier {
   }
 
   // Füge Profil hinzu, lokal und in Datenbank
-  Future<void> addProfile({@required String name, String email}) async {
+  Future<int> addProfile({@required String name, String email}) async {
     // In Datenbank user hinzufügen
-    await DatabaseHelper.instance.addUser(
+    var newUserID = await DatabaseHelper.instance.addUser(
       name: name,
       email: email == null ? " " : email,
     );
@@ -111,6 +111,7 @@ class UserProfileCollection with ChangeNotifier {
       selectUserProfile(userIndex: 0);
     }
     notifyListeners();
+    return newUserID;
   }
 
   // Dupliziere Profil,
@@ -122,12 +123,12 @@ class UserProfileCollection with ChangeNotifier {
     print("DUPLICATE");
     var copiedProfile = userProfileCollection[indexUserProfile];
     // Rufe lokale addUser FUnktion auf, kümmert sich um Datenbank u Lok Obj
-    await addProfile(
+    var newUserID = await addProfile(
         name: copiedProfile.name + " - Kopie", email: copiedProfile.email);
     //////////////// KOPIEREN DER TRAVELPROFILES ///////////////
     // Suche alle Travel Profile des zu kopierenden Users
     Database db = await DatabaseHelper.instance.database;
-    print(userProfileCollection);
+    /*
     var copiedTravelProfiles = await db.rawQuery('''
     SELECT *
     FROM TravelProfile
@@ -150,11 +151,33 @@ class UserProfileCollection with ChangeNotifier {
         userID: userProfileCollection.last.databaseID,
       );
     }
-    /////////////////////////////////////////////////////////////
+    */
+    // Suche alle Reiseprofile raus uns speichere sie unter einem neuen Nutzer
+    await db.rawInsert('''
+    INSERT INTO TravelProfile (UserID, NameTrav, MaxDetour, MinSegment, IndexTriangle)
+    SELECT ?, NameTrav, MaxDetour, MinSegment, IndexTriangle
+    FROM TravelProfile
+    WHERE UserID = ?
+    ''', [newUserID, userProfileCollection[indexUserProfile].databaseID]);
+    // Suche alle Adressen raus und speichere sie unter einem neuen Nutzer
+    await db.rawInsert('''
+    INSERT INTO Address (UserID, AddressName, AddressCalls, Date)
+    SELECT ?, AddressName, AddressCalls, Date 
+    FROM Address
+    WHERE UserID = ?
+    ''', [newUserID, userProfileCollection[indexUserProfile].databaseID]);
+    // Suche alle Verbindungen raus, speichere sie unter einem neuen Nutzer
+    await db.rawInsert('''
+    INSERT INTO RoadConnection (UserID, StartLocation, DestinationLocation, ConnectionCalls, Date)
+    SELECT ?, StartLocation, DestinationLocation, ConnectionCalls, Date
+    FROM RoadConnection
+    WHERE UserID = ?
+    ''', [newUserID, userProfileCollection[indexUserProfile].databaseID]);
   }
 
   // Setze das ausgewählte Nutzerprofil
   void selectUserProfile({@required int userIndex}) async {
+    print("SELECT USER PROFILE");
     Database db = await DatabaseHelper.instance.database;
     // Rücksetzen aller Selected auf 0
     db.rawUpdate('UPDATE User SET Selected = ?', [0]);

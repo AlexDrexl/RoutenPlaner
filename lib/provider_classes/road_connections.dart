@@ -12,7 +12,7 @@ class RoadConnections with ChangeNotifier {
 
   // Setze die Favoriten und letzten Ziele, müsste eigentlich nach jeder Änderung
   // aufgerufen werden
-  void setRoadConnections() async {
+  Future<bool> setRoadConnections() async {
     print("SET ROAD CONNECTIONS");
     favoriteConnections.clear();
     lastConnections.clear();
@@ -44,7 +44,8 @@ class RoadConnections with ChangeNotifier {
       lastConnections.add(
           "${lastCon[i]["StartLocation"]} > ${lastCon[i]["DestinationLocation"]}");
     }
-    // notifyListeners();
+    notifyListeners();
+    return true;
   }
 
   // Falls die Adresse nicht gespeichert, füge hinzu, erhöhe sonst nur den Aufrufwert um 1

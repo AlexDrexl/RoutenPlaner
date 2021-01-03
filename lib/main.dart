@@ -24,7 +24,6 @@ void main() => runApp(RoutePlaner());
 class RoutePlaner extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    // objekt, das zugriff auf die Farben gibt
     return MultiProvider(
       providers: [
         ChangeNotifierProvider<AddressCollection>(
@@ -53,9 +52,7 @@ class RoutePlaner extends StatelessWidget {
         ),
         // Sammlung RoutenDaten
         ChangeNotifierProvider<FinalRoutes>(
-          create: (context) => FinalRoutes(
-              Provider.of<RouteDetails>(context, listen: false),
-              Provider.of<DesiredAutomSections>(context, listen: false)),
+          create: (context) => FinalRoutes(),
         )
       ],
       child: MaterialApp(

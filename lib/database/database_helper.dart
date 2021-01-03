@@ -49,15 +49,15 @@ class DatabaseHelper {
     await db.execute('''
           CREATE TABLE $userTable (
             ID INTEGER PRIMARY KEY,
-            Name TEXT NOT NULL,
-            Email TEXT NOT NULL,
-            Selected INT NOT NULL
+            Name TEXT,
+            Email TEXT,
+            Selected INT
           )
           ''');
     await db.execute('''
       CREATE TABLE $addressTable (
             ID INTEGER PRIMARY KEY,
-            UserID INTEGER NOT NULL,
+            UserID INTEGER,
             AddressName TEXT,
             AddressCalls INTEGER,
             Date DATETIME
@@ -76,11 +76,8 @@ class DatabaseHelper {
     await db.execute('''
           CREATE TABLE $travelProfileTable (
             ID INTEGER PRIMARY KEY,
-            NameTrav TEXT,
             UserID INTEGER,
-            MaxAutom INTEGER ,
-            MinTravel INTEGER,
-            ADMD INTEGER,
+            NameTrav TEXT,
             MaxDetour INTEGER,
             MinSegment INTEGER,
             IndexTriangle INTEGER
@@ -150,9 +147,6 @@ class DatabaseHelper {
   // Travel Profile
   Future<int> addTravelProfile({
     int userID,
-    int maxAutom,
-    int minTravel,
-    int admd,
     int maxDetour,
     int minSegment,
     int indexTriangle,
@@ -161,9 +155,6 @@ class DatabaseHelper {
     var row = {
       "NameTrav": name,
       "UserID": userID,
-      "MaxAutom": maxAutom,
-      "MinTravel": minTravel,
-      "ADMD": admd,
       "MaxDetour": maxDetour,
       "MinSegment": minSegment,
       "IndexTriangle": indexTriangle,

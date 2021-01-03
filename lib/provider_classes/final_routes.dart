@@ -53,51 +53,9 @@ class FinalRoutes with ChangeNotifier {
   List<LatLng> polylineCoordinates = [];
 
   // Benötigte Provider Dateien im Konstruktor mit einbinden
-  FinalRoutes(
-      RouteDetails routeDetails, DesiredAutomSections desiredAutomSections) {
+  FinalRoutes() {
     /////////// ERSTELLUNG DER ROUTEN OBJEKTE ////////////
     print("FINAL_ROUTES CALLED");
-    /*
-    routes.add(
-      FinalRoute(
-          routeLetter: 'A',
-          automationDuration: Duration(minutes: 20),
-          manualDuration: Duration(minutes: 20),
-          automationSections: {
-            [0, 10]: true,
-            [10, 50]: false,
-            [50, 55]: true,
-            [55, 60]: false,
-            [60, 70]: true,
-          }),
-    );
-    routes.add(
-      FinalRoute(
-          routeLetter: 'B',
-          automationDuration: Duration(minutes: 20),
-          manualDuration: Duration(minutes: 20),
-          automationSections: {
-            [0, 10]: true,
-            [10, 50]: false,
-            [50, 55]: true,
-            [55, 60]: false,
-            [60, 70]: true,
-          }),
-    );
-    routes.add(
-      FinalRoute(
-          routeLetter: 'C',
-          automationDuration: Duration(minutes: 20),
-          manualDuration: Duration(minutes: 20),
-          automationSections: {
-            [0, 10]: true,
-            [10, 50]: false,
-            [50, 55]: true,
-            [55, 60]: false,
-            [60, 70]: true,
-          }),
-    );
-    */
   }
 
   // Aktualisierungsfunktion

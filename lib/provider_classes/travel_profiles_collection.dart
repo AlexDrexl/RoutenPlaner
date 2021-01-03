@@ -14,14 +14,13 @@ class TravelProfileCollection with ChangeNotifier {
   TravelProfileData selectedTravelProfile;
 
   TravelProfileCollection() {
-    print("TRAVEL PROFILES INSTATIATE");
-    // setTravelProfiles();
+    setTravelProfiles();
   }
   // init funktion. Setzt die Profile, basierend auf der userID. Holt dies
   // aus der Datenbank bzw von dem user, der Selected ist.
   // Immer dann aufrufen, wenn das Nutzerprofil geändert wurde
   // War mal mit Future, weis nicht genau, ob sich jetzt was geändert hat
-  Future<void> setTravelProfiles() async {
+  Future<bool> setTravelProfiles() async {
     print("set TravelProfiles");
     travelProfileCollection.clear();
     // Hole aus der Datenbank alle Einträge, dessen UserID selected ist
@@ -29,7 +28,7 @@ class TravelProfileCollection with ChangeNotifier {
     // User Profil, basierend auf der userID
     Database db = await DatabaseHelper.instance.database;
     var selectedTravelProfiles = await db.rawQuery('''
-    SELECT NameTrav, UserID, MaxAutom, MinTravel, ADMD, MaxDetour, MinSegment, IndexTriangle 
+    SELECT UserID, NameTrav, MaxDetour, MinSegment, IndexTriangle 
     FROM TravelProfile LEFT JOIN User
     ON User.ID = TravelProfile.UserID
     WHERE User.Selected = ?
@@ -39,14 +38,11 @@ class TravelProfileCollection with ChangeNotifier {
       var valuesList = selectedTravelProfiles[i].values.toList();
       travelProfileCollection.add(
         TravelProfileData(
-          name: valuesList[0],
-          userID: valuesList[1],
-          maxAutomDuration: valuesList[2],
-          minTravelTime: valuesList[3],
-          admd: valuesList[4],
-          maxDetour: valuesList[5],
-          minDurationAutomSegment: valuesList[6],
-          indexTriangle: valuesList[7],
+          userID: valuesList[0],
+          name: valuesList[1],
+          maxDetour: valuesList[2],
+          minDurationAutomSegment: valuesList[3],
+          indexTriangle: valuesList[4],
         ),
       );
     }
@@ -55,6 +51,7 @@ class TravelProfileCollection with ChangeNotifier {
       selectedTravelProfile = travelProfileCollection[0];
     }
     notifyListeners();
+    return true;
   }
 
   // getter um Zugriff aus die Profile Liste zu bekommen
@@ -64,18 +61,17 @@ class TravelProfileCollection with ChangeNotifier {
   void addEmptyTravelProfile({String name, int userID}) async {
     // Initialisieren der Daten, zuerst lokal
     // Sind alles Startwerte, kann man ändern
-    travelProfileCollection.add(TravelProfileData(
-      name: name,
-      userID: userID == null
-          ? await DatabaseHelper.instance.getCurrentUserID()
-          : userID,
-      maxDetour: 10,
-      minDurationAutomSegment: 10,
-      maxAutomDuration: 1,
-      minTravelTime: 1,
-      admd: 1,
-      indexTriangle: 6,
-    ));
+    travelProfileCollection.add(
+      TravelProfileData(
+        name: name,
+        userID: userID == null
+            ? await DatabaseHelper.instance.getCurrentUserID()
+            : userID,
+        maxDetour: 10,
+        minDurationAutomSegment: 10,
+        indexTriangle: 6,
+      ),
+    );
     // Auch in der Datenbank hinzufügen
     DatabaseHelper.instance.addTravelProfile(
       name: name,
@@ -84,9 +80,6 @@ class TravelProfileCollection with ChangeNotifier {
           : userID,
       maxDetour: 10,
       minSegment: 10,
-      maxAutom: 1,
-      minTravel: 1,
-      admd: 1,
       indexTriangle: 6,
     );
     // Führe notify Listeners nur aus, wenn keine UserID gegeben ist, also
@@ -210,13 +203,15 @@ class TravelProfileCollection with ChangeNotifier {
 
   Future<List<String>> getTravelProfileNames() async {
     List<String> names = List<String>();
+    /*
     if (travelProfileCollection.length == 0) {
+      print("Leer");
       await setTravelProfiles();
     }
+    */
     for (int i = 0; i < travelProfileCollection.length; i++) {
       names.add(travelProfileCollection[i].name);
     }
-    print(names);
     return names;
   }
 }
@@ -244,35 +239,5 @@ class TravelProfileData {
     this.maxDetour,
     this.indexTriangle,
     this.minDurationAutomSegment,
-    this.maxAutomDuration,
-    this.minTravelTime,
-    this.admd,
   });
 }
-
-/*
-    travelProfileCollection.add(TravelProfileData(
-        userID: 0,
-        name: "Arbeit",
-        maxDetour: 10,
-        minDurationAutomSegment: 10,
-        maxAutomDuration: 0.5,
-        minTravelTime: 0.3,
-        minChanging: 0.4));
-    travelProfileCollection.add(TravelProfileData(
-        userID: 0,
-        name: "Freizeit",
-        maxDetour: 20,
-        minDurationAutomSegment: 20,
-        maxAutomDuration: 0.5,
-        minTravelTime: 0.3,
-        minChanging: 0.4));
-    travelProfileCollection.add(TravelProfileData(
-        userID: 0,
-        name: "Kinder",
-        maxDetour: 30,
-        minDurationAutomSegment: 30,
-        maxAutomDuration: 0.5,
-        minTravelTime: 0.3,
-        minChanging: 0.4));
-        */
