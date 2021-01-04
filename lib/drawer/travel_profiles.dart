@@ -4,7 +4,7 @@ import 'package:routenplaner/drawer/travel_detail.dart';
 import 'package:routenplaner/drawer/travel_profile_addProfile.dart';
 import 'package:routenplaner/provider_classes/travel_profiles_collection.dart';
 import 'drawer_home.dart';
-import '../footer.dart';
+import '../main/footer.dart';
 import '../data/custom_colors.dart';
 import 'package:provider/provider.dart';
 

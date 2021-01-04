@@ -1,12 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:routenplaner/home_favorites/favorites.dart';
-import 'package:routenplaner/provider_classes/addresses.dart';
-import 'package:routenplaner/provider_classes/road_connections.dart';
-import 'package:routenplaner/provider_classes/travel_profiles_collection.dart';
-import 'data/custom_colors.dart';
-import 'package:provider/provider.dart';
-import 'drawer/drawer_home.dart';
-import 'home_favorites/favorite_routes.dart';
+import '../data/custom_colors.dart';
+import '../drawer/drawer_home.dart';
 import "package:routenplaner/home_destination_input/destinationinput.dart";
 
 // Startseite mit zwei großen Elementen: Zieleingabe und Favoriten ROuten
@@ -17,23 +12,6 @@ class RoutePlanning extends StatefulWidget {
 
 class _RoutePlanningState extends State<RoutePlanning> {
   final _scrollController = ScrollController();
-
-  void initializeApp() async {
-    /*
-    Provider.of<TravelProfileCollection>(context, listen: false)
-        .setTravelProfiles();
-    Provider.of<AddressCollection>(context, listen: false).setAddresses();
-    Provider.of<RoadConnections>(context, listen: false).setRoadConnections();
-    */
-  }
-
-  @override
-  void initState() {
-    // TODO: EVTL FUTURE BUILDER. Als future dann die initializeApp funktion
-    super.initState();
-    print("INITIALIZE");
-    initializeApp();
-  }
 
   @override
   Widget build(BuildContext context) {

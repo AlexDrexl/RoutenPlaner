@@ -4,7 +4,7 @@ import 'package:routenplaner/provider_classes/desired_Autom_Sections.dart';
 import 'package:provider/provider.dart';
 import 'package:routenplaner/provider_classes/final_routes.dart';
 import 'package:routenplaner/provider_classes/route_details.dart';
-import '../route_planning.dart';
+import '../main/route_planning.dart';
 
 class OverviewFooterPopup extends StatefulWidget {
   @override

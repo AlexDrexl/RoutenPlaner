@@ -1,17 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:routenplaner/data/custom_colors.dart';
 import 'package:provider/provider.dart';
-import 'package:routenplaner/footer.dart';
 import 'package:routenplaner/drawer/drawer_home.dart';
 import 'package:routenplaner/overview/overview_footer_pupup.dart';
 import 'package:routenplaner/provider_classes/final_routes.dart';
 import 'package:routenplaner/provider_classes/overview_change.dart';
-import 'package:routenplaner/provider_classes/route_details.dart';
 import 'overview_route_input.dart';
-import 'package:routenplaner/provider_classes/desired_Autom_Sections.dart';
 import 'package:routenplaner/overview/overview_route_options.dart';
-// Noch nichts implementiert. hier gehts weiter, wenn der User noch einen
-// zwischenstopp einlegen möchte, oder ein Autom. Fahrsegment
 
 class Overview extends StatefulWidget {
   @override

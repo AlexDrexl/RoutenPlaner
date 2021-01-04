@@ -1,9 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:routenplaner/provider_classes/addresses.dart';
-import 'package:routenplaner/provider_classes/road_connections.dart';
 import 'route_planning.dart';
-import 'data/custom_colors.dart';
+import '../data/custom_colors.dart';
 import 'package:provider/provider.dart';
 import 'package:routenplaner/provider_classes/route_details.dart';
 import 'package:routenplaner/provider_classes/desired_Autom_Sections.dart';

@@ -1,5 +1,4 @@
 import 'dart:math';
-import 'package:flutter/services.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
@@ -7,11 +6,7 @@ import 'package:routenplaner/home_destination_input/destinationinput_destination
 import 'package:routenplaner/provider_classes/travel_profiles_collection.dart';
 import 'desired_Autom_Sections.dart';
 import 'route_details.dart';
-import 'package:flutter_google_places/flutter_google_places.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
-import 'package:google_directions_api/google_directions_api.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:dio/dio.dart';
 import 'dart:math' show cos, sqrt, asin;
 // Übergestellte Klasse, erhält alle daten aus den verschiedenen provider Klassen
 // verwendet sie um finale Routen zu berechnen
@@ -563,14 +558,7 @@ class FinalRoute {
   // Weitere Routen Zugaben
   List<int> automMinutes = List<int>();
   String routeLetter;
-  // TODO: LÖSCHE, Bisher nur zur Simulation
-  Map<List<int>, bool> automationSections = ({
-    [0, 10]: true,
-    [10, 50]: false,
-    [50, 55]: true,
-    [55, 60]: false,
-    [60, 70]: true,
-  });
+  var automationSections = Map<List<int>, bool>();
 
   // Constructor, named, um die Daten zu füllen
   FinalRoute({

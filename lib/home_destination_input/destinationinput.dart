@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:routenplaner/data/custom_colors.dart';
-import 'package:provider/provider.dart';
-import 'package:routenplaner/provider_classes/route_details.dart';
-
 import 'destinationinput_destination.dart';
 import 'destinationinput_details.dart';
 import 'destinationinput_start.dart';

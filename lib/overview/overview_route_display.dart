@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:routenplaner/main.dart';
 import 'package:routenplaner/data/custom_colors.dart';
 import 'package:routenplaner/overview/overview_automation_graphic.dart';
-import 'package:routenplaner/provider_classes/automationSections.dart';
 import 'package:provider/provider.dart';
 import 'package:routenplaner/provider_classes/final_routes.dart';
 

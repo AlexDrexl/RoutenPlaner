@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:routenplaner/data/custom_colors.dart';
-import 'package:routenplaner/provider_classes/travel_profiles_collection.dart';
-import 'package:provider/provider.dart';
-import 'package:flutter_google_places/flutter_google_places.dart';
 
 class RouteDetails with ChangeNotifier {
   // Alle benötigten RoutenEingaben

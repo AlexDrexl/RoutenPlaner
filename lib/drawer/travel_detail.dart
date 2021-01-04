@@ -6,10 +6,9 @@ import 'package:routenplaner/drawer/travel_profiles.dart';
 import 'package:routenplaner/drawer/triangle_help.dart';
 import 'package:routenplaner/provider_classes/travel_profile_modifier.dart';
 import 'package:routenplaner/provider_classes/travel_profiles_collection.dart';
-import 'package:routenplaner/route_planning.dart';
+import 'package:routenplaner/main/route_planning.dart';
 import '../data/custom_colors.dart';
 import 'package:provider/provider.dart';
-import '../footer.dart';
 
 class TravelDetail extends StatefulWidget {
   final int indexProfile;

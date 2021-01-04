@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:routenplaner/data/custom_colors.dart';
-import 'package:routenplaner/provider_classes/travel_profiles_collection.dart';
 import 'package:routenplaner/provider_classes/user_profile_collection.dart';
 
 class AddUserProfileDialogue extends StatefulWidget {

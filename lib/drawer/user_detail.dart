@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'drawer_home.dart';
-import '../footer.dart';
+import '../main/footer.dart';
 
 // popup, das kommt wenn man auf ein Nutzerprofil klickt
 class UserDetail extends StatelessWidget {

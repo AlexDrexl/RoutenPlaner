@@ -163,7 +163,6 @@ class DatabaseHelper {
     return await db.insert(travelProfileTable, row);
   }
 
-  // TODO: Evtl alle Delete Funktionen auch hier rein schreiben
   // weitere Funktionen
   // Gebe den gesamten Table als Liste von Maps aus
   // Jede Row ist dabei eine map mit "Zelle1" : "Wert1"

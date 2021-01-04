@@ -3,7 +3,6 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:routenplaner/provider_classes/final_routes.dart';
 import 'package:provider/provider.dart';
 import 'package:routenplaner/provider_classes/route_details.dart';
-import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 
 class Maps extends StatefulWidget {
   @override

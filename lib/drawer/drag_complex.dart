@@ -3,7 +3,6 @@ import 'package:routenplaner/data/custom_colors.dart';
 import 'package:provider/provider.dart';
 import 'package:routenplaner/provider_classes/travel_profile_modifier.dart';
 import 'dart:math';
-import 'package:routenplaner/provider_classes/travel_profiles_collection.dart';
 
 class DragComplex extends StatefulWidget {
   final BuildContext context;

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:routenplaner/data/custom_colors.dart';
 
 class TrianglePainter extends CustomPainter {
   final Color strokeColor;
