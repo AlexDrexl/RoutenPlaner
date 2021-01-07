@@ -498,6 +498,8 @@ class FinalRoutes with ChangeNotifier {
     print("START POLYLINE CALCULATION");
     // Objekte Clearen
     polylineCoordinates.clear();
+    markers.clear();
+    polylines.clear();
     // Polyline objekt
     PolylinePoints polylinePoints = PolylinePoints();
     // Füge den Start und Zielmarker hinzu

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:routenplaner/data/custom_colors.dart';
 import 'package:routenplaner/drawer/drawer_home.dart';
-import 'package:routenplaner/main/footer.dart';
 import 'alternative_routes_list.dart';
 
 class AlternativeRoutes extends StatelessWidget {
@@ -16,7 +15,7 @@ class AlternativeRoutes extends StatelessWidget {
           iconTheme: new IconThemeData(color: Colors.white)
           //backgroundColor: Hexcolor("#48ACB8"),
           ),
-      bottomNavigationBar: Footer(),
+      // bottomNavigationBar: Footer(),
       drawer: DrawerHome(),
       body: Stack(
         children: [

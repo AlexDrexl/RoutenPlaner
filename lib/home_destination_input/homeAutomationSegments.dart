@@ -13,6 +13,13 @@ class _HomeAutomationSegmentsState extends State<HomeAutomationSegments> {
   Column segmentRow({DateTime keyWhen, Duration valueDuration, int index}) {
     // Dauer in int umrechnen(in minuten)
     int automationLength = valueDuration.inMinutes;
+    String timedSection;
+    // Wenn timedSection, dann Uhrzeitstring für die ANzeuge berechnen
+    if (keyWhen != null) {
+      var end = keyWhen.add(valueDuration);
+      timedSection =
+          '${keyWhen.hour.toString().padLeft(2, '0')}:${keyWhen.minute.toString().padLeft(2, '0')} - ${end.hour.toString().padLeft(2, '0')}:${end.minute.toString().padLeft(2, '0')} Uhr';
+    }
     return Column(
       children: <Widget>[
         SizedBox(height: 10), // Nur um ein wenig Abstand zu schaffen
@@ -25,10 +32,17 @@ class _HomeAutomationSegmentsState extends State<HomeAutomationSegments> {
               color: myYellow,
             ),
             // Minuten Anzahl und Löschen Button
-            Text(
-              "$automationLength" + " min",
-              style: TextStyle(fontSize: 17, color: myDarkGrey),
-            ),
+            // Wenn getimed
+            keyWhen != null
+                ? Text(
+                    timedSection,
+                    style: TextStyle(fontSize: 17, color: myDarkGrey),
+                  )
+                // Wenn nicht getimed
+                : Text(
+                    "$automationLength" + " min",
+                    style: TextStyle(fontSize: 17, color: myDarkGrey),
+                  ),
             RawMaterialButton(
               shape: CircleBorder(),
               highlightColor: myWhite,

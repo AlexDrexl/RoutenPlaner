@@ -78,13 +78,3 @@ class _DestinationinputDestinationState
     );
   }
 }
-/*
-helperText:
-                routeDetails.destinationLocValid ? 'Ziel' : 'Eingabe erfordert',
-            hintStyle: routeDetails.destinationLocValid
-                ? TextStyle()
-                : TextStyle(color: Colors.red),
-            hintText:
-                routeDetails.destinationLocValid ? 'Ziel' : 'Eingabe erfordert',
-            suffixIcon: Icon(Icons.keyboard, color: myMiddleGrey),
-*/

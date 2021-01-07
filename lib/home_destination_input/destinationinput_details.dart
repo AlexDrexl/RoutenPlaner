@@ -22,14 +22,12 @@ class _DestinationInputDetailsState extends State<DestinationInputDetails> {
   DateTime pickedDate;
   TimeOfDay pickedTime;
   String selectedTravelProfile;
-  List<String> travelProfileNames = List<String>();
   bool inputMissing = false;
   bool expanded = false;
 
   _DestinationInputDetailsState(BuildContext context) {
     pickedDate = DateTime.now();
     pickedTime = TimeOfDay.now();
-    setNameList(context);
   }
   // Date Picker
   _pickDate() async {
@@ -59,47 +57,35 @@ class _DestinationInputDetailsState extends State<DestinationInputDetails> {
       });
   }
 
-  void initState() {
-    // setNameList(context);
-    super.initState();
+  String getSelectedTravelProfileName() {
+    var profiles = Provider.of<TravelProfileCollection>(context, listen: false);
+    if (profiles.selectedTravelProfile != null) {
+      return profiles.selectedTravelProfile.name;
+    }
+    return null;
   }
 
-  void setNameList(BuildContext context) {
-    travelProfileNames.clear();
-    // Hole die Travel Profilnamen aus der TravelProfileCollection
-    Provider.of<TravelProfileCollection>(context, listen: false)
-        .getTravelProfileNames()
-        .then(
-          (val) => setState(
-            () {
-              if (val.length != 0) {
-                travelProfileNames = val;
-                selectedTravelProfile = val[0];
-              }
-            },
-          ),
-        );
-  }
-
+  // Dropdown items
   List<DropdownMenuItem<String>> getDropDownItems(
       TravelProfileCollection profiles) {
     List<DropdownMenuItem<String>> widgetList =
         List<DropdownMenuItem<String>>();
     // Kurzes Überprüfen, ob denn überhaupt TravelProfiles da sind
-    if (travelProfileNames == null) {
+    if (profiles.travelProfileCollection.isEmpty) {
       return null;
     }
-    for (int i = 0; i < travelProfileNames.length; i++) {
+    for (int i = 0; i < profiles.travelProfileCollection.length; i++) {
       widgetList.add(
         DropdownMenuItem(
           child: Text(
-            travelProfileNames[i],
+            profiles.travelProfileCollection[i].name,
             style: TextStyle(color: myDarkGrey),
           ),
-          value: travelProfileNames[i],
+          value: profiles.travelProfileCollection[i].name,
         ),
       );
     }
+
     return widgetList;
   }
 
@@ -216,18 +202,16 @@ class _DestinationInputDetailsState extends State<DestinationInputDetails> {
                                   size: 40,
                                   color: myMiddleTurquoise,
                                 ),
-                                value: selectedTravelProfile == null
-                                    ? null
-                                    : selectedTravelProfile,
+                                value: getSelectedTravelProfileName(),
                                 underline: Container(
                                   height: 2,
                                   color: myMiddleGrey,
                                 ),
                                 onChanged: (String value) {
-                                  setState(() {
-                                    // Setze ein Reiseprofil, auch in Provider
-                                    selectedTravelProfile = value;
-                                  });
+                                  // Setze ein Reiseprofil, auch in Provider
+                                  selectedTravelProfile = value;
+                                  travelProfiles.selectTravelProfile(
+                                      name: value);
                                 },
                                 items: getDropDownItems(travelProfiles),
                               );
@@ -322,36 +306,3 @@ class _DestinationInputDetailsState extends State<DestinationInputDetails> {
     );
   }
 }
-
-/*
-                Navigator.push<Widget>(
-                  context,
-                  MaterialPageRoute<Widget>(
-                    builder: (BuildContext context) => Overview(),
-                  ),
-                );
-Icon(Icons.local_car_wash, color: myYellow),
-                  SizedBox(
-                    width: 20,
-                  ),
-                  CircleAvatar(
-                    backgroundColor: myMiddleTurquoise,
-                    radius: 21,
-                    child: IconButton(
-                      icon: Icon(
-                        Icons.add,
-                        color: myWhite,
-                        size: 25,
-                      ),
-                      // Falls Button gedrückt -> Link RoutePlanning2
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute<Widget>(
-                            builder: (BuildContext context) => RoutePlanning2(),
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-*/

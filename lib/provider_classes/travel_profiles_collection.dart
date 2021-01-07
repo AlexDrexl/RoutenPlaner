@@ -20,7 +20,7 @@ class TravelProfileCollection with ChangeNotifier {
   // aus der Datenbank bzw von dem user, der Selected ist.
   // Immer dann aufrufen, wenn das Nutzerprofil geändert wurde
   // War mal mit Future, weis nicht genau, ob sich jetzt was geändert hat
-  Future<bool> setTravelProfiles() async {
+  Future<void> setTravelProfiles() async {
     print("set TravelProfiles");
     travelProfileCollection.clear();
     // Hole aus der Datenbank alle Einträge, dessen UserID selected ist
@@ -51,7 +51,7 @@ class TravelProfileCollection with ChangeNotifier {
       selectedTravelProfile = travelProfileCollection[0];
     }
     notifyListeners();
-    return true;
+    print("TravelProfiles set");
   }
 
   // getter um Zugriff aus die Profile Liste zu bekommen
@@ -203,12 +203,6 @@ class TravelProfileCollection with ChangeNotifier {
 
   Future<List<String>> getTravelProfileNames() async {
     List<String> names = List<String>();
-    /*
-    if (travelProfileCollection.length == 0) {
-      print("Leer");
-      await setTravelProfiles();
-    }
-    */
     for (int i = 0; i < travelProfileCollection.length; i++) {
       names.add(travelProfileCollection[i].name);
     }
