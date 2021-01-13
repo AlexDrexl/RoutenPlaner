@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:routenplaner/drawer/delete_pupup.dart';
 import 'package:routenplaner/drawer/travel_detail.dart';
-import 'package:routenplaner/drawer/travel_profile_addProfile.dart';
+import 'package:routenplaner/drawer/travel_profile_addTravelProfile.dart';
+import 'package:routenplaner/drawer/travel_profiles_button.dart';
 import 'package:routenplaner/provider_classes/travel_profiles_collection.dart';
+import 'package:routenplaner/provider_classes/user_profile_collection.dart';
 import 'drawer_home.dart';
 import '../main/footer.dart';
 import '../data/custom_colors.dart';
@@ -252,49 +254,93 @@ class _TravelProfilesState extends State<TravelProfiles> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: myWhite,
-      appBar: AppBar(
-        title: Text(
-          'Reiseprofile',
-          style: TextStyle(color: myWhite, fontSize: 30),
-        ),
-        iconTheme: new IconThemeData(color: myWhite),
-      ),
-      bottomNavigationBar: Footer(),
-      drawer: DrawerHome(),
-      body: Container(
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            colorFilter: new ColorFilter.mode(
-                Colors.grey.withOpacity(0.15), BlendMode.dstATop),
-            image: AssetImage("assets/images/citybackground.png"),
-            fit: BoxFit.fitWidth,
+        backgroundColor: myWhite,
+        appBar: AppBar(
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'Reiseprofile',
+                style: TextStyle(color: myWhite, fontSize: 30),
+              ),
+              FlatButton(
+                child: Icon(
+                  Icons.help,
+                  color: myWhite,
+                  size: 40,
+                ),
+                onPressed: () {
+                  showDialog(
+                    context: context,
+                    builder: (context) {
+                      return SimpleDialog(
+                        title: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              "Reiseprofile:",
+                              style: TextStyle(color: myDarkGrey, fontSize: 25),
+                            ),
+                            Container(
+                              width: 50,
+                              height: 50,
+                              child: FloatingActionButton(
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                },
+                                child: Icon(
+                                  Icons.close,
+                                  color: myWhite,
+                                  size: 40,
+                                ),
+                              ),
+                            )
+                          ],
+                        ),
+                        titleTextStyle:
+                            TextStyle(color: myDarkGrey, fontSize: 25),
+                        contentPadding: EdgeInsets.fromLTRB(10, 10, 30, 20),
+                        children: [
+                          Row(
+                            children: [
+                              Flexible(
+                                child: Text(
+                                  "Reiseprofile ermöglichen eine personalisierte Routenfindung. Bei der Routeneingabe kann ein Reiseprofil ausgewählt werden, sodass eingestellte Präferenzen in der Routenberechnung berücksichtigt werden. \n\nWenn auf das Erstellen eines Reiseprofils verzichtet wird, ist keine personalisierte Routenfindung möglich.",
+                                  style: TextStyle(
+                                    color: myDarkGrey,
+                                    fontSize: 20,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          )
+                        ],
+                      );
+                    },
+                  );
+                },
+              )
+            ],
           ),
+          iconTheme: new IconThemeData(color: myWhite),
         ),
-        child: Consumer<TravelProfileCollection>(
-          builder: (context, travelProfileCollection, child) => ListView(
-            children: printTravelProfiles(travelProfileCollection),
-          ),
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: myMiddleTurquoise,
-        // Eintrag Hinzufügen, noch implentieren
-        // um aktualisierung gültig zu machen muss man WidgetList rebuilden
-        // einfach
-        onPressed: () {
-          showDialog(
-            context: context,
-            // Dialog Popup
-            builder: (context) => Builder(
-              builder: (BuildContext context) {
-                return AddTravelProfileDialogue(modifyMode: false);
-              },
+        bottomNavigationBar: Footer(),
+        drawer: DrawerHome(),
+        body: Container(
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              colorFilter: new ColorFilter.mode(
+                  Colors.grey.withOpacity(0.15), BlendMode.dstATop),
+              image: AssetImage("assets/images/citybackground.png"),
+              fit: BoxFit.fitWidth,
             ),
-          );
-        },
-        child: Icon(Icons.add, color: myWhite, size: 30),
-      ),
-    );
+          ),
+          child: Consumer<TravelProfileCollection>(
+            builder: (context, travelProfileCollection, child) => ListView(
+              children: printTravelProfiles(travelProfileCollection),
+            ),
+          ),
+        ),
+        floatingActionButton: TravelProfileButton());
   }
 }

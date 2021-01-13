@@ -244,10 +244,6 @@ class _DestinationInputDetailsState extends State<DestinationInputDetails> {
           SizedBox(
             height: 10,
           ),
-          Text(
-            "Durch kurzfristige Änderungen bei Verkehr und Umgebungsbedingungen kann es zu Abweichungen von Planung und tatsächlichem Fahrtverlauf kommen",
-            style: TextStyle(fontSize: 10, color: myDarkGrey),
-          ),
           // Los gehts button
           MaterialButton(
             minWidth: 300,
@@ -292,7 +288,8 @@ class _DestinationInputDetailsState extends State<DestinationInputDetails> {
                         destination: destination,
                         timeNow: DateTime.now());
                 // Pushe zur nächsten seite
-                await Navigator.push<Widget>(
+
+                Navigator.push<Widget>(
                   context,
                   MaterialPageRoute<Widget>(
                     builder: (BuildContext context) => Overview(),

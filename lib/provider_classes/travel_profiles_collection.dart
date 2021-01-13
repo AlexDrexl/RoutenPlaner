@@ -50,8 +50,8 @@ class TravelProfileCollection with ChangeNotifier {
     if (travelProfileCollection.length > 0) {
       selectedTravelProfile = travelProfileCollection[0];
     }
-    notifyListeners();
     print("TravelProfiles set");
+    notifyListeners();
   }
 
   // getter um Zugriff aus die Profile Liste zu bekommen
@@ -82,8 +82,9 @@ class TravelProfileCollection with ChangeNotifier {
       minSegment: 10,
       indexTriangle: 6,
     );
-    // Führe notify Listeners nur aus, wenn keine UserID gegeben ist, also
-    // das UserProfil NICHT dupliziert wird
+    // Falls dies das erste Reiseprofil ist, wird das standartmäßig ausgewählt
+    if (travelProfileCollection.length == 1)
+      selectedTravelProfile = travelProfileCollection[0];
     notifyListeners();
   }
 
@@ -161,7 +162,7 @@ class TravelProfileCollection with ChangeNotifier {
     if (name != null) {
       selectedTravelProfile =
           travelProfileCollection.firstWhere((element) => element.name == name);
-    } else {
+    } else if (index != null) {
       selectedTravelProfile = travelProfileCollection[index];
     }
     print("SELECTED TRAVEL PROFILE: ${selectedTravelProfile.name}");

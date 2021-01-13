@@ -77,14 +77,4 @@ class AddressCollection with ChangeNotifier {
     setAddresses();
     return true;
   }
-
-  // Lösche alle Adressen, basierend auf der UserID
-  void deleteAllAddresses({@required int userID}) async {
-    Database db = await DatabaseHelper.instance.database;
-    db.rawDelete('''
-    DELETE FROM Address
-    WHERE UserID = ?
-    ''', [userID]);
-    setAddresses();
-  }
 }

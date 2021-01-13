@@ -6,30 +6,33 @@ import 'package:routenplaner/provider_classes/overview_change.dart';
 import 'package:routenplaner/provider_classes/route_details.dart';
 import 'package:routenplaner/provider_classes/travel_profiles_collection.dart';
 
+// Callback ist notwendig, da ansonsten der FutureBuilder nicht neu gestartet werden kann
+// Overview_route übergribt eine setstate FUnktion an diese Datei. Wenn diese
+// datei die übergebene Funktion ausfruft, wird overview_route inklusive overview_route_builder
+// aktualisiert
 class OverviewRouteInput extends StatefulWidget {
+  final BuildContext context;
+  final Function _callback;
+  OverviewRouteInput({@required void myCallback(), @required this.context})
+      : _callback = myCallback;
   @override
-  _OverviewRouteInputState createState() => _OverviewRouteInputState();
+  _OverviewRouteInputState createState() => _OverviewRouteInputState(context);
 }
 
 class _OverviewRouteInputState extends State<OverviewRouteInput> {
-  // Variablen, aus Laufzeit Datenbank
-  List<String> travelProfilenames = List<String>();
-  // String selectedAutomationLength;
-
+  // Flex Werte für die information Row
   int flexFirstColumn = 5;
   int flexSecondColumn = 2;
   int flexThirdColumn = 8;
+  // merke den ausgewählten Profilnamen, um bei Nicht-Änderung keinen
+  // Neustart der Route zu triggern
+  String selectedProfileName;
 
-  // setze die Travel ProfilNamen in ein Lokales Objekt
-  void setTravelProfiles(BuildContext context) {
-    travelProfilenames.clear();
+  _OverviewRouteInputState(BuildContext context) {
     var travelProfiles =
-        Provider.of<TravelProfileCollection>(context, listen: false)
-            .travelProfileCollection;
-    for (int i = 0; i < travelProfiles.length; i++) {
-      travelProfilenames.add(
-        travelProfiles[i].name,
-      );
+        Provider.of<TravelProfileCollection>(context, listen: false);
+    if (travelProfiles.selectedTravelProfile != null) {
+      selectedProfileName = travelProfiles.selectedTravelProfile.name;
     }
   }
 
@@ -66,9 +69,6 @@ class _OverviewRouteInputState extends State<OverviewRouteInput> {
   // Eigentliches Widget
   @override
   Widget build(BuildContext context) {
-    // Zuerst die TravelProfile Setzen
-    setTravelProfiles(context);
-    // PROVIDER FÜR PUPUP UND OVERVIEW SEGMENT
     return Column(
       children: <Widget>[
         // Alle information rows sind nur der obere Teil bis zu "Abfahrt ab:"
@@ -122,6 +122,7 @@ class _OverviewRouteInputState extends State<OverviewRouteInput> {
                 child: Consumer<TravelProfileCollection>(
                   builder: (context, travelProfiles, _) =>
                       DropdownButton<String>(
+                    isExpanded: true,
                     // Hint wird durch Provider Aktualisiert
                     icon: Icon(
                       Icons.arrow_drop_down,
@@ -139,23 +140,23 @@ class _OverviewRouteInputState extends State<OverviewRouteInput> {
                       color: myMiddleGrey,
                     ),
                     // Wenn Geärndert, dann ändere auch den Wert im Provider
-                    onChanged: (String travelProfileName) {
+                    onChanged: (String newTravelProfileName) {
                       // RoutenProfil ändern
-                      Provider.of<TravelProfileCollection>(context,
-                              listen: false)
-                          .selectTravelProfile(
-                        name: travelProfileName,
-                      );
-                      // Aktualisieren, STartet die Routenberechnung erneut
-                      Provider.of<OverviewChange>(context, listen: false)
-                          .refresh();
+                      travelProfiles.selectTravelProfile(
+                          name: newTravelProfileName);
+                      // Aktualisieung, wenn ein anderes Reiseprofil ausgewählt
+                      // startet Routenberechnung erneut
+                      if (newTravelProfileName != selectedProfileName) {
+                        widget?._callback();
+                      }
+                      selectedProfileName = newTravelProfileName;
                     },
-                    items: travelProfilenames.map((String i) {
-                      print(travelProfilenames);
+                    items: travelProfiles.travelProfileCollection
+                        .map((TravelProfileData profile) {
                       return DropdownMenuItem<String>(
-                        value: i,
+                        value: profile.name,
                         child: Text(
-                          i,
+                          profile.name,
                           style: TextStyle(color: myDarkGrey),
                         ),
                       );
@@ -166,58 +167,10 @@ class _OverviewRouteInputState extends State<OverviewRouteInput> {
             ),
           ],
         ),
-        // Min. Automationszeit
-        /*
-        Row(
-          children: <Widget>[
-            Expanded(
-              flex: flexFirstColumn + flexSecondColumn,
-              child: Text(
-                "Min. Automationszeit",
-                style: TextStyle(fontSize: 17, color: myDarkGrey),
-              ),
-            ),
-            // Expanded für das Dropdown menü min autom. Reisezeit
-            Expanded(
-              flex: flexThirdColumn,
-              child: Container(
-                margin: EdgeInsets.only(right: 70),
-                child: DropdownButton<String>(
-                  hint: Text("0 min"),
-                  icon: Icon(
-                    Icons.arrow_drop_down,
-                    size: 40,
-                    color: myMiddleTurquoise,
-                  ),
-                  value: selectedAutomationLength,
-                  underline: Container(
-                    height: 2,
-                    color: myMiddleGrey,
-                    width: 4,
-                  ),
-                  onChanged: (String timeValue) {
-                    setState(() {
-                      selectedAutomationLength = timeValue;
-                    });
-                  },
-                  // Mappe durch alle elemente, dann wieder zu Liste
-                  items: minAutomationLength.map((String i) {
-                    return DropdownMenuItem<String>(
-                      value: i,
-                      child: Text(
-                        i + " min",
-                        style: TextStyle(color: myDarkGrey),
-                      ),
-                    );
-                  }).toList(),
-                ),
-              ),
-            ),
-          ],
-        ),
-        */
         // Automatisierte Fahrsegmente einfügen
-        OverviewSegments(),
+        OverviewSegments(
+          myCallback: widget._callback,
+        ),
       ],
     );
   }

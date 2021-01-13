@@ -21,7 +21,7 @@ class _OverviewFooterPopupState extends State<OverviewFooterPopup> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Expanded(
-            flex: 6,
+            flex: 10,
             child: Text(
               "Möchten Sie die Route wirklich verwerfen?",
               overflow: TextOverflow.ellipsis,
@@ -30,16 +30,7 @@ class _OverviewFooterPopupState extends State<OverviewFooterPopup> {
           ),
           Expanded(
             flex: 1,
-            child: FloatingActionButton(
-              child: Icon(
-                Icons.close,
-                color: myWhite,
-                size: 40,
-              ),
-              onPressed: () {
-                Navigator.of(context).pop(false);
-              },
-            ),
+            child: Container(),
           ),
         ],
       ),

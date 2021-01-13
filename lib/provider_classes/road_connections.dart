@@ -3,8 +3,9 @@ import 'package:routenplaner/database/database_helper.dart';
 import 'package:sqflite/sqflite.dart';
 
 class RoadConnections with ChangeNotifier {
-  List<String> favoriteConnections = List<String>();
-  List<String> lastConnections = List<String>();
+  // 2D Array mit Start und Ziel
+  List<List<String>> favoriteConnections = List<List<String>>();
+  List<List<String>> lastConnections = List<List<String>>();
 
   RoadConnections() {
     setRoadConnections();
@@ -39,10 +40,14 @@ class RoadConnections with ChangeNotifier {
     // Schreibe in die Localen Variablen, als formatierter String
     // Theoretisch immer gleich lang
     for (int i = 0; i < lastCon.length; i++) {
-      favoriteConnections.add(
-          "${favCon[i]["StartLocation"]} > ${favCon[i]["DestinationLocation"]}");
-      lastConnections.add(
-          "${lastCon[i]["StartLocation"]} > ${lastCon[i]["DestinationLocation"]}");
+      favoriteConnections.add([
+        "${favCon[i]["StartLocation"]}",
+        "${favCon[i]["DestinationLocation"]}"
+      ]);
+      lastConnections.add([
+        "${lastCon[i]["StartLocation"]}",
+        "${lastCon[i]["DestinationLocation"]}"
+      ]);
     }
     notifyListeners();
     return true;

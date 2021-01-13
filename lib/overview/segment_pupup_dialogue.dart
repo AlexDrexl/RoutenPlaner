@@ -11,10 +11,13 @@ import 'package:routenplaner/provider_classes/overview_change.dart';
 class PopUpInput extends StatefulWidget {
   final BuildContext segmentContext;
   final bool overviewMode;
+  final Function callback;
   // onstructor
   PopUpInput(
-      {Key key, @required this.segmentContext, @required this.overviewMode})
-      : super(key: key);
+      {void myCallback(),
+      @required this.segmentContext,
+      @required this.overviewMode})
+      : callback = myCallback;
   @override
   _PopUpInputState createState() =>
       _PopUpInputState(segmentContext, overviewMode);
@@ -196,9 +199,8 @@ class _PopUpInputState extends State<PopUpInput>
                                 // Wenn im Overview ein Element hinzugefügt wird,
                                 // muss die Routenberechnung neu gestartet werden
                                 if (overviewMode) {
-                                  Provider.of<OverviewChange>(context,
-                                          listen: false)
-                                      .refresh();
+                                  // Callback um Aktualisierung zu erwingen
+                                  widget.callback();
                                 }
                               },
                               child: Icon(
@@ -264,9 +266,8 @@ class _PopUpInputState extends State<PopUpInput>
                                           beginningOfAutom, endOfAutom);
                                   Navigator.pop(context);
                                   if (overviewMode) {
-                                    Provider.of<OverviewChange>(context,
-                                            listen: false)
-                                        .refresh();
+                                    // Callback um Aktualisierung zu erwingen
+                                    widget.callback();
                                   }
                                 },
                                 child: Icon(

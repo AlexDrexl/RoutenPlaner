@@ -6,6 +6,8 @@ import 'package:routenplaner/provider_classes/desired_Autom_Sections.dart';
 import 'package:routenplaner/provider_classes/overview_change.dart';
 
 class OverviewSegments extends StatefulWidget {
+  final Function callback;
+  OverviewSegments({@required void myCallback()}) : callback = myCallback;
   @override
   _OverviewSegmentsState createState() => _OverviewSegmentsState();
 }
@@ -54,15 +56,13 @@ class _OverviewSegmentsState extends State<OverviewSegments> {
                                 listen: false)
                             .deleteTimedSection(keyWhen);
                         // Routenerstellungsprozess muss wieder erneut gestartet werden
-                        Provider.of<OverviewChange>(context, listen: false)
-                            .refresh();
+                        widget?.callback();
                       } else {
                         // wenn nicht getimed
                         Provider.of<DesiredAutomSections>(context,
                                 listen: false)
                             .deleteSection(index);
-                        Provider.of<OverviewChange>(context, listen: false)
-                            .refresh();
+                        widget?.callback();
                       }
                     },
                     child: Icon(
@@ -168,6 +168,7 @@ class _OverviewSegmentsState extends State<OverviewSegments> {
                                     BorderRadius.all(Radius.circular(14.0))),
                             contentPadding: EdgeInsets.fromLTRB(0, 0, 0, 0),
                             content: PopUpInput(
+                              myCallback: widget.callback,
                               segmentContext: context,
                               overviewMode: true,
                             ),

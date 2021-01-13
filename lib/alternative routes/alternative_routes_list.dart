@@ -92,7 +92,7 @@ class AlternativeRoutesList extends StatelessWidget {
     print("BUILD ALTERNATIVE ROUTES");
     return Container(
       constraints: BoxConstraints(
-        maxHeight: MediaQuery.of(context).size.height - 240,
+        maxHeight: MediaQuery.of(context).size.height - 180,
       ),
       // height: MediaQuery.of(context).size.height - 240,
       /////////////////////////////////////////////////////////////

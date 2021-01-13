@@ -1,0 +1,130 @@
+Date : 2021-01-08 18:47:35
+Directory : c:\Uni\Bachelorarbeit\App\routenplaner 07.01.20
+Total : 70 files,  6442 codes, 1323 comments, 393 blanks, all 8158 lines
+
+Languages
++------------+------------+------------+------------+------------+------------+
+| language   | files      | code       | comment    | blank      | total      |
++------------+------------+------------+------------+------------+------------+
+| Dart       |         51 |      6,036 |      1,235 |        333 |      7,604 |
+| JSON       |          2 |        145 |          0 |          2 |        147 |
+| XML        |          7 |        115 |         40 |          7 |        162 |
+| Groovy     |          3 |         84 |          3 |         21 |        108 |
+| YAML       |          1 |         27 |         44 |         16 |         87 |
+| Markdown   |          2 |         13 |          0 |          9 |         22 |
+| Swift      |          1 |         12 |          0 |          2 |         14 |
+| Properties |          2 |          9 |          1 |          2 |         12 |
+| C++        |          1 |          1 |          0 |          1 |          2 |
++------------+------------+------------+------------+------------+------------+
+
+Directories
++---------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| path                                                                                                          | files      | code       | comment    | blank      | total      |
++---------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| .                                                                                                             |         70 |      6,442 |      1,323 |        393 |      8,158 |
+| android                                                                                                       |         10 |        147 |         42 |         28 |        217 |
+| android\app                                                                                                   |          6 |        103 |         41 |         17 |        161 |
+| android\app\src                                                                                               |          5 |         54 |         38 |          5 |         97 |
+| android\app\src\debug                                                                                         |          1 |          4 |          3 |          1 |          8 |
+| android\app\src\main                                                                                          |          3 |         46 |         32 |          4 |         82 |
+| android\app\src\main\res                                                                                      |          2 |         13 |         16 |          3 |         32 |
+| android\app\src\main\res\drawable                                                                             |          1 |          4 |          7 |          2 |         13 |
+| android\app\src\main\res\values                                                                               |          1 |          9 |          9 |          1 |         19 |
+| android\app\src\profile                                                                                       |          1 |          4 |          3 |          0 |          7 |
+| android\gradle                                                                                                |          1 |          5 |          1 |          1 |          7 |
+| android\gradle\wrapper                                                                                        |          1 |          5 |          1 |          1 |          7 |
+| ios                                                                                                           |          7 |        222 |          2 |          9 |        233 |
+| ios\Runner                                                                                                    |          7 |        222 |          2 |          9 |        233 |
+| ios\Runner\Assets.xcassets                                                                                    |          3 |        148 |          0 |          4 |        152 |
+| ios\Runner\Assets.xcassets\AppIcon.appiconset                                                                 |          1 |        122 |          0 |          1 |        123 |
+| ios\Runner\Assets.xcassets\LaunchImage.imageset                                                               |          2 |         26 |          0 |          3 |         29 |
+| ios\Runner\Base.lproj                                                                                         |          2 |         61 |          2 |          2 |         65 |
+| lib                                                                                                           |         51 |      6,036 |      1,235 |        333 |      7,604 |
+| lib\alternative routes                                                                                        |          2 |        207 |         22 |          7 |        236 |
+| lib\data                                                                                                      |          3 |         20 |          0 |          5 |         25 |
+| lib\database                                                                                                  |          1 |        156 |         79 |         20 |        255 |
+| lib\drawer                                                                                                    |         14 |      1,887 |        189 |         66 |      2,142 |
+| lib\home_destination_input                                                                                    |          5 |        598 |        146 |         37 |        781 |
+| lib\home_favorites                                                                                            |          4 |        565 |         48 |         17 |        630 |
+| lib\main                                                                                                      |          3 |        128 |         21 |         10 |        159 |
+| lib\maps                                                                                                      |          1 |         47 |          0 |          5 |         52 |
+| lib\overview                                                                                                  |          8 |      1,312 |        405 |         54 |      1,771 |
+| lib\provider_classes                                                                                          |          9 |      1,045 |        316 |        108 |      1,469 |
++---------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+
+Files
++---------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| filename                                                                                                      | language   | code       | comment    | blank      | total      |
++---------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| c:\Uni\Bachelorarbeit\App\routenplaner 07.01.20\README.md                                                     | Markdown   |         10 |          0 |          7 |         17 |
+| c:\Uni\Bachelorarbeit\App\routenplaner 07.01.20\android\app\build.gradle                                      | Groovy     |         49 |          3 |         12 |         64 |
+| c:\Uni\Bachelorarbeit\App\routenplaner 07.01.20\android\app\src\debug\AndroidManifest.xml                     | XML        |          4 |          3 |          1 |          8 |
+| c:\Uni\Bachelorarbeit\App\routenplaner 07.01.20\android\app\src\main\AndroidManifest.xml                      | XML        |         33 |         16 |          1 |         50 |
+| c:\Uni\Bachelorarbeit\App\routenplaner 07.01.20\android\app\src\main\res\drawable\launch_background.xml       | XML        |          4 |          7 |          2 |         13 |
+| c:\Uni\Bachelorarbeit\App\routenplaner 07.01.20\android\app\src\main\res\values\styles.xml                    | XML        |          9 |          9 |          1 |         19 |
+| c:\Uni\Bachelorarbeit\App\routenplaner 07.01.20\android\app\src\profile\AndroidManifest.xml                   | XML        |          4 |          3 |          0 |          7 |
+| c:\Uni\Bachelorarbeit\App\routenplaner 07.01.20\android\build.gradle                                          | Groovy     |         27 |          0 |          5 |         32 |
+| c:\Uni\Bachelorarbeit\App\routenplaner 07.01.20\android\gradle.properties                                     | Properties |          4 |          0 |          1 |          5 |
+| c:\Uni\Bachelorarbeit\App\routenplaner 07.01.20\android\gradle\wrapper\gradle-wrapper.properties              | Properties |          5 |          1 |          1 |          7 |
+| c:\Uni\Bachelorarbeit\App\routenplaner 07.01.20\android\settings.gradle                                       | Groovy     |          8 |          0 |          4 |         12 |
+| c:\Uni\Bachelorarbeit\App\routenplaner 07.01.20\ios\Runner\AppDelegate.swift                                  | Swift      |         12 |          0 |          2 |         14 |
+| c:\Uni\Bachelorarbeit\App\routenplaner 07.01.20\ios\Runner\Assets.xcassets\AppIcon.appiconset\Contents.json   | JSON       |        122 |          0 |          1 |        123 |
+| c:\Uni\Bachelorarbeit\App\routenplaner 07.01.20\ios\Runner\Assets.xcassets\LaunchImage.imageset\Contents.json | JSON       |         23 |          0 |          1 |         24 |
+| c:\Uni\Bachelorarbeit\App\routenplaner 07.01.20\ios\Runner\Assets.xcassets\LaunchImage.imageset\README.md     | Markdown   |          3 |          0 |          2 |          5 |
+| c:\Uni\Bachelorarbeit\App\routenplaner 07.01.20\ios\Runner\Base.lproj\LaunchScreen.storyboard                 | XML        |         36 |          1 |          1 |         38 |
+| c:\Uni\Bachelorarbeit\App\routenplaner 07.01.20\ios\Runner\Base.lproj\Main.storyboard                         | XML        |         25 |          1 |          1 |         27 |
+| c:\Uni\Bachelorarbeit\App\routenplaner 07.01.20\ios\Runner\Runner-Bridging-Header.h                           | C++        |          1 |          0 |          1 |          2 |
+| c:\Uni\Bachelorarbeit\App\routenplaner 07.01.20\lib\alternative routes\alternative_routes.dart                | Dart       |         84 |          6 |          2 |         92 |
+| c:\Uni\Bachelorarbeit\App\routenplaner 07.01.20\lib\alternative routes\alternative_routes_list.dart           | Dart       |        123 |         16 |          5 |        144 |
+| c:\Uni\Bachelorarbeit\App\routenplaner 07.01.20\lib\data\custom_colors.dart                                   | Dart       |          9 |          0 |          2 |         11 |
+| c:\Uni\Bachelorarbeit\App\routenplaner 07.01.20\lib\data\custom_colors2.dart                                  | Dart       |         11 |          0 |          2 |         13 |
+| c:\Uni\Bachelorarbeit\App\routenplaner 07.01.20\lib\data\database.dart                                        | Dart       |          0 |          0 |          1 |          1 |
+| c:\Uni\Bachelorarbeit\App\routenplaner 07.01.20\lib\database\database_helper.dart                             | Dart       |        156 |         79 |         20 |        255 |
+| c:\Uni\Bachelorarbeit\App\routenplaner 07.01.20\lib\drawer\delete_pupup.dart                                  | Dart       |         88 |          4 |          4 |         96 |
+| c:\Uni\Bachelorarbeit\App\routenplaner 07.01.20\lib\drawer\drag_complex.dart                                  | Dart       |        124 |         16 |          7 |        147 |
+| c:\Uni\Bachelorarbeit\App\routenplaner 07.01.20\lib\drawer\drawer_home.dart                                   | Dart       |        115 |         17 |          4 |        136 |
+| c:\Uni\Bachelorarbeit\App\routenplaner 07.01.20\lib\drawer\input_dashed_line.dart                             | Dart       |         58 |          5 |          7 |         70 |
+| c:\Uni\Bachelorarbeit\App\routenplaner 07.01.20\lib\drawer\input_triangle.dart                                | Dart       |         54 |         40 |          4 |         98 |
+| c:\Uni\Bachelorarbeit\App\routenplaner 07.01.20\lib\drawer\travel_detail.dart                                 | Dart       |        498 |         20 |          7 |        525 |
+| c:\Uni\Bachelorarbeit\App\routenplaner 07.01.20\lib\drawer\travel_profile_addProfile.dart                     | Dart       |        101 |          6 |          5 |        112 |
+| c:\Uni\Bachelorarbeit\App\routenplaner 07.01.20\lib\drawer\travel_profiles.dart                               | Dart       |        263 |         34 |          4 |        301 |
+| c:\Uni\Bachelorarbeit\App\routenplaner 07.01.20\lib\drawer\triangle_help.dart                                 | Dart       |         77 |          4 |          2 |         83 |
+| c:\Uni\Bachelorarbeit\App\routenplaner 07.01.20\lib\drawer\triangle_painter.dart                              | Dart       |         29 |          3 |          6 |         38 |
+| c:\Uni\Bachelorarbeit\App\routenplaner 07.01.20\lib\drawer\user_detail.dart                                   | Dart       |         53 |          2 |          3 |         58 |
+| c:\Uni\Bachelorarbeit\App\routenplaner 07.01.20\lib\drawer\user_item.dart                                     | Dart       |         46 |          0 |          3 |         49 |
+| c:\Uni\Bachelorarbeit\App\routenplaner 07.01.20\lib\drawer\user_profile_addUser.dart                          | Dart       |        141 |          7 |          5 |        153 |
+| c:\Uni\Bachelorarbeit\App\routenplaner 07.01.20\lib\drawer\user_profiles.dart                                 | Dart       |        240 |         31 |          5 |        276 |
+| c:\Uni\Bachelorarbeit\App\routenplaner 07.01.20\lib\home_destination_input\destinationinput.dart              | Dart       |         67 |         14 |          3 |         84 |
+| c:\Uni\Bachelorarbeit\App\routenplaner 07.01.20\lib\home_destination_input\destinationinput_destination.dart  | Dart       |         64 |          8 |          9 |         81 |
+| c:\Uni\Bachelorarbeit\App\routenplaner 07.01.20\lib\home_destination_input\destinationinput_details.dart      | Dart       |        266 |         30 |          9 |        305 |
+| c:\Uni\Bachelorarbeit\App\routenplaner 07.01.20\lib\home_destination_input\destinationinput_start.dart        | Dart       |         61 |         12 |          8 |         81 |
+| c:\Uni\Bachelorarbeit\App\routenplaner 07.01.20\lib\home_destination_input\homeAutomationSegments.dart        | Dart       |        140 |         82 |          8 |        230 |
+| c:\Uni\Bachelorarbeit\App\routenplaner 07.01.20\lib\home_favorites\favorite_destination.dart                  | Dart       |         22 |          1 |          4 |         27 |
+| c:\Uni\Bachelorarbeit\App\routenplaner 07.01.20\lib\home_favorites\favorite_destination_item.dart             | Dart       |         34 |          5 |          2 |         41 |
+| c:\Uni\Bachelorarbeit\App\routenplaner 07.01.20\lib\home_favorites\favorite_routes.dart                       | Dart       |        342 |         25 |          5 |        372 |
+| c:\Uni\Bachelorarbeit\App\routenplaner 07.01.20\lib\home_favorites\favorites.dart                             | Dart       |        167 |         17 |          6 |        190 |
+| c:\Uni\Bachelorarbeit\App\routenplaner 07.01.20\lib\main.dart                                                 | Dart       |         71 |          9 |          4 |         84 |
+| c:\Uni\Bachelorarbeit\App\routenplaner 07.01.20\lib\main\footer.dart                                          | Dart       |         62 |         15 |          4 |         81 |
+| c:\Uni\Bachelorarbeit\App\routenplaner 07.01.20\lib\main\home_button.dart                                     | Dart       |         21 |          1 |          2 |         24 |
+| c:\Uni\Bachelorarbeit\App\routenplaner 07.01.20\lib\main\route_planning.dart                                  | Dart       |         45 |          5 |          4 |         54 |
+| c:\Uni\Bachelorarbeit\App\routenplaner 07.01.20\lib\maps\maps.dart                                            | Dart       |         47 |          0 |          5 |         52 |
+| c:\Uni\Bachelorarbeit\App\routenplaner 07.01.20\lib\overview\overview_automation_graphic.dart                 | Dart       |        158 |        150 |         14 |        322 |
+| c:\Uni\Bachelorarbeit\App\routenplaner 07.01.20\lib\overview\overview_footer_pupup.dart                       | Dart       |         96 |          6 |          4 |        106 |
+| c:\Uni\Bachelorarbeit\App\routenplaner 07.01.20\lib\overview\overview_route.dart                              | Dart       |        321 |         34 |          4 |        359 |
+| c:\Uni\Bachelorarbeit\App\routenplaner 07.01.20\lib\overview\overview_route_display.dart                      | Dart       |         90 |         31 |          4 |        125 |
+| c:\Uni\Bachelorarbeit\App\routenplaner 07.01.20\lib\overview\overview_route_input.dart                        | Dart       |        153 |         65 |          8 |        226 |
+| c:\Uni\Bachelorarbeit\App\routenplaner 07.01.20\lib\overview\overview_route_options.dart                      | Dart       |         78 |          8 |          3 |         89 |
+| c:\Uni\Bachelorarbeit\App\routenplaner 07.01.20\lib\overview\overview_segment.dart                            | Dart       |        163 |         79 |          9 |        251 |
+| c:\Uni\Bachelorarbeit\App\routenplaner 07.01.20\lib\overview\segment_pupup_dialogue.dart                      | Dart       |        253 |         32 |          8 |        293 |
+| c:\Uni\Bachelorarbeit\App\routenplaner 07.01.20\lib\provider_classes\addresses.dart                           | Dart       |         69 |         14 |          8 |         91 |
+| c:\Uni\Bachelorarbeit\App\routenplaner 07.01.20\lib\provider_classes\desired_Autom_Sections.dart              | Dart       |         22 |          2 |          6 |         30 |
+| c:\Uni\Bachelorarbeit\App\routenplaner 07.01.20\lib\provider_classes\final_routes.dart                        | Dart       |        398 |        148 |         35 |        581 |
+| c:\Uni\Bachelorarbeit\App\routenplaner 07.01.20\lib\provider_classes\overview_change.dart                     | Dart       |          6 |          0 |          2 |          8 |
+| c:\Uni\Bachelorarbeit\App\routenplaner 07.01.20\lib\provider_classes\road_connections.dart                    | Dart       |         69 |         10 |          6 |         85 |
+| c:\Uni\Bachelorarbeit\App\routenplaner 07.01.20\lib\provider_classes\route_details.dart                       | Dart       |        106 |         13 |         14 |        133 |
+| c:\Uni\Bachelorarbeit\App\routenplaner 07.01.20\lib\provider_classes\travel_profile_modifier.dart             | Dart       |         48 |         14 |         10 |         72 |
+| c:\Uni\Bachelorarbeit\App\routenplaner 07.01.20\lib\provider_classes\travel_profiles_collection.dart          | Dart       |        179 |         44 |         15 |        238 |
+| c:\Uni\Bachelorarbeit\App\routenplaner 07.01.20\lib\provider_classes\user_profile_collection.dart             | Dart       |        148 |         71 |         12 |        231 |
+| c:\Uni\Bachelorarbeit\App\routenplaner 07.01.20\pubspec.yaml                                                  | YAML       |         27 |         44 |         16 |         87 |
+| Total                                                                                                         |            |      6,442 |      1,323 |        393 |      8,158 |
++---------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+

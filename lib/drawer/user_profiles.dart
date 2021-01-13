@@ -55,11 +55,16 @@ class _UserProfilesState extends State<UserProfiles> {
                       size: 50,
                     ),
                     // Name
-                    Text(
-                      profiles.userProfileCollection[i].name,
-                      style: TextStyle(
-                        color: myDarkGrey,
-                        fontSize: 20,
+                    Expanded(
+                      child: Center(
+                        child: Text(
+                          profiles.userProfileCollection[i].name,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            color: myDarkGrey,
+                            fontSize: 20,
+                          ),
+                        ),
                       ),
                     ),
                     // Reihe, um Divider und Punkte näher aneinander zu bringen

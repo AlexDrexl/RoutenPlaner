@@ -2,6 +2,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:routenplaner/drawer/drawer_home.dart';
 import 'package:routenplaner/drawer/input_triangle.dart';
+import 'package:routenplaner/drawer/travel_profile_addTravelProfile.dart';
 import 'package:routenplaner/drawer/travel_profiles.dart';
 import 'package:routenplaner/drawer/triangle_help.dart';
 import 'package:routenplaner/provider_classes/travel_profile_modifier.dart';
@@ -23,10 +24,12 @@ class _TravelDetailState extends State<TravelDetail> {
   final ScrollController _scrollController = ScrollController();
   int indexProfile;
   bool homeButtonPressed = false;
+  String newTravelProfileName = "";
   _TravelDetailState(this.indexProfile) {
     // Übergebe das Profi an den Modifier, als Startwert
   }
 
+  // Popup Dialog für das Speichern
   Future<bool> safeChanges() {
     return showDialog(
       context: context,
@@ -141,7 +144,6 @@ class _TravelDetailState extends State<TravelDetail> {
     );
   }
 
-  /////
   @override
   Widget build(BuildContext context) {
     Provider.of<TravelProfileDetailModifier>(context, listen: false)
@@ -240,6 +242,7 @@ class _TravelDetailState extends State<TravelDetail> {
           )
         ],
       ),
+      // Eigentliches Reiseprofil
       body: WillPopScope(
         onWillPop: safeChanges,
         child: Scrollbar(
@@ -280,16 +283,42 @@ class _TravelDetailState extends State<TravelDetail> {
                             left: 15, right: 15, top: 8, bottom: 8),
                         leading:
                             Icon(Icons.card_travel, color: myYellow, size: 50),
-                        title: Text(
-                          // Überschrift aus dem Provider Objekt mit index holen
-                          Provider.of<TravelProfileCollection>(context,
-                                  listen: false)
-                              .travelProfileCollection[widget.indexProfile]
-                              .name,
-                          style: TextStyle(
-                            fontSize: 20,
-                            color: myDarkGrey,
+                        //////////////////// PROBLEM, Name aktualisiert nicht
+                        title: Consumer<TravelProfileCollection>(
+                          builder: (context, travelProfiles, _) => Container(
+                            child: Text(
+                              travelProfiles.travelProfileCollection.length != 0
+                                  ? travelProfiles
+                                      .travelProfileCollection[indexProfile]
+                                      .name
+                                  : "",
+                              style: TextStyle(
+                                fontSize: 20,
+                                color: myDarkGrey,
+                              ),
+                            ),
                           ),
+                        ),
+                        trailing: MaterialButton(
+                          child: Icon(
+                            Icons.edit,
+                            color: myMiddleTurquoise,
+                          ),
+                          onPressed: () {
+                            // Dialog für das ändern des Reiseprofilnamens
+                            showDialog(
+                              context: context,
+                              // Dialog Popup
+                              builder: (context) => Builder(
+                                builder: (BuildContext context) {
+                                  return AddTravelProfileDialogue(
+                                    modifyMode: true,
+                                    indexTravelProfile: indexProfile,
+                                  );
+                                },
+                              ),
+                            );
+                          },
                         ),
                       ),
                     ),

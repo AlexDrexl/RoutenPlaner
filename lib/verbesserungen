@@ -1,32 +1,22 @@
-Tobis Verbesserungsvorschläge:
-- bei Nutzerprofil bearbeiten werden bisher eingegeben Daten nicht angezeigt+
-- Hilfe Icon bei dem Dreieck
-- Letzte Seite muss es noch einen Button geben, der Dummy Mäßig die Route an das Auto Übergibt 
-- Im Hauptmenü die Reisezeit und das ganze mit den Automatisierte Segmenten in einem Dropout menü
 
-
-Eigene Verbesserungsvorschläge
-- bei Home Menü evtl noch den Favoriten Komplex besser anpassen
-- Problem: Wenn im Overview noch Automatisierte Segmente hinzugefügt werden, dann muss der Routenplanungsprozess 
-- erneut gestartet werden, evtl dann ein Ladeicon bei der ROutenanzeige 
-
-TODO:
-- DONE Sortieralgorytmus fertig, 
-- DONE Hilfeicon über Dreieck mit einem GIF, 
-- DONE Adressen /Verbindungen immer laden bei seitenwechsel, passiert im moment noch nicht 
-- DONE Dixclaimer über los gehts "Durch kurzfristige Änderungen bei Verkehr und Umgebungsbedingungen kann es zu Abweichungen von Planung und tatsächlichem Fahrtverlauf kommen"
-- Start Button am Ende 
-- DONE Wenn von Overview zurück auf Home, Abfrage, ob wirklich die Route verworfen werden soll
-- DONE Startzeit nicht im Dropout menü, sondern davor 
-- DONE Gesamtzeit hinzufügen
-- DONE wenn in overview etwas geändernt. routenberechnung neu starten 
-- DONE Bei „Nutzerprofil bearbeiten“: bisher eingegebenen Daten werden nicht dargestellt
-- DONE Adressen Verbindungen Löschen, wenn das Nutzerprofil gelöscht 
-- Adressen verbindungen kopieren, wenn das Nutzerprofil kopiert
-
-Test am Smartphone:
-- Plus button ist das Plus noch nicht ganz in der Mitte
-- Max. Profilnamenlänge wird nicht durchgesetzt. Man kann mehr eingeben als erlaubt
-
-
-
+TODO Liste von Tobi:
+- DONE Den Button „Route an Fahrzeug übertragen“ von Box routenoptionen trennen (mit farbe Dunkeltürkis)
+- DONE Diclaimer über den Button "Route an Fahrzeug übertragen“
+- DONE Max. Profilnamenlänge wird nicht durchgesetzt. Man kann mehr eingeben als erlaubt
+- DONE Bei Profil bearbeiten gibt es Probleme 
+- DONE Auf Seite Alternative Routen wird ncith die ganze Seite ausgenutzt
+- DONE Im Popup/Möchten sie die Route verwerfen den X-Button weg
+- DONE Name den Reiseprofils in den Profileinstellungen ändern können
+- DONE Wenn Reiseprofilname zu lang, dann Overflow in Overview
+- DONE Letzte Adressen/Verbindungen mit Funktion versehen 
+- DONE Anlegen von Reiseprofil ohne Nutzerprofil unterbinden
+- DONE bei erstellung von erstem Reiseprofil nicht automatisch ausgewählt
+- DONE Wenn im Overview das gleiche Reiseprofil wieder ausgewählt, dann kein reload. 
+- DONE über reaload button noch den grund warum gescheitert
+- DONE Wenn Nutzerprofil geändernt dann noch immer Probleme mit der Route
+- DONE Wenn Reiseprofil gelöscht, dann spinnt das Dropdown wieder rum
+- DONE Ranking überprüfen und notieren
+- DONE Reiszeit wirklich von google maps erhalten
+- DONE Infoicon bei Reiseprofile
+- DONE Segmentwechsel unter den Gesamtzeit
+- DONE Ohne Reiseprofil dennoch nach Zeit sortieren

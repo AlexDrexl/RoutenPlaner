@@ -195,12 +195,25 @@ class TimeTotals extends StatelessWidget {
             ),
             // Gesamte Fahrzeit
             SizedBox(
-              height: 10,
+              height: 15,
             ),
             Align(
               alignment: Alignment.centerLeft,
               child: Text(
                 "Gesamtfahrzeit: ${finalRoutes.getFormattedTime(finalRoutes.routes[routeIndex].duration)} h",
+                style: TextStyle(
+                  color: myDarkGrey,
+                  fontSize: 15,
+                ),
+              ),
+            ),
+            SizedBox(
+              height: 5,
+            ),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                "Wechsel: ${finalRoutes.routes[routeIndex].automationSections.length - 1}",
                 style: TextStyle(
                   color: myDarkGrey,
                   fontSize: 15,

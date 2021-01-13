@@ -59,24 +59,6 @@ class RouteDisplay extends StatelessWidget {
                         ),
                       ),
                     ),
-                    // Uhr Button
-                    /*
-                    Expanded(
-                      flex: 1,
-                      child: FloatingActionButton(
-                        // Braucht man, damit es
-                        heroTag: null,
-                        onPressed: () {
-                          // HERAUSFINDEN, WAS DENN DER BUTTON MACHEN SOLL
-                        },
-                        child: Icon(
-                          Icons.access_time_outlined,
-                          color: myWhite,
-                          size: 40,
-                        ),
-                      ),
-                    )
-                    */
                   ],
                 ),
                 SizedBox(height: 15),

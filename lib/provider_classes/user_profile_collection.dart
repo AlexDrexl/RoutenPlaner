@@ -44,7 +44,8 @@ class UserProfileCollection with ChangeNotifier {
   }
 
   // lösche ein Profil, lokal und in Datenbank
-  void deleteProfile({@required int indexUserProfile}) async {
+  void deleteProfile(
+      {@required int indexUserProfile, @required BuildContext context}) async {
     // Wenn das aktive Profil gelöscht werden soll, dann setze das neue aktive
     // profil automatisch auf den ersten Eintrag im User Profile Array
     // In Datenbank wird dann automatisch der User mit korrespondierender userID
@@ -73,8 +74,24 @@ class UserProfileCollection with ChangeNotifier {
     // Lösche den User in der Datenbank
     await DatabaseHelper.instance
         .deleteUser(userID: userProfileCollection[indexUserProfile].databaseID);
-    // Lösche User lokal
+
+    // Lösche User, zugehörige Reiseprofile, Adressen/Verbindungen lokal
     userProfileCollection.removeAt(indexUserProfile);
+    Provider.of<TravelProfileCollection>(context, listen: false)
+        .travelProfileCollection
+        .clear();
+    Provider.of<TravelProfileCollection>(context, listen: false)
+        .selectedTravelProfile = null;
+    Provider.of<AddressCollection>(context, listen: false)
+        .favoriteAddress
+        .clear();
+    Provider.of<AddressCollection>(context, listen: false).lastAddress.clear();
+    Provider.of<RoadConnections>(context, listen: false)
+        .favoriteConnections
+        .clear();
+    Provider.of<RoadConnections>(context, listen: false)
+        .lastConnections
+        .clear();
     print("DELETE PROFILE");
 
     // Wenn ein Profil gelöscht wird, dessen Index kleiner ist als der Index

@@ -25,6 +25,13 @@ class _AddTravelProfileDialogueState extends State<AddTravelProfileDialogue> {
   bool duplicate = false;
 
   bool check4duplicate(TravelProfileCollection collection, String name) {
+    // Schaue, ob denn der gleiche name wieder eingegeben, wenn modifiziert
+    if (modifyMode) {
+      if (collection.travelProfileCollection[indexTravelProfile].name == name) {
+        return false;
+      }
+    }
+    // Überprüfe, ob der name gleich mit dem eines anderen Profils ist
     for (int i = 0; i < collection.travelProfileCollection.length; i++) {
       if (collection.travelProfileCollection[i].name == name) return true;
     }
@@ -99,7 +106,7 @@ class _AddTravelProfileDialogueState extends State<AddTravelProfileDialogue> {
                 }
               },
               child: Text(
-                "Profil erstellen",
+                modifyMode ? "Änderung speichern" : "Profil erstellen",
                 style: TextStyle(fontSize: 15),
               ),
             ),

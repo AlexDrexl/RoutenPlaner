@@ -25,8 +25,15 @@ class _AddUserProfileDialogueState extends State<AddUserProfileDialogue> {
   }
 
   bool check4duplicate(UserProfileCollection collection, String name) {
+    // Wenn bei bearbeiten der selbe name noch einmal eingegeben wird, ist das
+    // erlaubt
+    if (modify) {
+      if (collection.userProfileCollection[profileIndex4Modify].name == name) {
+        return false;
+      }
+    }
+    // Überprüfe den rest der Namen
     for (int i = 0; i < collection.userProfileCollection.length; i++) {
-      print(collection.userProfileCollection[i].name);
       if (collection.userProfileCollection[i].name == name) {
         return true;
       }
@@ -140,7 +147,7 @@ class _AddUserProfileDialogueState extends State<AddUserProfileDialogue> {
                 }
               },
               child: Text(
-                "Profil erstellen",
+                modify ? "Änderungen speichern" : "Profil erstellen",
                 style: TextStyle(fontSize: 15),
               ),
             ),

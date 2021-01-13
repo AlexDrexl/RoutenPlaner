@@ -62,7 +62,8 @@ class _DeletePopUpState extends State<DeletePopUp> {
               travelProfileCollection.deleteTravelProfile(index);
               Navigator.of(context).pop(true);
             } else {
-              userProfileCollection.deleteProfile(indexUserProfile: index);
+              userProfileCollection.deleteProfile(
+                  indexUserProfile: index, context: context);
               Navigator.of(context).pop(true);
             }
           },

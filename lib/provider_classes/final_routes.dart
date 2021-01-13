@@ -8,6 +8,8 @@ import 'desired_Autom_Sections.dart';
 import 'route_details.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'dart:math' show cos, sqrt, asin;
+import 'package:dio/dio.dart';
+
 // Übergestellte Klasse, erhält alle daten aus den verschiedenen provider Klassen
 // verwendet sie um finale Routen zu berechnen
 // Hier auch die Nutzerprofile mit einbeziehen
@@ -16,8 +18,8 @@ import 'dart:math' show cos, sqrt, asin;
 // hält
 
 class FinalRoutes with ChangeNotifier {
-  // In dieser Polyline ist die routen gespeichert
-
+  // API KEY
+  String apiKey = "AIzaSyC0DgP0BdEXEybFlEReSj_ghex8jTDOeWE";
   // Liste mit den verfügbaren Routen
   List<FinalRoute> routes = List<FinalRoute>();
   int indexSelectedRoute = 0;
@@ -33,8 +35,8 @@ class FinalRoutes with ChangeNotifier {
   int maxRandomSegment = 15; // Max Länge eines zufälligen Segments
 
   // Einzelne Faktoren für die Das Ranking.
-  double segmentFactor = 1;
-  double detourFactor = 1;
+  double segmentFactor = 0.5;
+  double detourFactor = 0.5;
   double admdFactor = 1;
   double travelTimeFactor = 1;
   double maxAutomTimeFactor = 1;
@@ -52,6 +54,8 @@ class FinalRoutes with ChangeNotifier {
     /////////// ERSTELLUNG DER ROUTEN OBJEKTE ////////////
     print("FINAL_ROUTES CALLED");
   }
+
+  bool running = false;
 
   // Aktualisierungsfunktion
   // void refresh() => notifyListeners();
@@ -74,7 +78,10 @@ class FinalRoutes with ChangeNotifier {
   // SIMULATION: Simuliere die automatisierten Segmente. Erstelle so mit einer
   // random Funktion FÜNF zufällige Routen und zeige diese an
   Future<bool> computeFinalRoutes(BuildContext context) async {
-    print("START ROUTE COMPUTATION");
+    if (running) {
+      return false;
+    }
+    print("/////////////////START ROUTE COMPUTATION////////////////");
     routes.clear();
     // Random Number generator
     Random rng = Random();
@@ -89,8 +96,9 @@ class FinalRoutes with ChangeNotifier {
     await computePolylines(
         routeDetails.geoCoordStart, routeDetails.geoCoordDestination);
     // Berechne die theoretische Reisezeit, ist immer gleich
-    Duration travelTime = getTravelTime(polylineCoordinates);
-    for (int i = 0; i < 8; i++) {
+    Duration travelTime = await getTravelTime(polylineCoordinates,
+        routeDetails.geoCoordStart, routeDetails.geoCoordDestination);
+    for (int i = 0; i < 5; i++) {
       // Für die Linie ist nur die Map Mit automatisierten Segmenten nötig
       // in overview automation graphic, bereits mit finalRoutes verbunden
       // Für die Anzeige an gesamt autom/manuel Fahrzeit sind autom und man duration nötig, berechne
@@ -161,14 +169,13 @@ class FinalRoutes with ChangeNotifier {
   // Hier die Routen basierend auf Reiseprofil Ranken,
   Future<bool> rankRoutes(
       TravelProfileData travelProfile, Duration theoreticalDuration) async {
-    print("RANKING ROUTES");
     // SORTIERE DIE ROUTEN
     // Stelle eine Punktebewertung auf. Jede Route wird dann anhand der Kriterien bewertet
     // Sortiere dann nach Punketzahl
     // Ranking basiert auf Reiseprofil. Wenn dieses nicht vorhanden ist, dann fällt das Ranking aus
     if (travelProfile != null) {
+      print("RANKING ROUTES");
       List<double> points = List<double>.filled(routes.length, 0);
-
       // Überprüfe, ob die minimale Segmentlänge bei ALLEN autom Segmenten erreicht wurde
       // Gebe Prozentualwert an, wie viele von allen segmenten erfüllen die Anforderungen?
       int minSegmentDuration = travelProfile.minDurationAutomSegment;
@@ -189,20 +196,23 @@ class FinalRoutes with ChangeNotifier {
           }
         }
         // Füge die prozentuale Bewertung in die punkteListe mit ein
-        points[i] = (validSectionCount / totalSectionCount) * segmentFactor;
+        if (totalSectionCount != 0) {
+          points[i] = (validSectionCount / totalSectionCount) * segmentFactor;
+        }
       }
       // Bewertung der maximalen abweichung von der theoretischen Dauer
       // Berechne prozentuale Abweichung der tatsächlichen Zeit von der theretischen Zeit
       for (int i = 0; i < routes.length; i++) {
-        // Gewollte Reisezeit
-        double maxDuration = (1 + (travelProfile.maxDetour / 100)) *
+        // SollReisezeit
+        double targetDuration = (1 + (travelProfile.maxDetour / 100)) *
             theoreticalDuration.inMinutes.toDouble(); // in minuten
-        // differenz gewollt und tatsächlich
-        double diff = (routes[i].duration.inMinutes - maxDuration).abs();
-        // Prozentuale Abweichung vom gewollten Wert auf die Punkte aufaddiert
-        points[i] += (maxDuration / (maxDuration + diff)) * detourFactor;
+        // Ist Reisezeit
+        double actualDuration = routes[i].duration.inMinutes.toDouble();
+        // Abweichung soll-ist/soll
+        double deviation = (targetDuration - actualDuration) / targetDuration;
+        // TODO: Evtl 1+diviation quadrieren um Unterschied zu verstärken
+        points[i] += (1 + deviation) * detourFactor;
       }
-
       ///////////
       // Dreieck Daten verwerten
       // Interpretiere zunächst den Dreecksindex
@@ -232,16 +242,16 @@ class FinalRoutes with ChangeNotifier {
         rankedADMD.add([admdAlt, ranking]);
       }
       // Vergleiche die bewertungen in Ranked mit den gewollten Bewertungen.
-      // Nehme hierfür wieder die absolute Differenz
       for (int i = 0; i < admdAlternation.length; i++) {
         for (int j = 0; j < rankedADMD.length; j++) {
           if (admdAlternation[i] == rankedADMD[j][0]) {
-            var diff = (rankedADMD[j][1] - minADMD).abs();
-            points[i] += (minADMD / (minADMD + diff)) * admdFactor;
+            var importanceFactor = minADMD;
+            points[i] += importanceFactor * rankedADMD[j][1] * admdFactor;
             break;
           }
         }
       }
+
       // Minimale Reisezeit. Ähnlich wie oben. Ranke die Routen nach ihrer Reisezeit
       // Verteile Prozentuale Bewertungen
       var durations = List<int>();
@@ -260,18 +270,17 @@ class FinalRoutes with ChangeNotifier {
         rankedDurations.add([duration, ranking]);
       }
       // Vergleiche die bewertungen in Ranked mit den gewollten Bewertungen.
-      // Nehme hierfür wieder die absolute Differenz
       for (int i = 0; i < durations.length; i++) {
         for (int j = 0; j < rankedDurations.length; j++) {
           if (durations[i] == rankedDurations[j][0]) {
-            var diff = (rankedDurations[j][1] - minTravelTime).abs();
+            var importanceFactor = minTravelTime;
             points[i] +=
-                (minTravelTime / (minTravelTime + diff)) * travelTimeFactor;
+                importanceFactor * rankedDurations[j][1] * travelTimeFactor;
             break;
           }
         }
       }
-      //
+
       // Maximale autmationsdauer, Gleich wie oben
       // Angabe in Minuten
       var automationDurations = List<int>();
@@ -294,9 +303,7 @@ class FinalRoutes with ChangeNotifier {
       for (int i = 0; i < automationDurations.length; i++) {
         for (int j = 0; j < rankedautomDurations.length; j++) {
           if (automationDurations[i] == rankedautomDurations[j][0]) {
-            var diff = (rankedautomDurations[j][1] - maxAutomTime).abs();
-            points[i] +=
-                (maxAutomTime / (maxAutomTime + diff)) * maxAutomTimeFactor;
+            points[i] += rankedautomDurations[j][1] * maxAutomTime;
             break;
           }
         }
@@ -314,7 +321,20 @@ class FinalRoutes with ChangeNotifier {
           }
         }
       }
+      // print(points);
       print("RANKING SUCCESSFULL");
+    }
+    // Wenn kein Reiseprofil ausgewählt, dann sollen die Routen nach der Reisezeit sortiert werden
+    else {
+      for (int i = 0; i < routes.length; i++) {
+        for (int j = i; j < routes.length; j++) {
+          if (routes[j].duration < routes[i].duration) {
+            var helper = routes[i];
+            routes[i] = routes[j];
+            routes[j] = helper;
+          }
+        }
+      }
     }
     // Füge den Routen absteigend einen Buchstaben zu
     int letter = "A".codeUnitAt(0);
@@ -359,29 +379,29 @@ class FinalRoutes with ChangeNotifier {
   // Interpretiere den index des Triangles
   List<num> interpretTriangleIndex(int index) {
     // Map mit den index und [automDauer, MinReisezeit, admd]
+    // Gesamtzahl ist 6
     var values = {
       // Ecken
-      0: [1, 5, 1],
-      2: [1, 1, 5],
-      12: [5, 1, 1],
+      0: [0, 6, 0],
+      2: [0, 0, 6],
+      12: [6, 0, 0],
       // Center
-      6: [3, 3, 3],
+      6: [2, 2, 2],
       // Auf Seiten linien
-      1: [1, 4, 4],
-      9: [4, 4, 1],
-      10: [4, 1, 4],
+      1: [0, 3, 3],
+      9: [3, 3, 0],
+      10: [3, 0, 3],
       // Zentrum, 6 Eck
-      3: [2, 4, 2],
-      5: [2, 2, 4],
-      11: [4, 2, 2],
-      4: [2, 3.5, 3.5],
-      8: [3.5, 2, 3.5],
-      7: [3.5, 3.5, 2],
+      3: [1, 4, 1],
+      5: [1, 1, 4],
+      11: [4, 1, 1],
+      4: [1, 2.5, 2.5],
+      8: [2.5, 1, 2.5],
+      7: [2.5, 2.5, 1],
     };
 
     var selected = values[index];
-    var sum = selected.fold(0, (p, e) => p + e);
-    return [selected[0] / sum, selected[1] / sum, selected[2] / sum];
+    return [selected[0] / 6, selected[1] / 6, selected[2] / 6];
   }
 
   // Setze die gewünschten Automatisierten Abschnitte, füge, falls weniger
@@ -468,8 +488,16 @@ class FinalRoutes with ChangeNotifier {
     return automMinutes;
   }
 
-  // EINFACH MIT FESTEM WERT
-  Duration getTravelTime(List<LatLng> polylineCoordinates) {
+  // Request an google distance api
+  Future<Duration> getTravelTime(List<LatLng> polylineCoordinates, LatLng start,
+      LatLng destination) async {
+    Dio dio = new Dio();
+    Response response = await dio.get(
+        "https://maps.googleapis.com/maps/api/distancematrix/json?units=metric&origins=${start.latitude},${start.longitude}&destinations=${destination.latitude},${destination.longitude}&key=$apiKey");
+    var durationInSec = response.data["rows"][0]["elements"][0]["duration"]
+        ["value"]; // Reisezeit in Sekunden
+    return Duration(seconds: durationInSec);
+    /*
     double totalDistance = 0;
     for (int i = 0; i < (polylineCoordinates.length - 1); i++) {
       totalDistance += coordinateDistance(
@@ -482,6 +510,7 @@ class FinalRoutes with ChangeNotifier {
     double durationInMin = 60 * totalDistance / (50);
     // Variiere die Dauer
     return Duration(minutes: durationInMin.floor());
+    */
   }
 
   // einfache funktion, die die Distanz zwischen zwei geografischen Koordinaten berechnet

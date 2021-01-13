@@ -69,16 +69,3 @@ class TravelProfileDetailModifier with ChangeNotifier {
     return indexTriangleLocal;
   }
 }
-
-/*
-    // Hole das zu bearbeitende Objekt aus der Collection, kopiere, bearbeite lokal
-    // speichere dann, wenn user das will
-    localTravelProfile = Provider.of<TravelProfileCollection>(context)
-        .travelProfileCollection[indexProfile];
-    // notifyListeners();
-    print("init called");
-    print(localTravelProfile.indexTriangle);
-    print(Provider.of<TravelProfileCollection>(context)
-        .travelProfileCollection[indexProfile]
-        .indexTriangle);
-*/
