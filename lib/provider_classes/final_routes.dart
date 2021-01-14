@@ -2,7 +2,6 @@ import 'dart:math';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
-import 'package:routenplaner/home_destination_input/destinationinput_destination.dart';
 import 'package:routenplaner/provider_classes/travel_profiles_collection.dart';
 import 'desired_Autom_Sections.dart';
 import 'route_details.dart';
@@ -31,8 +30,8 @@ class FinalRoutes with ChangeNotifier {
   double automationFactorMax =
       0.9; // Varriert verhältnismäßige automFahrtdauer maximum
   // MinMax Segmentlänge, kann mit bereits bestehenden Segmenten überlappen
-  int minRandomSegment = 5; // Min länge eines Zufälligen Segments
-  int maxRandomSegment = 15; // Max Länge eines zufälligen Segments
+  double minRandomSegment = 0.1; // Min länge eines Segments abh. von Gesamtzeit
+  double maxRandomSegment = 0.3; // Max länge eines Segments abh. von Gesamtzeit
 
   // Einzelne Faktoren für die Das Ranking.
   double segmentFactor = 0.5;
@@ -131,7 +130,6 @@ class FinalRoutes with ChangeNotifier {
           desiredAutomSections.sections,
           routeDetails.startDateTime,
           duration);
-
       // Setze die Automation Sections in der Map
       var automSections = getAutomSections(automMinutes);
 
@@ -432,7 +430,6 @@ class FinalRoutes with ChangeNotifier {
         }
       }
     }
-
     // Versuche die Terminlosen Sections unter zu bringen, beschränke die maximale
     // automatisierte Dauer auf einen Wert zwischen 60% und 90%
     // Maximaler Anteil an automatisierten Segmenten
@@ -440,6 +437,7 @@ class FinalRoutes with ChangeNotifier {
         rng.nextInt(
             (duration.inMinutes * (automationFactorMax - automationFactorMin))
                 .round());
+
     // Fülle leere Stellen
     for (int i = 0; i < sections.length; i++) {
       // Suche die leeren Stellen raus, speichere diese
@@ -472,19 +470,23 @@ class FinalRoutes with ChangeNotifier {
         break;
       }
     }
-
     // Setze nun, falls maxAutomTime noch nicht erreicht zufällig weitere automSegmente
     // segmente müssen eine gewisse Länge haben, damit nicht zu winzig
     while (true) {
       // breche ab, falls die maximale automationsdauer erreicht
-      if (automMinutes.fold(0, (p, c) => p + c) >= maxAutomTime) {
+      // breche ab, wenn die Route zu kurz ist
+      if (automMinutes.fold(0, (p, c) => p + c) >= maxAutomTime ||
+          duration.inMinutes < 4) {
         break;
       }
-      int randLength =
-          rng.nextInt(maxRandomSegment - minRandomSegment) + minRandomSegment;
+      int maxLength = (duration.inMinutes.toDouble() * maxRandomSegment).ceil();
+      int minLength =
+          (duration.inMinutes.toDouble() * minRandomSegment).floor();
+      int randLength = rng.nextInt(maxLength - minLength) + minLength;
       int randStart = rng.nextInt(automMinutes.length - randLength);
       automMinutes.fillRange(randStart, randStart + randLength, 1);
     }
+
     return automMinutes;
   }
 

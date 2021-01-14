@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:routenplaner/data/custom_colors.dart';
 import 'package:routenplaner/provider_classes/final_routes.dart';
-import 'package:routenplaner/provider_classes/overview_change.dart';
-import 'package:async/async.dart';
 
 import 'overview_route_options.dart';
 
@@ -48,7 +46,7 @@ class _OverviewRouteBuilderState extends State<OverviewRouteBuilder> {
           child = OverviewRouteOptions();
         } else if (snapshot.hasError) {
           print("FUTURE BUILDER FAILED");
-          print(snapshot.error);
+          print(snapshot.error.toString());
           child = Column(
             children: [
               Text(

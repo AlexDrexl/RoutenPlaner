@@ -1,14 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:routenplaner/data/custom_colors.dart';
-import 'package:provider/provider.dart';
 import 'package:routenplaner/drawer/drawer_home.dart';
 import 'package:routenplaner/overview/overview_footer_pupup.dart';
 import 'package:routenplaner/overview/overview_route_builder.dart';
-import 'package:routenplaner/provider_classes/final_routes.dart';
-import 'package:routenplaner/provider_classes/overview_change.dart';
 import 'overview_route_input.dart';
-import 'package:routenplaner/overview/overview_route_options.dart';
-import 'package:async/async.dart';
 
 class Overview extends StatefulWidget {
   @override
@@ -181,38 +176,34 @@ class _OverviewState extends State<Overview> {
                 ),
                 // Routen Optionen
                 Container(
-                  // generelles Aussehen
-                  decoration: BoxDecoration(
-                    border: Border.all(width: 0, color: myMiddleGrey),
-                    borderRadius: BorderRadius.only(
-                      bottomLeft: Radius.circular(14),
-                      bottomRight: Radius.circular(14),
+                    // generelles Aussehen
+                    decoration: BoxDecoration(
+                      border: Border.all(width: 0, color: myMiddleGrey),
+                      borderRadius: BorderRadius.only(
+                        bottomLeft: Radius.circular(14),
+                        bottomRight: Radius.circular(14),
+                      ),
+                      color: myWhite,
+                      boxShadow: [
+                        BoxShadow(
+                          color: myMiddleGrey,
+                          blurRadius: 4,
+                        )
+                      ],
                     ),
-                    color: myWhite,
-                    boxShadow: [
-                      BoxShadow(
-                        color: myMiddleGrey,
-                        blurRadius: 4,
-                      )
-                    ],
-                  ),
-                  padding:
-                      EdgeInsets.only(top: 8, bottom: 8, left: 15, right: 15),
-                  margin: EdgeInsets.only(left: 25, right: 25, bottom: 25),
-                  // Gesamtübersicht Routenoptionen
-                  ///////////
-                  ///
-                  ///
-                  /// WICHTIG: Wenn Änderung, dann wird dieser Block rebuilded
-                  /// dadurch wird der gesamte Routenerstellungsprozess erneut gestartet
-                  /// DIESES WIDGET WIRD AUS IRGENDEINEM GRUND IMMER WIEDER NEU AUFGEBAUT
-                  child: Consumer<OverviewChange>(
-                      builder: (context, finalRoutes, _) {
-                    return OverviewRouteBuilder(
+                    padding:
+                        EdgeInsets.only(top: 8, bottom: 8, left: 15, right: 15),
+                    margin: EdgeInsets.only(left: 25, right: 25, bottom: 25),
+                    // Gesamtübersicht Routenoptionen
+                    ///////////
+                    ///
+                    ///
+                    /// WICHTIG: Wenn Änderung, dann wird dieser Block rebuilded
+                    /// dadurch wird der gesamte Routenerstellungsprozess erneut gestartet
+                    /// DIESES WIDGET WIRD AUS IRGENDEINEM GRUND IMMER WIEDER NEU AUFGEBAUT
+                    child: OverviewRouteBuilder(
                       myCallback: mySetState,
-                    );
-                  }),
-                ),
+                    )),
                 // Überschrift "and das Fahrzeug übertragen"
                 Container(
                   // generelles Aussehen

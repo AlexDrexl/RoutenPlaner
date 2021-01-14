@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:routenplaner/data/custom_colors.dart';
 import 'package:provider/provider.dart';
 import 'package:routenplaner/overview/overview_segment.dart';
-import 'package:routenplaner/provider_classes/overview_change.dart';
 import 'package:routenplaner/provider_classes/route_details.dart';
 import 'package:routenplaner/provider_classes/travel_profiles_collection.dart';
 
