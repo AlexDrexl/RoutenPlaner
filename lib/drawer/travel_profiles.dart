@@ -339,9 +339,20 @@ class _TravelProfilesState extends State<TravelProfiles> {
             color: backgroundColor,
           ),
           child: Consumer<TravelProfileCollection>(
-            builder: (context, travelProfileCollection, child) => ListView(
-              children: printTravelProfiles(travelProfileCollection),
-            ),
+            builder: (context, travelProfileCollection, child) =>
+                travelProfileCollection.travelProfileCollection.isEmpty
+                    ? Container(
+                        margin: EdgeInsets.fromLTRB(30, 50, 30, 100),
+                        constraints: BoxConstraints.expand(),
+                        decoration: BoxDecoration(
+                          color: myWhite,
+                          border: Border.all(color: myDarkGrey, width: 1),
+                        ),
+                        child: Text("Text"),
+                      )
+                    : ListView(
+                        children: printTravelProfiles(travelProfileCollection),
+                      ),
           ),
         ),
         floatingActionButton: TravelProfileButton());

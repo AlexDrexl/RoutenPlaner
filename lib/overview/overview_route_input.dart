@@ -112,7 +112,7 @@ class _OverviewRouteInputState extends State<OverviewRouteInput> {
             Expanded(
               flex: flexSecondColumn,
               child: Icon(
-                Icons.time_to_leave,
+                Icons.card_travel,
                 color: iconColor,
               ),
             ),

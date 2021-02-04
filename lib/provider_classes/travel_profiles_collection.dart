@@ -62,7 +62,7 @@ class TravelProfileCollection with ChangeNotifier {
   //TravelProfileData getProfile(int index) => travelProfileCollection[index];
   // Wird die User ID nicht explizit gegeben, wird automatisch das TravelProfil
   // dem ausgewählten User zugeteilt
-  void addEmptyTravelProfile({String name, int userID}) async {
+  Future<bool> addEmptyTravelProfile({String name, int userID}) async {
     // Initialisieren der Daten, zuerst lokal
     // Sind alles Startwerte, kann man ändern
     travelProfileCollection.add(
@@ -91,6 +91,7 @@ class TravelProfileCollection with ChangeNotifier {
     if (travelProfileCollection.length == 1)
       selectedTravelProfile = travelProfileCollection[0];
     notifyListeners();
+    return true;
   }
 
   void deleteTravelProfile(int indexProfile) async {

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:routenplaner/drawer/travel_detail.dart';
 import 'package:routenplaner/provider_classes/travel_profiles_collection.dart';
 
 class AddTravelProfileDialogue extends StatefulWidget {
@@ -80,7 +81,7 @@ class _AddTravelProfileDialogueState extends State<AddTravelProfileDialogue> {
             SizedBox(width: 20),
             // Profil erstellen
             FlatButton(
-              onPressed: () {
+              onPressed: () async {
                 showHint = (name == "" || name == null);
                 duplicate = check4duplicate(
                     Provider.of<TravelProfileCollection>(context,
@@ -96,9 +97,22 @@ class _AddTravelProfileDialogueState extends State<AddTravelProfileDialogue> {
                     );
                     Navigator.pop(context);
                   } else {
-                    Provider.of<TravelProfileCollection>(context, listen: false)
+                    await Provider.of<TravelProfileCollection>(context,
+                            listen: false)
                         .addEmptyTravelProfile(name: name);
-                    Navigator.pop(context);
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute<Widget>(
+                        builder: (BuildContext context) => TravelDetail(
+                          indexProfile: Provider.of<TravelProfileCollection>(
+                                      context,
+                                      listen: false)
+                                  .travelProfileCollection
+                                  .length -
+                              1,
+                        ),
+                      ),
+                    );
                   }
                 } else {
                   // Keine Eingabe oder Bereits vorhandener Name
