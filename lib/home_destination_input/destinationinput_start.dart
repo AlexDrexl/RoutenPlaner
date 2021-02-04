@@ -68,7 +68,7 @@ class _DestinationinputStartState extends State<DestinationinputStart> {
             border: OutlineInputBorder(),
             icon: Icon(
               Icons.place,
-              color: myYellow,
+              color: iconColor,
             ),
             hintText: routeDetails.hintTextStart,
             hintStyle: TextStyle(color: routeDetails.hintColorStart),

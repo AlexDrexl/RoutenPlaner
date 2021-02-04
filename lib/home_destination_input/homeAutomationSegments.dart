@@ -29,7 +29,7 @@ class _HomeAutomationSegmentsState extends State<HomeAutomationSegments> {
           children: <Widget>[
             Icon(
               Icons.directions_car_rounded,
-              color: myYellow,
+              color: iconColor,
             ),
             // Minuten Anzahl und Löschen Button
             // Wenn getimed
@@ -118,7 +118,7 @@ class _HomeAutomationSegmentsState extends State<HomeAutomationSegments> {
                 alignment: Alignment.centerLeft,
                 child: Icon(
                   Icons.directions_car_rounded,
-                  color: myYellow,
+                  color: iconColor,
                 ),
               ),
             ),

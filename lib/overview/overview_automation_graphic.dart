@@ -7,14 +7,56 @@ import 'package:routenplaner/provider_classes/final_routes.dart';
 // start : ende
 
 // Grafik für die dynamische Übersicht über die Automationslängen
-class AutomationGraphic extends StatelessWidget {
+class AutomationGraphic extends StatefulWidget {
   // Map mit Liste an Start/Ende Zeitabschnitte, und dazugehörig bool ob Autom oder nicht
   // zeit in Min
-  final routeLetter = "A";
   final int routeIndex;
   AutomationGraphic({@required this.routeIndex});
 
-  Widget graphLine(Map<List<int>, bool> automationSections) {
+  @override
+  _AutomationGraphicState createState() => _AutomationGraphicState();
+}
+
+class _AutomationGraphicState extends State<AutomationGraphic>
+    with TickerProviderStateMixin {
+  final routeLetter = "A";
+  bool showTimes = false;
+
+  final _transformationController = TransformationController();
+  TapDownDetails _doubleTapDetails;
+
+  void _handleDoubleTapDown(TapDownDetails details) {
+    _doubleTapDetails = details;
+  }
+
+  void _handleDoubleTap() {
+    // Zoom out
+    if (_transformationController.value != Matrix4.identity()) {
+      _transformationController.value = Matrix4.identity();
+      setState(() {
+        showTimes = false;
+      });
+    }
+    // Zoom in
+    else {
+      final position = _doubleTapDetails.localPosition;
+      // For a 3x zoom
+      _transformationController.value = Matrix4.identity()
+        ..translate(-position.dx * 2, -position.dy * 2)
+        ..scale(3.0);
+      // Fox a 2x zoom
+      // ..translate(-position.dx, -position.dy)
+      // ..scale(2.0);
+      setState(() {
+        showTimes = true;
+      });
+    }
+  }
+
+  // Gebe eine Reihe von Drei Columns zurück, 1. Column ist icon + start, dann Linie + Zeiten
+  // dann icon + ende
+  Widget graphLine(
+      Map<List<int>, bool> automationSections, DateTime start, DateTime end) {
     double myHeight;
     Color myColor;
     // Liste der Widgets
@@ -25,16 +67,33 @@ class AutomationGraphic extends StatelessWidget {
     List<bool> listOfAutomation = automationSections.values.toList();
     // Einzelnen Flex Werte
     List<int> flexValues = [];
+    // Textstyle, wird immer wieder verwendet
+    var smallTextStyle = TextStyle(
+      color: myDarkGrey,
+      fontSize: 6,
+    );
 
-    // Füge das Start Icon am Anfang der Linie hinzu
+    // Füge das Start Icon + Zeitr am Anfang der Linie hinzu
     widgetList.add(
-      Icon(
-        Icons.location_on,
-        color: myDarkGrey,
-        size: 20,
+      Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            Icons.location_on,
+            color: myDarkGrey,
+            size: 20,
+          ),
+          showTimes
+              ? Text(
+                  "${start.hour.toString().padLeft(2, '0')}:${start.minute.toString().padLeft(2, '0')}",
+                  style: smallTextStyle,
+                )
+              : Container(),
+        ],
       ),
     );
 
+    // Erstelle die Reihe mit den Segmenten
     for (int i = 0; i < listOfSections.length; i++) {
       flexValues
           .add(listOfSections[i][1] - listOfSections[i][0] + 1); // Flex Val
@@ -51,54 +110,96 @@ class AutomationGraphic extends StatelessWidget {
       widgetList.add(
         Flexible(
           flex: flexValues[i],
-          child: Container(
-            height: myHeight,
-            color: myColor,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                height: myHeight,
+                color: myColor,
+              ),
+            ],
           ),
         ),
       );
     }
-    // Füge die Fahne am Ende hinzu
+    // Füge die Fahne + Zeit am Ende hinzu
     widgetList.add(
-      Icon(
-        Icons.flag_rounded,
-        color: myDarkGrey,
-        size: 20,
+      Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            Icons.flag_rounded,
+            color: myDarkGrey,
+            size: 20,
+          ),
+          showTimes
+              ? Text(
+                  "${end.hour.toString().padLeft(2, '0')}:${end.minute.toString().padLeft(2, '0')}",
+                  style: smallTextStyle,
+                )
+              : Container(),
+        ],
       ),
     );
-    // Liste An Widgets erstellen
-    // Liste von Abschnitten erstellen, Liste aus Flexible mit gegebenen Flex Wert
-    return Row(children: widgetList);
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: widgetList,
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Column(
-        children: <Widget>[
-          // Erste Reihe mit den zwei Icons am Ende
-          /*
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              Icon(
-                Icons.location_on,
-                color: myDarkGrey,
-                size: 20,
-              ),
-              Icon(
-                Icons.flag_rounded,
-                color: myDarkGrey,
-                size: 20,
-              )
-            ],
+    // GEsture Detector benötigt um das Scrollen zu verhindern
+    // dadurch kein Gesture disambiguation
+    return GestureDetector(
+      onTap: () {
+        // NeverScrollableScrollPhysics();
+      },
+      onVerticalDragStart: (DragStartDetails _) {
+        // NeverScrollableScrollPhysics();
+      },
+      onDoubleTap: _handleDoubleTap,
+      onDoubleTapDown: _handleDoubleTapDown,
+      child: Container(
+        height: 150,
+        decoration: BoxDecoration(
+          color: myWhite,
+          border: Border.all(width: 0, color: myDarkGrey),
+          borderRadius: BorderRadius.all(
+            Radius.circular(14),
           ),
-          */
-          // Linie, zur Anzeige der Fahrabschnitte
-          graphLine(Provider.of<FinalRoutes>(context, listen: false)
-              .routes[routeIndex]
-              .automationSections)
-        ],
+        ),
+        child: ClipRect(
+          child: InteractiveViewer(
+            transformationController: _transformationController,
+            onInteractionEnd: (details) {
+              // Gibt die TrafoMatrix einträge zurück, wenn voll eingezoomed
+              // dann sind die DIagonaleneinträge, bis auf den Letzten, bei 2.57
+              if (_transformationController.value.row0.x > 2) {
+                setState(() {
+                  showTimes = true;
+                });
+              } else if (showTimes == true) {
+                setState(() {
+                  showTimes = false;
+                });
+              }
+            },
+            child: Container(
+              child: graphLine(
+                  Provider.of<FinalRoutes>(context, listen: false)
+                      .routes[widget.routeIndex]
+                      .automationSections,
+                  Provider.of<FinalRoutes>(context, listen: false)
+                      .routes[widget.routeIndex]
+                      .startDateTime,
+                  Provider.of<FinalRoutes>(context, listen: false)
+                      .routes[widget.routeIndex]
+                      .arrivalDateTime),
+              constraints: BoxConstraints.expand(),
+            ),
+          ),
+        ),
       ),
     );
   }

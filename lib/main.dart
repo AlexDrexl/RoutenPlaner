@@ -10,7 +10,7 @@ import 'package:routenplaner/provider_classes/travel_profile_modifier.dart';
 import 'package:routenplaner/provider_classes/user_profile_collection.dart';
 import 'data/custom_colors.dart';
 import 'provider_classes/route_details.dart';
-import 'main/route_planning.dart';
+import 'home/route_planning.dart';
 
 void main() => runApp(RoutePlaner());
 

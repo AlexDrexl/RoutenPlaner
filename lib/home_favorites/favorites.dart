@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:routenplaner/data/custom_colors.dart';
 import 'package:provider/provider.dart';
+import 'package:routenplaner/data/layoutData.dart';
 import 'package:routenplaner/home_favorites/address_insert_dialog.dart';
 import 'package:routenplaner/provider_classes/addresses.dart';
 import 'package:routenplaner/provider_classes/route_details.dart';
@@ -35,15 +36,19 @@ class _FavoritesState extends State<Favorites>
         Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            Icon(
-              favourite ? Icons.star : Icons.location_city_outlined,
-              size: 30,
-              color: myYellow,
+            Expanded(
+              flex: 1,
+              child: Icon(
+                favourite ? Icons.star : Icons.location_city_outlined,
+                size: 30,
+                color: iconColor,
+              ),
             ),
             SizedBox(
-              width: 20,
+              width: 10,
             ),
             Expanded(
+              flex: 5,
               child: Text(
                 addressName,
                 maxLines: 3,
@@ -51,36 +56,39 @@ class _FavoritesState extends State<Favorites>
                 style: TextStyle(color: myDarkGrey, fontSize: 15),
               ),
             ),
-            FlatButton(
-              child: Icon(
-                Icons.forward,
-                color: myDarkGrey,
+            Expanded(
+              flex: 1,
+              child: FlatButton(
+                child: Icon(
+                  Icons.forward,
+                  color: myMiddleTurquoise,
+                ),
+                onPressed: () async {
+                  // Wenn gedrückt, dann werden die Koordinaten basierend auf
+                  // dem namen gesucht, nicht optimal, da es bei fehlender Internet verbindung fehl schlägt
+                  // TODO: Ectl doch noch ändern und LatLng in Database speichern
+                  bool start = await showDialog(
+                    context: context,
+                    builder: (context) {
+                      return AddressInsertDialog(addressName);
+                    },
+                  );
+                  // wenn nutzer abbrechen klickt, dann gibt das Popup null zurück
+                  if (start == null) {
+                    return;
+                  }
+                  // je nachdem was der Nutzer auswählt, speichere das Ergebnis in
+                  // start oder ziel
+                  if (start) {
+                    Provider.of<RouteDetails>(context, listen: false)
+                        .setStart(addressName);
+                  }
+                  if (!start) {
+                    Provider.of<RouteDetails>(context, listen: false)
+                        .setDestination(addressName);
+                  }
+                },
               ),
-              onPressed: () async {
-                // Wenn gedrückt, dann werden die Koordinaten basierend auf
-                // dem namen gesucht, nicht optimal, da es bei fehlender Internet verbindung fehl schlägt
-                // TODO: Ectl doch noch ändern und LatLng in Database speichern
-                bool start = await showDialog(
-                  context: context,
-                  builder: (context) {
-                    return AddressInsertDialog(addressName);
-                  },
-                );
-                // wenn nutzer abbrechen klickt, dann gibt das Popup null zurück
-                if (start == null) {
-                  return;
-                }
-                // je nachdem was der Nutzer auswählt, speichere das Ergebnis in
-                // start oder ziel
-                if (start) {
-                  Provider.of<RouteDetails>(context, listen: false)
-                      .setStart(addressName);
-                }
-                if (!start) {
-                  Provider.of<RouteDetails>(context, listen: false)
-                      .setDestination(addressName);
-                }
-              },
             ),
           ],
         ),
@@ -100,7 +108,7 @@ class _FavoritesState extends State<Favorites>
             Icon(
               favourite ? Icons.star : Icons.location_city_outlined,
               size: 30,
-              color: myYellow,
+              color: iconColor,
             ),
             SizedBox(
               width: 20,
@@ -116,7 +124,7 @@ class _FavoritesState extends State<Favorites>
             FlatButton(
               child: Icon(
                 Icons.forward,
-                color: myDarkGrey,
+                color: myMiddleTurquoise,
               ),
               onPressed: () async {
                 // TODO: EVtl latlng in Datenbank speichern
@@ -218,12 +226,11 @@ class _FavoritesState extends State<Favorites>
       children: [
         // Tab Bar,
         Container(
-          margin: EdgeInsets.only(left: 25, right: 25),
+          margin:
+              EdgeInsets.only(left: contentMarginLR, right: contentMarginLR),
           decoration: BoxDecoration(
             border: Border.all(width: 1, color: Colors.grey),
-            borderRadius: BorderRadius.only(
-                topRight: Radius.circular(14), topLeft: Radius.circular(14)),
-            color: myMiddleTurquoise, // Hexcolor('48ACB8'),
+            color: myWhite,
             boxShadow: [
               BoxShadow(
                 color: myMiddleGrey, //Colors.grey,
@@ -234,8 +241,9 @@ class _FavoritesState extends State<Favorites>
           // Tab Bar mit ADRESSE UND VERBINDUNGEN
           child: new TabBar(
             controller: _controller,
-            indicatorColor: myWhite, //Colors.white,
-            labelColor: myWhite, //Colors.white,
+            indicatorColor: myMiddleTurquoise, //Colors.white,
+            labelColor: myDarkGrey, //Colors.white,
+            indicatorWeight: 5,
             tabs: [
               Tab(
                 //icon: const Icon(Icons.flag),
@@ -251,13 +259,13 @@ class _FavoritesState extends State<Favorites>
         // Container für den Hintergund der TabBarView Inhalte
         Container(
           height: 540,
-          margin: EdgeInsets.only(left: 25, right: 25, bottom: 25),
+          margin: EdgeInsets.only(
+              left: contentMarginLR,
+              right: contentMarginLR,
+              bottom: distanceBoxes),
           // Nur ein bisschen Kosmetik
           decoration: BoxDecoration(
             border: Border.all(width: 0, color: myMiddleGrey),
-            borderRadius: BorderRadius.only(
-                bottomLeft: Radius.circular(14),
-                bottomRight: Radius.circular(14)),
             color: myWhite, //Colors.white,
             boxShadow: [
               BoxShadow(

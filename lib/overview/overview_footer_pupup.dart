@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:routenplaner/data/custom_colors.dart';
+import 'package:routenplaner/home/route_planning.dart';
 import 'package:routenplaner/provider_classes/desired_Autom_Sections.dart';
 import 'package:provider/provider.dart';
 import 'package:routenplaner/provider_classes/final_routes.dart';
 import 'package:routenplaner/provider_classes/route_details.dart';
-import '../main/route_planning.dart';
 
-class OverviewFooterPopup extends StatefulWidget {
+class OveriewConfirmation extends StatefulWidget {
   @override
-  _OverviewFooterPopupState createState() => _OverviewFooterPopupState();
+  _OveriewConfirmationState createState() => _OveriewConfirmationState();
 }
 
-class _OverviewFooterPopupState extends State<OverviewFooterPopup> {
+class _OveriewConfirmationState extends State<OveriewConfirmation> {
   bool homeButtonPressed = false;
 
   @override

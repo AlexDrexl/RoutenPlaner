@@ -114,36 +114,41 @@ class _DestinationInputDetailsState extends State<DestinationInputDetails> {
           ),
           // Date Picker und Time Picker
           Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Icon(Icons.calendar_today, color: myYellow),
-              //String convertedDateTime = "${now.year.toString()}-${now.month.toString().padLeft(2,'0')}-${now.day.toString().padLeft(2,'0')} ${now.hour.toString()}-${now.minute.toString()}";
-              SizedBox(
-                width: 18.0,
+              Row(
+                children: [
+                  Icon(Icons.calendar_today, color: iconColor),
+                  SizedBox(
+                    width: 20,
+                  ),
+                  MaterialButton(
+                    color: myMiddleTurquoise,
+                    textColor: myWhite,
+                    child: Text(
+                      "${pickedDate.day.toString().padLeft(2, '0')}.${pickedDate.month.toString().padLeft(2, '0')}.${pickedDate.year.toString()}",
+                    ),
+                    onPressed: _pickDate,
+                  ),
+                ],
               ),
               // Button für DatePicker
-              MaterialButton(
-                color: myMiddleTurquoise,
-                textColor: myWhite,
-                child: Text(
-                  "${pickedDate.day.toString().padLeft(2, '0')}.${pickedDate.month.toString().padLeft(2, '0')}.${pickedDate.year.toString()}",
-                ),
-                onPressed: _pickDate,
-              ),
-              SizedBox(
-                width: 18,
-              ),
-              Icon(Icons.access_time, color: myYellow),
-              SizedBox(
-                width: 18,
+              Row(
+                children: [
+                  Icon(Icons.access_time, color: iconColor),
+                  SizedBox(
+                    width: 20,
+                  ),
+                  MaterialButton(
+                    color: myMiddleTurquoise,
+                    textColor: myWhite,
+                    child: Text(
+                        "${pickedTime.hour.toString().padLeft(2, '0')}:${pickedTime.minute.toString().padLeft(2, '0')} Uhr"),
+                    onPressed: _pickTime,
+                  ),
+                ],
               ),
               // Button für den TimePicker
-              MaterialButton(
-                color: myMiddleTurquoise,
-                textColor: myWhite,
-                child: Text(
-                    "${pickedTime.hour.toString().padLeft(2, '0')}:${pickedTime.minute.toString().padLeft(2, '0')} Uhr"),
-                onPressed: _pickTime,
-              ),
             ],
           ),
           SizedBox(height: 20),
@@ -188,7 +193,7 @@ class _DestinationInputDetailsState extends State<DestinationInputDetails> {
                         children: [
                           Icon(
                             Icons.card_travel,
-                            color: myYellow,
+                            color: iconColor,
                           ),
                           SizedBox(
                             width: 20,
@@ -288,7 +293,6 @@ class _DestinationInputDetailsState extends State<DestinationInputDetails> {
                         destination: destination,
                         timeNow: DateTime.now());
                 // Pushe zur nächsten seite
-
                 Navigator.push<Widget>(
                   context,
                   MaterialPageRoute<Widget>(

@@ -16,7 +16,9 @@ class AlternativeRoutes extends StatelessWidget {
           //backgroundColor: Hexcolor("#48ACB8"),
           ),
       // bottomNavigationBar: Footer(),
-      drawer: DrawerHome(),
+      drawer: DrawerHome(
+        screen: "overview",
+      ),
       body: Stack(
         children: [
           // Background

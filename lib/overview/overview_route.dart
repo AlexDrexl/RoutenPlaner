@@ -4,6 +4,7 @@ import 'package:routenplaner/drawer/drawer_home.dart';
 import 'package:routenplaner/overview/overview_footer_pupup.dart';
 import 'package:routenplaner/overview/overview_route_builder.dart';
 import 'overview_route_input.dart';
+import 'package:routenplaner/data/layoutData.dart';
 
 class Overview extends StatefulWidget {
   @override
@@ -27,6 +28,8 @@ class _OverviewState extends State<Overview> {
         ),
         iconTheme: new IconThemeData(color: Colors.white),
       ),
+      // TODO: Bottom App Bar Weg damit
+      /*
       bottomNavigationBar: BottomAppBar(
         color: Colors.white.withOpacity(0),
         child: Container(
@@ -61,7 +64,7 @@ class _OverviewState extends State<Overview> {
                       showDialog(
                         context: context,
                         builder: (context) {
-                          return OverviewFooterPopup();
+                          return OveriewConfirmation();
                         },
                       );
                     },
@@ -72,35 +75,37 @@ class _OverviewState extends State<Overview> {
           ),
         ),
       ),
-      drawer: DrawerHome(),
-      body: Scrollbar(
-        controller: _scrollController,
-        isAlwaysShown: true,
-        child: SingleChildScrollView(
+      */
+      drawer: DrawerHome(
+        screen: "overview",
+      ),
+      // Container um Hintergrund und margin einzustellen
+      body: Container(
+        margin: EdgeInsets.fromLTRB(
+            contentMarginLR, contentMarginTB, contentMarginLR, 0),
+        color: backgroundColor,
+        child: Scrollbar(
           controller: _scrollController,
-          child: Container(
-            // Container benötigt, um den Background zu erstellen
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                colorFilter: new ColorFilter.mode(
-                    Colors.grey.withOpacity(0.15), BlendMode.dstATop),
-                image: AssetImage("assets/images/citybackground.png"),
-                fit: BoxFit.fitWidth,
-              ),
-            ),
-            // Spalte für die zwei Cards
+          child: SingleChildScrollView(
+            controller: _scrollController,
             child: Column(
               // Damit der Container über die gesamte Breite geht
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
+                // Abstand zu Oben
+                SizedBox(
+                  height: distanceBoxes,
+                ),
                 // Überschrift ROUTENEINGABE
                 Container(
+                  padding: EdgeInsets.only(
+                      top: contentPaddingTB,
+                      bottom: contentPaddingTB,
+                      left: contentPaddingLR,
+                      right: contentPaddingLR),
                   // generelles Aussehen
                   decoration: BoxDecoration(
                     border: Border.all(width: 0, color: myMiddleGrey),
-                    borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(14),
-                        topRight: Radius.circular(14)),
                     color: myMiddleTurquoise,
                     boxShadow: [
                       BoxShadow(
@@ -110,11 +115,9 @@ class _OverviewState extends State<Overview> {
                     ],
                   ),
                   // Platzierung des Text Widgets in der Zeile
-                  padding: EdgeInsets.only(top: 8, bottom: 8, left: 15),
-                  margin: EdgeInsets.only(left: 25, right: 25, top: 25),
                   // String ROUTENEINGABE
                   child: Text(
-                    "ROUTENEINGABE",
+                    "ÜBERSICHT",
                     style: TextStyle(
                       color: myWhite,
                       fontSize: 20,
@@ -127,10 +130,6 @@ class _OverviewState extends State<Overview> {
                   // generelles Aussehen
                   decoration: BoxDecoration(
                       border: Border.all(width: 0, color: myMiddleGrey),
-                      borderRadius: BorderRadius.only(
-                        bottomLeft: Radius.circular(14),
-                        bottomRight: Radius.circular(14),
-                      ),
                       color: myWhite,
                       boxShadow: [
                         BoxShadow(
@@ -138,22 +137,22 @@ class _OverviewState extends State<Overview> {
                           blurRadius: 4,
                         )
                       ]),
-                  padding:
-                      EdgeInsets.only(top: 8, bottom: 8, left: 15, right: 15),
-                  margin: EdgeInsets.only(left: 25, right: 25, bottom: 25),
+                  padding: EdgeInsets.fromLTRB(contentPaddingLR,
+                      contentPaddingTB, contentMarginLR, contentMarginTB),
                   child: OverviewRouteInput(
                     context: context,
                     myCallback: mySetState,
                   ),
+                ),
+                // Abstand zwischen den Boxen
+                SizedBox(
+                  height: distanceBoxes,
                 ),
                 // Überschrift ROUTENOPTIONEN
                 Container(
                   // generelles Aussehen
                   decoration: BoxDecoration(
                       border: Border.all(width: 0, color: myMiddleGrey),
-                      borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(14),
-                          topRight: Radius.circular(14)),
                       color: myMiddleTurquoise,
                       boxShadow: [
                         BoxShadow(
@@ -162,8 +161,8 @@ class _OverviewState extends State<Overview> {
                         )
                       ]),
                   // Platzierung des Text Widgets in der Zeile
-                  padding: EdgeInsets.only(top: 8, bottom: 8, left: 15),
-                  margin: EdgeInsets.only(left: 25, right: 25, top: 25),
+                  padding: EdgeInsets.fromLTRB(contentPaddingLR,
+                      contentPaddingTB, contentPaddingLR, contentPaddingTB),
                   // String ROUTENEINGABE
                   child: Text(
                     "ROUTENOPTIONEN",
@@ -176,42 +175,39 @@ class _OverviewState extends State<Overview> {
                 ),
                 // Routen Optionen
                 Container(
-                    // generelles Aussehen
-                    decoration: BoxDecoration(
-                      border: Border.all(width: 0, color: myMiddleGrey),
-                      borderRadius: BorderRadius.only(
-                        bottomLeft: Radius.circular(14),
-                        bottomRight: Radius.circular(14),
-                      ),
-                      color: myWhite,
-                      boxShadow: [
-                        BoxShadow(
-                          color: myMiddleGrey,
-                          blurRadius: 4,
-                        )
-                      ],
-                    ),
-                    padding:
-                        EdgeInsets.only(top: 8, bottom: 8, left: 15, right: 15),
-                    margin: EdgeInsets.only(left: 25, right: 25, bottom: 25),
-                    // Gesamtübersicht Routenoptionen
-                    ///////////
-                    ///
-                    ///
-                    /// WICHTIG: Wenn Änderung, dann wird dieser Block rebuilded
-                    /// dadurch wird der gesamte Routenerstellungsprozess erneut gestartet
-                    /// DIESES WIDGET WIRD AUS IRGENDEINEM GRUND IMMER WIEDER NEU AUFGEBAUT
-                    child: OverviewRouteBuilder(
-                      myCallback: mySetState,
-                    )),
+                  // generelles Aussehen
+                  decoration: BoxDecoration(
+                    border: Border.all(width: 0, color: myMiddleGrey),
+                    color: myWhite,
+                    boxShadow: [
+                      BoxShadow(
+                        color: myMiddleGrey,
+                        blurRadius: 4,
+                      )
+                    ],
+                  ),
+                  padding: EdgeInsets.fromLTRB(contentPaddingLR,
+                      contentPaddingTB, contentPaddingLR, contentPaddingTB),
+                  // Gesamtübersicht Routenoptionen
+                  ///////////
+                  ///
+                  ///
+                  /// WICHTIG: Wenn Änderung, dann wird dieser Block rebuilded
+                  /// dadurch wird der gesamte Routenerstellungsprozess erneut gestartet
+                  /// DIESES WIDGET WIRD AUS IRGENDEINEM GRUND IMMER WIEDER NEU AUFGEBAUT
+                  child: OverviewRouteBuilder(
+                    myCallback: mySetState,
+                  ),
+                ),
+                // Abstand zwischen den Boxen
+                SizedBox(
+                  height: distanceBoxes,
+                ),
                 // Überschrift "and das Fahrzeug übertragen"
                 Container(
                   // generelles Aussehen
                   decoration: BoxDecoration(
                       border: Border.all(width: 0, color: myMiddleGrey),
-                      borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(14),
-                          topRight: Radius.circular(14)),
                       color: myMiddleTurquoise,
                       boxShadow: [
                         BoxShadow(
@@ -220,8 +216,8 @@ class _OverviewState extends State<Overview> {
                         )
                       ]),
                   // Platzierung des Text Widgets in der Zeile
-                  padding: EdgeInsets.only(top: 8, bottom: 8, left: 15),
-                  margin: EdgeInsets.only(left: 25, right: 25, top: 25),
+                  padding: EdgeInsets.fromLTRB(contentPaddingLR,
+                      contentPaddingTB, contentPaddingLR, contentPaddingTB),
                   // String ROUTENEINGABE
                   child: Text(
                     "ÜBERTRAGUNG STARTEN",
@@ -234,13 +230,11 @@ class _OverviewState extends State<Overview> {
                 ),
                 // An das Fahrzeug übertragen
                 Container(
+                  padding: EdgeInsets.fromLTRB(contentPaddingLR,
+                      contentPaddingTB, contentPaddingLR, contentPaddingTB),
                   // generelles Aussehen
                   decoration: BoxDecoration(
                     border: Border.all(width: 0, color: myMiddleGrey),
-                    borderRadius: BorderRadius.only(
-                      bottomLeft: Radius.circular(14),
-                      bottomRight: Radius.circular(14),
-                    ),
                     color: myWhite,
                     boxShadow: [
                       BoxShadow(
@@ -249,15 +243,10 @@ class _OverviewState extends State<Overview> {
                       )
                     ],
                   ),
-                  margin: EdgeInsets.only(left: 25, right: 25, bottom: 25),
                   child: Column(
                     children: [
-                      SizedBox(
-                        height: 10,
-                      ),
                       // Text mit Disclaimer
                       Container(
-                        margin: EdgeInsets.only(left: 20, right: 20),
                         child: Text(
                           "Durch kurzfristige Änderungen bei Verkehr und Umgebungsbedingungen kann es zu Abweichungen von Planung und tatsächlichem Fahrtverlauf kommen",
                           style: TextStyle(fontSize: 10, color: myDarkGrey),
@@ -268,39 +257,30 @@ class _OverviewState extends State<Overview> {
                       ),
                       // Material Button
                       Container(
+                        color: myDarkTurquoise,
                         child: MaterialButton(
                           onPressed: () {
                             ///////
                             ///Übertragen an das Fahrzeug
                           },
-                          child: Container(
-                            padding: EdgeInsets.all(15),
-                            decoration: BoxDecoration(
-                              color: myDarkTurquoise,
-                              border: Border.all(width: 0, color: myDarkGrey),
-                              borderRadius: BorderRadius.all(
-                                Radius.circular(0),
-                              ),
-                            ),
-                            child: Align(
-                              alignment: Alignment.center,
-                              child: Text(
-                                "Route an Fahrzeug übertragen",
-                                style: TextStyle(
-                                  color: myWhite,
-                                  fontSize: 15,
-                                ),
+                          child: Center(
+                            child: Text(
+                              "Route an Fahrzeug übertragen",
+                              style: TextStyle(
+                                color: myWhite,
+                                fontSize: 18,
                               ),
                             ),
                           ),
                         ),
                       ),
-                      SizedBox(
-                        height: 10,
-                      )
                     ],
                   ),
-                )
+                ),
+                // Abstand nach unten
+                SizedBox(
+                  height: distanceBoxes,
+                ),
               ],
             ),
           ),

@@ -80,7 +80,10 @@ class DatabaseHelper {
             NameTrav TEXT,
             MaxDetour INTEGER,
             MinSegment INTEGER,
-            IndexTriangle INTEGER
+            XPosTriangle INTEGER, 
+            YPosTriangle INTEGER,
+            WidthTriangle INTEGER,
+            HeightTriangle INTEGER
           )
           ''');
   }
@@ -145,19 +148,24 @@ class DatabaseHelper {
   }
 
   // Travel Profile
-  Future<int> addTravelProfile({
-    int userID,
-    int maxDetour,
-    int minSegment,
-    int indexTriangle,
-    String name,
-  }) async {
+  Future<int> addTravelProfile(
+      {int userID,
+      int maxDetour,
+      int minSegment,
+      double xPosTriangle,
+      double yPosTriangle,
+      String name,
+      @required double widthTriangle,
+      @required double heightTriangle}) async {
     var row = {
       "NameTrav": name,
       "UserID": userID,
       "MaxDetour": maxDetour,
       "MinSegment": minSegment,
-      "IndexTriangle": indexTriangle,
+      "XPosTriangle": xPosTriangle,
+      "YPosTriangle": yPosTriangle,
+      "WidthTriangle": widthTriangle,
+      "HeightTriangle": heightTriangle,
     };
     Database db = await instance.database;
     return await db.insert(travelProfileTable, row);

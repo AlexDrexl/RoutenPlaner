@@ -28,6 +28,8 @@ dependencies:
   flutter_polyline_points: ^0.2.4
   google_directions_api: ^0.5.0
   dio: ^3.0.10
+  vector_math: any
+  dart_math: ^0.0.9+4
 
 
   # The following adds the Cupertino Icons font to your application.

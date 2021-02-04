@@ -1,22 +1,24 @@
-
-TODO Liste von Tobi:
-- DONE Den Button „Route an Fahrzeug übertragen“ von Box routenoptionen trennen (mit farbe Dunkeltürkis)
-- DONE Diclaimer über den Button "Route an Fahrzeug übertragen“
-- DONE Max. Profilnamenlänge wird nicht durchgesetzt. Man kann mehr eingeben als erlaubt
-- DONE Bei Profil bearbeiten gibt es Probleme 
-- DONE Auf Seite Alternative Routen wird ncith die ganze Seite ausgenutzt
-- DONE Im Popup/Möchten sie die Route verwerfen den X-Button weg
-- DONE Name den Reiseprofils in den Profileinstellungen ändern können
-- DONE Wenn Reiseprofilname zu lang, dann Overflow in Overview
-- DONE Letzte Adressen/Verbindungen mit Funktion versehen 
-- DONE Anlegen von Reiseprofil ohne Nutzerprofil unterbinden
-- DONE bei erstellung von erstem Reiseprofil nicht automatisch ausgewählt
-- DONE Wenn im Overview das gleiche Reiseprofil wieder ausgewählt, dann kein reload. 
-- DONE über reaload button noch den grund warum gescheitert
-- DONE Wenn Nutzerprofil geändernt dann noch immer Probleme mit der Route
-- DONE Wenn Reiseprofil gelöscht, dann spinnt das Dropdown wieder rum
-- DONE Ranking überprüfen und notieren
-- DONE Reiszeit wirklich von google maps erhalten
-- DONE Infoicon bei Reiseprofile
-- DONE Segmentwechsel unter den Gesamtzeit
-- DONE Ohne Reiseprofil dennoch nach Zeit sortieren
+ToDo:
+- DONE Reiseprofil Dreieck ändern
+- DONE runde ecken weg bei Home und Übersicht, keine Ahnung ob bei Reiseprofileinstellungen auch 
+- DONE Orange Ändern zu #707070
+- DONE "Zieleingabe" weg
+- DONE Kästen auf Bildschirmgröße
+- DONE hintergrund einfarbig zu #EEF1F2
+- DONE Abstand zwischen den Kästen kleiner 
+- DONE Tabs "Adresse Verbindungen" weiss machen 
+- DONE Plus Icon zum Hinzufügen eines Automatisierten Segemnts kleiner machen
+- DONE "Reisprofil" zu Reiseprofil
+- DONE Home Button ändern bzw von Overview/Reiseprofile etc weg 
+- Weitere Angaben Design und Anordnung überarbeiten 
+- Reiseprofil hat auf der zeiten Seite ein anderes Icon als auf der ersten Seite
+- Reiseprofil icon stimmt nicht ?
+- Popup hinzufügen von autom segment ändern 
+- Alternative ROuten Button noch nicht aligned mit dem Darüber
+- Wenn in Overview auf zurückbutton gedrückt, dann auch Abfrage, ob die ROute verworfen werden soll
+- wenn im overviewv auf entwas anderes als home gedrückt wird, dann kommt keine abfrage ob die Route verworfen werden soll
+- home Kasten hat unten noch abgerundete ecken
+- Footer löschen
+- Hintergurnd in Reiseprofil und Nutzerprofil ändern
+- Hintergrund dateien löschen
+- Welcome Bildschirme in Nutzer und Reiseprofile

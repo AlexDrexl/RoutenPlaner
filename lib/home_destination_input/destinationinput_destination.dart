@@ -68,7 +68,7 @@ class _DestinationinputDestinationState
             border: OutlineInputBorder(),
             icon: Icon(
               Icons.flag,
-              color: myYellow,
+              color: iconColor,
             ),
             hintText: routeDetails.hintTextDestination,
             hintStyle: TextStyle(color: routeDetails.hintColorDestination),

@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:routenplaner/drawer/travel_detail_confirmation.dart';
 import 'package:routenplaner/drawer/user_profiles.dart';
+import 'package:routenplaner/home/route_planning.dart';
+import 'package:routenplaner/overview/overview_footer_pupup.dart';
 import 'package:routenplaner/provider_classes/user_profile_collection.dart';
 import 'package:provider/provider.dart';
 import 'travel_profiles.dart';
@@ -9,6 +12,11 @@ import '../data/custom_colors.dart';
 // Drawer an der Seite, link zu den weiteren Seiten wie Nutzerprofile,
 // Reiseprofile, Meine Karten, Einstellungen
 class DrawerHome extends StatelessWidget {
+  // Da es nicht bekannt ist, wo der Nutzer gerade ist, muss zu jedem Drawer aufruf
+  // die Aufrufposition übergeben werden
+  final String screen;
+  final int indexTravelProfile;
+  DrawerHome({@required this.screen, this.indexTravelProfile});
   // Überprüfe, ob profileCollection existent und name nicht null
   String checkName(UserProfileCollection profileCollection) {
     if (profileCollection.userProfileCollection != null &&
@@ -38,6 +46,7 @@ class DrawerHome extends StatelessWidget {
     return Drawer(
       child: ListView(
         children: <Widget>[
+          // Nutzer und Email
           Consumer<UserProfileCollection>(
             builder: (context, userProfileCollection, _) =>
                 UserAccountsDrawerHeader(
@@ -48,9 +57,69 @@ class DrawerHome extends StatelessWidget {
               currentAccountPicture: CircleAvatar(),
             ),
           ),
+          // Home, Überprüfe von wo aufgerufen!
+          ListTile(
+            leading: Icon(Icons.home, color: iconColor, size: 50),
+            title: Text(
+              'Home',
+              style: TextStyle(
+                fontSize: 20,
+                color: myDarkGrey, //#707070
+              ),
+            ),
+            onTap: () {
+              /*
+              Navigator.push(
+                context,
+                MaterialPageRoute<Widget>(
+                  builder: (BuildContext context) => RoutePlanning(),
+                ),
+              );
+              */
+              switch (screen) {
+                // In home soll nichts passieren
+                case "home":
+                  Navigator.of(context).pop();
+                  break;
+                // in overview soll geschaut werden, ob der Nutzer wirklich die Route verwerfen möchte
+                // Dazu zählt auch alternative Routes
+                case "overview":
+                  showDialog(
+                    context: context,
+                    builder: (context) {
+                      return OveriewConfirmation();
+                    },
+                  );
+                  break;
+                // In den Reiseprofilen soll abgefragt werden, ob gespeichert werden soll
+                case "travelprofiledetails":
+                  showDialog(
+                    context: context,
+                    builder: (context) {
+                      return TravelDetailConirmation(
+                        indexProfile: indexTravelProfile,
+                      );
+                    },
+                  );
+                  break;
+                // In allen anderen Fällen soll einfach zu home zurückgegangen werden
+                default:
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute<Widget>(
+                      builder: (BuildContext context) => RoutePlanning(),
+                    ),
+                  );
+                  break;
+              }
+            },
+          ),
+          Divider(
+            thickness: 1,
+          ),
           // Listenzeile Nutzerprofile
           ListTile(
-            leading: Icon(Icons.person, color: myYellow, size: 50),
+            leading: Icon(Icons.person, color: iconColor, size: 50),
             title: Text(
               'Nutzerprofile',
               style: TextStyle(
@@ -72,7 +141,7 @@ class DrawerHome extends StatelessWidget {
           ),
           // Listenzeile Reiseprofile
           ListTile(
-            leading: Icon(Icons.card_travel, color: myYellow, size: 50),
+            leading: Icon(Icons.card_travel, color: iconColor, size: 50),
             title: Text(
               'Reiseprofile',
               style: TextStyle(
@@ -88,42 +157,6 @@ class DrawerHome extends StatelessWidget {
                 ),
               );
             },
-          ),
-          Divider(
-            thickness: 1,
-          ),
-          // Listenzeile Meine Karten, kein Link
-          ListTile(
-            leading: Icon(Icons.map, color: myYellow, size: 50),
-            title: Text(
-              'Meine Karten',
-              style: TextStyle(
-                fontSize: 20,
-                color: myDarkGrey, //#707070
-              ),
-            ),
-            /*onTap: () {
-                  Navigator.push(context, MaterialPageRoute<Widget>(
-                      builder: (BuildContext context) => TravelProfiles())
-                  );
-                },*/
-          ),
-          Divider(
-            thickness: 1,
-          ),
-          // Listenzeile Einstellungen, kein Link
-          ListTile(
-            leading: Icon(Icons.settings, color: myYellow, size: 50),
-            title: Text('Einstellungen',
-                style: TextStyle(
-                  fontSize: 20,
-                  color: myDarkGrey, //#707070
-                )),
-            /*onTap: () {
-                  Navigator.push(context, MaterialPageRoute<Widget>(
-                      builder: (BuildContext context) => TravelProfiles())
-                  );
-                },*/
           ),
           Divider(
             thickness: 1,

@@ -30,8 +30,12 @@ class _OverviewRouteBuilderState extends State<OverviewRouteBuilder> {
   }
   */
   Future<bool> computeRoute(BuildContext context) {
-    return Provider.of<FinalRoutes>(context, listen: false)
-        .computeFinalRoutes(context);
+    try {
+      return Provider.of<FinalRoutes>(context, listen: false)
+          .computeFinalRoutes(context);
+    } catch (e) {
+      throw e.toString();
+    }
   }
 
   @override

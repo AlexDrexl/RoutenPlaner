@@ -12,6 +12,7 @@ import 'package:sqflite/sqflite.dart';
 class TravelProfileCollection with ChangeNotifier {
   List<TravelProfileData> travelProfileCollection = List<TravelProfileData>();
   TravelProfileData selectedTravelProfile;
+  // Höhe und Breite des Dreiecks, ist wichtig wür die interpretation des Icons
 
   TravelProfileCollection() {
     setTravelProfiles();
@@ -28,7 +29,7 @@ class TravelProfileCollection with ChangeNotifier {
     // User Profil, basierend auf der userID
     Database db = await DatabaseHelper.instance.database;
     var selectedTravelProfiles = await db.rawQuery('''
-    SELECT UserID, NameTrav, MaxDetour, MinSegment, IndexTriangle 
+    SELECT UserID, NameTrav, MaxDetour, MinSegment, XPosTriangle, YPosTriangle, HeightTriangle, WidthTriangle
     FROM TravelProfile LEFT JOIN User
     ON User.ID = TravelProfile.UserID
     WHERE User.Selected = ?
@@ -42,7 +43,10 @@ class TravelProfileCollection with ChangeNotifier {
           name: valuesList[1],
           maxDetour: valuesList[2],
           minDurationAutomSegment: valuesList[3],
-          indexTriangle: valuesList[4],
+          xPosTriangle: valuesList[4],
+          yPosTriangle: valuesList[5],
+          triangleHeight: valuesList[6],
+          triangleWidth: valuesList[7],
         ),
       );
     }
@@ -69,19 +73,20 @@ class TravelProfileCollection with ChangeNotifier {
             : userID,
         maxDetour: 10,
         minDurationAutomSegment: 10,
-        indexTriangle: 6,
       ),
     );
     // Auch in der Datenbank hinzufügen
     DatabaseHelper.instance.addTravelProfile(
-      name: name,
-      userID: userID == null
-          ? await DatabaseHelper.instance.getCurrentUserID()
-          : userID,
-      maxDetour: 10,
-      minSegment: 10,
-      indexTriangle: 6,
-    );
+        name: name,
+        userID: userID == null
+            ? await DatabaseHelper.instance.getCurrentUserID()
+            : userID,
+        maxDetour: 10,
+        minSegment: 10,
+        xPosTriangle: null,
+        yPosTriangle: null,
+        heightTriangle: null,
+        widthTriangle: null);
     // Falls dies das erste Reiseprofil ist, wird das standartmäßig ausgewählt
     if (travelProfileCollection.length == 1)
       selectedTravelProfile = travelProfileCollection[0];
@@ -124,8 +129,11 @@ class TravelProfileCollection with ChangeNotifier {
       maxDetour: copiedTravelProfile.maxDetour,
       minDurationAutomSegment:
           copiedTravelProfile.minDurationAutomSegment.toDouble(),
-      indexTriangle: copiedTravelProfile.indexTriangle,
+      xPosTriangle: copiedTravelProfile.xPosTriangle,
+      yPosTriangle: copiedTravelProfile.yPosTriangle,
       userID: copiedTravelProfile.userID,
+      heightTriangle: copiedTravelProfile.triangleHeight,
+      widthTriangle: copiedTravelProfile.triangleWidth,
     );
     notifyListeners();
   }
@@ -175,14 +183,19 @@ class TravelProfileCollection with ChangeNotifier {
       {int profileIndex,
       int maxDetour,
       double minDurationAutomSegment,
-      int indexTriangle,
+      double xPosTriangle,
+      double yPosTriangle,
+      double heightTriangle,
+      double widthTriangle,
       int userID}) async {
     // ändern der des Lokalen Profils
     travelProfileCollection[profileIndex].maxDetour = maxDetour;
     travelProfileCollection[profileIndex].minDurationAutomSegment =
         minDurationAutomSegment.toInt();
-    travelProfileCollection[profileIndex].indexTriangle = indexTriangle;
-
+    travelProfileCollection[profileIndex].yPosTriangle = yPosTriangle;
+    travelProfileCollection[profileIndex].xPosTriangle = xPosTriangle;
+    travelProfileCollection[profileIndex].triangleHeight = heightTriangle;
+    travelProfileCollection[profileIndex].triangleWidth = widthTriangle;
     // Änderungen in die Datenbank pushen
     // Profil anhand der aktuellen UserID und Namen eindeutig identifizieren
     print("Update called");
@@ -190,7 +203,7 @@ class TravelProfileCollection with ChangeNotifier {
     db.rawUpdate(
       '''
     UPDATE TravelProfile 
-    SET MaxDetour = $maxDetour, MinSegment = $minDurationAutomSegment, IndexTriangle = $indexTriangle
+    SET MaxDetour = $maxDetour, MinSegment = $minDurationAutomSegment, XPosTriangle = $xPosTriangle, YPosTriangle = $yPosTriangle, HeightTriangle = $heightTriangle, WidthTriangle = $widthTriangle
     WHERE UserID = ? AND NameTrav = ?    
     ''',
       [
@@ -220,7 +233,9 @@ class TravelProfileData {
   int maxDetour = 0; // In %, Verglichen zur minimalen möglichen Route
   int minDurationAutomSegment = 0;
   // Index des DropTargets aus dem Dreieck, muss noch interpretiert werden
-  int indexTriangle = 6; // Default auf 6, der Mitte, wenn neu instatiiert
+  double xPosTriangle, yPosTriangle;
+  // Höhe und Breite des Dreicks
+  double triangleWidth, triangleHeight;
 
   // Anteilige Routeneinstellungen
   int maxAutomDuration = 0;
@@ -232,7 +247,10 @@ class TravelProfileData {
     this.userID,
     this.name,
     this.maxDetour,
-    this.indexTriangle,
+    this.xPosTriangle,
+    this.yPosTriangle,
     this.minDurationAutomSegment,
+    this.triangleWidth,
+    this.triangleHeight,
   });
 }

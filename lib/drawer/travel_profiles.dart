@@ -3,9 +3,9 @@ import 'package:routenplaner/drawer/delete_pupup.dart';
 import 'package:routenplaner/drawer/travel_detail.dart';
 import 'package:routenplaner/drawer/travel_profile_addTravelProfile.dart';
 import 'package:routenplaner/drawer/travel_profiles_button.dart';
+import 'package:routenplaner/home/footer.dart';
 import 'package:routenplaner/provider_classes/travel_profiles_collection.dart';
 import 'drawer_home.dart';
-import '../main/footer.dart';
 import '../data/custom_colors.dart';
 import 'package:provider/provider.dart';
 
@@ -59,7 +59,7 @@ class _TravelProfilesState extends State<TravelProfiles> {
                         children: [
                           Icon(
                             Icons.wallet_travel,
-                            color: myYellow,
+                            color: iconColor,
                             size: 40,
                           ),
                           // Flexible für Bezeichnung
@@ -323,16 +323,20 @@ class _TravelProfilesState extends State<TravelProfiles> {
           ),
           iconTheme: new IconThemeData(color: myWhite),
         ),
-        bottomNavigationBar: Footer(),
-        drawer: DrawerHome(),
+        drawer: DrawerHome(
+          screen: "travelprofiles",
+        ),
         body: Container(
           decoration: BoxDecoration(
+            /*
             image: DecorationImage(
               colorFilter: new ColorFilter.mode(
                   Colors.grey.withOpacity(0.15), BlendMode.dstATop),
               image: AssetImage("assets/images/citybackground.png"),
               fit: BoxFit.fitWidth,
             ),
+            */
+            color: backgroundColor,
           ),
           child: Consumer<TravelProfileCollection>(
             builder: (context, travelProfileCollection, child) => ListView(

@@ -20,8 +20,8 @@ class OverviewRouteInput extends StatefulWidget {
 
 class _OverviewRouteInputState extends State<OverviewRouteInput> {
   // Flex Werte für die information Row
-  int flexFirstColumn = 5;
-  int flexSecondColumn = 2;
+  int flexFirstColumn = 4;
+  int flexSecondColumn = 1;
   int flexThirdColumn = 8;
   // merke den ausgewählten Profilnamen, um bei Nicht-Änderung keinen
   // Neustart der Route zu triggern
@@ -51,14 +51,17 @@ class _OverviewRouteInputState extends State<OverviewRouteInput> {
           flex: flexSecondColumn,
           child: Icon(
             middleIcon,
-            color: myYellow,
+            color: iconColor,
           ),
         ),
         Expanded(
           flex: flexThirdColumn,
-          child: Text(
-            secondElement,
-            style: TextStyle(fontSize: 17, color: myDarkGrey),
+          child: Padding(
+            padding: EdgeInsets.only(left: 10),
+            child: Text(
+              secondElement,
+              style: TextStyle(fontSize: 17, color: myDarkGrey),
+            ),
           ),
         ),
       ],
@@ -102,7 +105,7 @@ class _OverviewRouteInputState extends State<OverviewRouteInput> {
             Expanded(
               flex: flexFirstColumn,
               child: Text(
-                "Reisprofil",
+                "Reiseprofil",
                 style: TextStyle(fontSize: 17, color: myDarkGrey),
               ),
             ),
@@ -110,7 +113,7 @@ class _OverviewRouteInputState extends State<OverviewRouteInput> {
               flex: flexSecondColumn,
               child: Icon(
                 Icons.time_to_leave,
-                color: myYellow,
+                color: iconColor,
               ),
             ),
             // Expanded für das Dropdown Menü Reiseprofil
@@ -118,6 +121,7 @@ class _OverviewRouteInputState extends State<OverviewRouteInput> {
               flex: flexThirdColumn,
               child: Container(
                 margin: EdgeInsets.only(right: 50),
+                padding: EdgeInsets.only(left: 10),
                 child: Consumer<TravelProfileCollection>(
                   builder: (context, travelProfiles, _) =>
                       DropdownButton<String>(
@@ -165,6 +169,9 @@ class _OverviewRouteInputState extends State<OverviewRouteInput> {
               ),
             ),
           ],
+        ),
+        SizedBox(
+          height: 20,
         ),
         // Automatisierte Fahrsegmente einfügen
         OverviewSegments(

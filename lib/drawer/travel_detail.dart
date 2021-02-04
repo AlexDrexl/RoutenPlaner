@@ -7,7 +7,7 @@ import 'package:routenplaner/drawer/travel_profiles.dart';
 import 'package:routenplaner/drawer/triangle_help.dart';
 import 'package:routenplaner/provider_classes/travel_profile_modifier.dart';
 import 'package:routenplaner/provider_classes/travel_profiles_collection.dart';
-import 'package:routenplaner/main/route_planning.dart';
+import 'package:routenplaner/home/route_planning.dart';
 import '../data/custom_colors.dart';
 import 'package:provider/provider.dart';
 
@@ -157,52 +157,34 @@ class _TravelDetailState extends State<TravelDetail> {
         iconTheme: new IconThemeData(color: myWhite),
         //backgroundColor: Colors.transparent,
       ),
-      drawer: DrawerHome(),
+      drawer: DrawerHome(
+        screen: "travelprofiledetails",
+        indexTravelProfile: indexProfile,
+      ),
+      floatingActionButton: CircleAvatar(
+        radius: 30,
+        backgroundColor: myMiddleTurquoise,
+        child: IconButton(
+          icon: Icon(
+            Icons.save,
+            color: myWhite,
+            size: 30,
+          ),
+          onPressed: () {
+            Provider.of<TravelProfileDetailModifier>(context, listen: false)
+                .safe(indexProfile, context);
+            Navigator.push(
+              context,
+              MaterialPageRoute<Widget>(
+                builder: (BuildContext context) => TravelProfiles(),
+              ),
+            );
+          },
+        ),
+      ),
+      /*
       bottomNavigationBar: Stack(
         children: [
-          // Home Button
-          BottomAppBar(
-            color: Colors.white.withOpacity(0),
-            child: Container(
-              padding: EdgeInsets.only(top: 5, bottom: 5, left: 5, right: 5),
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    Colors.white.withOpacity(0.1),
-                    Colors.white.withOpacity(0.9),
-                  ],
-                ),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Container(
-                    decoration: BoxDecoration(
-                        color: myMiddleTurquoise,
-                        shape: BoxShape.circle,
-                        boxShadow: [
-                          BoxShadow(
-                              blurRadius: 10, color: myWhite, spreadRadius: 5),
-                        ]),
-                    child: CircleAvatar(
-                      radius: 30,
-                      backgroundColor: myMiddleTurquoise,
-                      child: IconButton(
-                        icon: Icon(Icons.home, color: myWhite, size: 30),
-                        onPressed: () async {
-                          homeButtonPressed = true;
-                          safeChanges();
-                          // Navigator.pushReplacementNamed(context, '/');
-                        },
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             // Mit margin hindeichseln
@@ -242,6 +224,7 @@ class _TravelDetailState extends State<TravelDetail> {
           )
         ],
       ),
+      */
       // Eigentliches Reiseprofil
       body: WillPopScope(
         onWillPop: safeChanges,
@@ -282,7 +265,7 @@ class _TravelDetailState extends State<TravelDetail> {
                         contentPadding: EdgeInsets.only(
                             left: 15, right: 15, top: 8, bottom: 8),
                         leading:
-                            Icon(Icons.card_travel, color: myYellow, size: 50),
+                            Icon(Icons.card_travel, color: iconColor, size: 50),
                         //////////////////// PROBLEM, Name aktualisiert nicht
                         title: Consumer<TravelProfileCollection>(
                           builder: (context, travelProfiles, _) => Container(

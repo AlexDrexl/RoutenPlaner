@@ -3,6 +3,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:routenplaner/provider_classes/travel_profiles_collection.dart';
+import 'package:vector_math/vector_math.dart' as vec;
 import 'desired_Autom_Sections.dart';
 import 'route_details.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
@@ -215,7 +216,12 @@ class FinalRoutes with ChangeNotifier {
       // Dreieck Daten verwerten
       // Interpretiere zunächst den Dreecksindex
       // [automDauer, MinReisezeit, admd]
-      var interpretIndex = interpretTriangleIndex(travelProfile.indexTriangle);
+      // TODO: ÄNDERE ZU FUNKTIONAL
+      var interpretIndex = interpretTrianglePosition(
+          travelProfile.xPosTriangle,
+          travelProfile.yPosTriangle,
+          travelProfile.triangleHeight,
+          travelProfile.triangleWidth);
       var maxAutomTime = interpretIndex[0];
       var minTravelTime = interpretIndex[1];
       var minADMD = interpretIndex[2];
@@ -375,31 +381,58 @@ class FinalRoutes with ChangeNotifier {
   }
 
   // Interpretiere den index des Triangles
-  List<num> interpretTriangleIndex(int index) {
-    // Map mit den index und [automDauer, MinReisezeit, admd]
-    // Gesamtzahl ist 6
-    var values = {
-      // Ecken
-      0: [0, 6, 0],
-      2: [0, 0, 6],
-      12: [6, 0, 0],
-      // Center
-      6: [2, 2, 2],
-      // Auf Seiten linien
-      1: [0, 3, 3],
-      9: [3, 3, 0],
-      10: [3, 0, 3],
-      // Zentrum, 6 Eck
-      3: [1, 4, 1],
-      5: [1, 1, 4],
-      11: [4, 1, 1],
-      4: [1, 2.5, 2.5],
-      8: [2.5, 1, 2.5],
-      7: [2.5, 2.5, 1],
+  // [automDauer, MinReisezeit, admd]
+  List<num> interpretTrianglePosition(
+      double posX, double posY, double height, double width) {
+    // Sollte das Reiseprofil angelegt, aber nie aufgerufen worden sein, können
+    // höhe und breite nicht init werden, in dem Fall, setze alles auf 1/3
+    if (posX == null || posY == null || height == null || width == null) {
+      print("Travel Profile never opened");
+      return [1 / 3, 1 / 3, 1 / 3];
+    }
+    var posMiddle = vec.Vector2(width / 2, (width / 2) * tan(pi * 1 / 6));
+    var posIcon = vec.Vector2(posX, posY);
+    var rotMatrixLeft = vec.Matrix2(
+        cos(pi * 2 / 3), sin(pi * 2 / 3), -sin(pi * 2 / 3), cos(pi * 2 / 3));
+    var rotMatrixRight = vec.Matrix2(
+        cos(pi * 2 / 3), -sin(pi * 2 / 3), sin(pi * 2 / 3), cos(pi * 2 / 3));
+    Map<String, double> posVals = {
+      "maxAutom": 0,
+      "minTravTime": 0,
+      "minADMD": 0,
     };
 
-    var selected = values[index];
-    return [selected[0] / 6, selected[1] / 6, selected[2] / 6];
+    //Verschiebung in die Mitte
+    // ROTATION GEHT NOCH NICHT
+    // TODO: Wenn odirekt nach dem Start das ein Reiseprofil gewählt, ist die größe
+    // des Dreicks nicht bekannt, entweder Wichtigkeitswerte speichern und dann bei  Bedarf umrechenen
+    // oder immer die Größe des Bildschirms merken
+    // Rechne immer die Höhre der Mitte drauf um keine negativen Wert zu erhalten
+    // Icon hat eine gewisse Eigengröße, weshalb 0 nicht ganz erreicht werden kann.
+    // da aber trotzdem viel kleiner egal
+    // TODO: GANZE interpretation der Reisedreiecke in das Reiseprofil, merke dann nur
+    // die ergebnisse in der DB, Rückinterpretiere die ergebnisse zu der Position
+    posIcon -= posMiddle;
+    // Abstand zu maxAutom direkt ablesbar
+    posVals["maxAutom"] = posIcon.y + posMiddle.y;
+    // Rotation um 120 grad im Urzeigersinn
+    posVals["minTravTime"] = (rotMatrixRight * posIcon).y + posMiddle.y;
+    // Rotation um 120 grad gegen den Uhrzeigersinn, geht von mittlerem Kosy aus
+    posVals["minADMD"] = (rotMatrixLeft * posIcon).y + posMiddle.y;
+    double tot =
+        posVals["maxAutom"] + posVals["minTravTime"] + posVals["minADMD"];
+    /*
+    print([
+      posVals["maxAutom"] / tot,
+      posVals["minTravTime"] / tot,
+      posVals["minADMD"] / tot,
+    ]);
+    */
+    return [
+      posVals["maxAutom"] / tot,
+      posVals["minTravTime"] / tot,
+      posVals["minADMD"] / tot,
+    ];
   }
 
   // Setze die gewünschten Automatisierten Abschnitte, füge, falls weniger

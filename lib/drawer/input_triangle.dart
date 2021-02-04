@@ -19,8 +19,10 @@ class _InputTriangleState extends State<InputTriangle> {
 
   @override
   Widget build(BuildContext context) {
+    // print(MediaQuery.of(context).size.width);
+    // print(MediaQuery.of(context).size.height);
     return Container(
-      // Stack, damit man
+      // Stack, damit man die einzelnen Elemente übereinande legen kann
       child: Stack(
         fit: StackFit.expand,
         children: <Widget>[
@@ -46,50 +48,25 @@ class _InputTriangleState extends State<InputTriangle> {
             painter: DashedLine(start: "top"),
           ),
           Container(
+            // Verwende Layout builder um Zugriff auf die Größe der Widgets zu haben
+            // Seitenverhältnis durch Aspectration schon voher bestimmt
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                return DragComplex(
+                  context: context,
+                  height: constraints.maxHeight,
+                  width: constraints.maxWidth,
+                  indexProfile: indexProfile,
+                );
+              },
+            ),
+            /*
             child: DragComplex(
               context: context,
               indexProfile: indexProfile,
             ),
+            */
           ),
-          // Um Widget bei unterem Drittel zu Plazieren werden Expanded verwendet
-          /*
-          Column(
-            children: <Widget>[
-              Expanded(
-                flex: 3,
-                child: Container(),
-              ),
-              // Expanded für das Drag Element
-              Expanded(
-                flex: 2,
-                child: Align(
-                  alignment: Alignment.center,
-                  child: Draggable(
-                    child: CircleAvatar(
-                      backgroundColor: myMiddleTurquoise,
-                      child: Icon(
-                        Icons.touch_app,
-                        color: myWhite,
-                      ),
-                    ),
-                    feedback: CircleAvatar(
-                      backgroundColor: myMiddleTurquoise,
-                      child: Icon(
-                        Icons.touch_app,
-                        color: myWhite,
-                      ),
-                    ),
-                    childWhenDragging: Container(),
-                  ),
-                ),
-              ),
-              Expanded(
-                flex: 1,
-                child: Container(),
-              ),
-            ],
-          ),
-          */
         ],
       ),
     );

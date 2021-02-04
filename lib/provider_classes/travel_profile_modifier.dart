@@ -9,8 +9,12 @@ class TravelProfileDetailModifier with ChangeNotifier {
   // TravelProfileCollection collection;
   TravelProfileDetailModifier();
   TravelProfileData localTravelProfile = TravelProfileData();
-  int indexTriangleLocal, maxDetourLocal;
-  double minDurationAutomSegmentLocal;
+  int maxDetourLocal;
+  double minDurationAutomSegmentLocal,
+      xPosTriangleLocal,
+      yPosTriangleLocal,
+      heightTriangle,
+      widthTriangle;
 
   // init FUnktion, setzt die Werte auf den Start, der von Collection gegeben
   // wird. DIe Werte werden aber noch nicht übertragen
@@ -20,7 +24,10 @@ class TravelProfileDetailModifier with ChangeNotifier {
             .getTravelProfile(indexProfile: indexProfile);
     // Man muss die Variablen noch einmal lokal speichern, da Provider sonst immer
     // die Werte in Collection mit ändert, save dadurch nicht möglich
-    indexTriangleLocal = localTravelProfile.indexTriangle;
+    xPosTriangleLocal = localTravelProfile.xPosTriangle;
+    yPosTriangleLocal = localTravelProfile.yPosTriangle;
+    widthTriangle = localTravelProfile.triangleWidth;
+    heightTriangle = localTravelProfile.triangleHeight;
     minDurationAutomSegmentLocal =
         localTravelProfile.minDurationAutomSegment.toDouble();
     maxDetourLocal = localTravelProfile.maxDetour;
@@ -36,7 +43,10 @@ class TravelProfileDetailModifier with ChangeNotifier {
       profileIndex: indexProfile,
       maxDetour: maxDetourLocal,
       minDurationAutomSegment: minDurationAutomSegmentLocal,
-      indexTriangle: indexTriangleLocal,
+      xPosTriangle: xPosTriangleLocal,
+      yPosTriangle: yPosTriangleLocal,
+      heightTriangle: heightTriangle,
+      widthTriangle: widthTriangle,
     );
   }
 
@@ -52,10 +62,6 @@ class TravelProfileDetailModifier with ChangeNotifier {
     notifyListeners();
   }
 
-  void setIndexTriangle({int indexTriangle}) {
-    indexTriangleLocal = indexTriangle;
-  }
-
   // getter methoden
   int getMinAutomLength() {
     return minDurationAutomSegmentLocal.toInt();
@@ -65,7 +71,10 @@ class TravelProfileDetailModifier with ChangeNotifier {
     return maxDetourLocal.toInt();
   }
 
-  int getIndexTriangle() {
-    return indexTriangleLocal;
+  void setTriangle(Offset position, Offset dimensionsTriangle) {
+    xPosTriangleLocal = position.dx;
+    yPosTriangleLocal = position.dy;
+    heightTriangle = dimensionsTriangle.dy;
+    widthTriangle = dimensionsTriangle.dx;
   }
 }

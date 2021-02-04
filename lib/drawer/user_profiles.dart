@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:routenplaner/drawer/user_profile_addUser.dart';
-import 'package:routenplaner/main/footer.dart';
+import 'package:routenplaner/home/footer.dart';
 import 'package:routenplaner/provider_classes/user_profile_collection.dart';
 import 'delete_pupup.dart';
 import 'drawer_home.dart';
@@ -14,6 +14,7 @@ class UserProfiles extends StatefulWidget {
 
 class _UserProfilesState extends State<UserProfiles> {
   GlobalKey key = GlobalKey();
+
   List<Widget> printUserProfiles(UserProfileCollection profiles) {
     List<Widget> widgetList = List<Widget>();
     for (int i = 0; i < profiles.userProfileCollection.length; i++) {
@@ -51,7 +52,7 @@ class _UserProfilesState extends State<UserProfiles> {
                     // Nur der Icon
                     Icon(
                       Icons.person,
-                      color: myYellow,
+                      color: iconColor,
                       size: 50,
                     ),
                     // Name
@@ -231,16 +232,20 @@ class _UserProfilesState extends State<UserProfiles> {
         ),
         iconTheme: new IconThemeData(color: Colors.white),
       ),
-      drawer: DrawerHome(),
-      bottomNavigationBar: Footer(),
+      drawer: DrawerHome(
+        screen: "userprofiles",
+      ),
       body: Container(
         decoration: BoxDecoration(
+          /*
           image: DecorationImage(
             colorFilter: new ColorFilter.mode(
                 Colors.grey.withOpacity(0.15), BlendMode.dstATop),
             image: AssetImage("assets/images/citybackground.png"),
             fit: BoxFit.fitWidth,
           ),
+          */
+          color: backgroundColor,
         ),
         child: Consumer<UserProfileCollection>(
           builder: (context, profiles, _) => ListView(
@@ -266,15 +271,3 @@ class _UserProfilesState extends State<UserProfiles> {
     );
   }
 }
-
-/*
-ListView.builder(
-          itemCount: user.length,
-          itemBuilder: (context, i) {
-            return TravelItem(
-              user[i],
-              () => deleteUser(i),
-            );
-          },
-        ),
-        */
