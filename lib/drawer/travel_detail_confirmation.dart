@@ -46,7 +46,6 @@ class TravelDetailConirmation extends StatelessWidget {
         children: [
           Container(
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.all(Radius.circular(14)),
               color: myLightGrey,
             ),
             child: MaterialButton(
@@ -91,7 +90,6 @@ class TravelDetailConirmation extends StatelessWidget {
           ),
           Container(
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.all(Radius.circular(14)),
               color: myMiddleTurquoise,
             ),
             child: MaterialButton(
