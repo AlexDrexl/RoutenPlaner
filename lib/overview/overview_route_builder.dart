@@ -13,22 +13,6 @@ class OverviewRouteBuilder extends StatefulWidget {
 }
 
 class _OverviewRouteBuilderState extends State<OverviewRouteBuilder> {
-  /*
-  final AsyncMemoizer _memoizer = AsyncMemoizer();
-  // Wenn das hier ausgewählt, dann kann nicht mehr aktualisiert werden
-  _computeRoute(BuildContext context) {
-    return this._memoizer.runOnce(() async {
-      await Provider.of<FinalRoutes>(context, listen: false)
-          .computeFinalRoutes(context);
-      return 'REMOTE DATA';
-    });
-  }
-
-  _fetchData() async {
-    await Future.delayed(Duration(seconds: 2));
-    return 'REMOTE DATA';
-  }
-  */
   Future<bool> computeRoute(BuildContext context) {
     try {
       return Provider.of<FinalRoutes>(context, listen: false)

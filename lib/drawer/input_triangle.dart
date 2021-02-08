@@ -60,12 +60,6 @@ class _InputTriangleState extends State<InputTriangle> {
                 );
               },
             ),
-            /*
-            child: DragComplex(
-              context: context,
-              indexProfile: indexProfile,
-            ),
-            */
           ),
         ],
       ),

@@ -1,13 +1,39 @@
 import 'package:flutter/material.dart';
 import 'package:routenplaner/data/custom_colors.dart';
 
-class TriangleHelper extends StatelessWidget {
+class TriangleHelper extends StatefulWidget {
+  @override
+  _TriangleHelperState createState() => _TriangleHelperState();
+}
+
+class _TriangleHelperState extends State<TriangleHelper> {
+  final usedTextStyle = TextStyle(
+    color: myDarkGrey,
+    fontSize: 17,
+  );
+
   @override
   Widget build(BuildContext context) {
-    return Dialog(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
+    return AlertDialog(
+      scrollable: true,
+      insetPadding: EdgeInsets.fromLTRB(20, 80, 20, 120),
+      actions: [
+        MaterialButton(
+          color: myMiddleTurquoise,
+          child: Center(
+            child: Text(
+              "OK",
+              style: TextStyle(color: myWhite, fontSize: 20),
+            ),
+          ),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+      ],
+      content: Column(
         mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SizedBox(
             height: 10,
@@ -22,7 +48,7 @@ class TriangleHelper extends StatelessWidget {
           SizedBox(
             height: 10,
           ),
-          // Inhalt
+          // GIF
           Container(
             width: MediaQuery.of(context).size.width - 20,
             height: MediaQuery.of(context).size.width - 100,
@@ -38,42 +64,49 @@ class TriangleHelper extends StatelessWidget {
               ),
             ),
           ),
-          // Erklärungstext
-          Align(
-            alignment: Alignment.centerLeft,
-            child: Container(
-              margin: EdgeInsets.only(left: 10, top: 10, right: 10, bottom: 10),
-              child: Text(
-                "Verschiebe das blaue Icon, um festzulegen, auf was bei der Routenerstellung am meisten Wert gelegt werden soll",
-                style: TextStyle(color: myDarkGrey, fontSize: 17),
-              ),
-            ),
+          // Allgemeiner Erklärungstext
+          Text(
+            "Verschiebe das blaue Icon, um festzulegen, auf was bei der Routenerstellung am meisten Wert gelegt werden soll",
+            style: usedTextStyle,
           ),
-          // Zurückicon
-          Align(
-            alignment: Alignment.centerRight,
-            child: MaterialButton(
-              child: Container(
-                height: 40,
-                width: 70,
-                decoration: BoxDecoration(
-                  color: myMiddleTurquoise,
-                  border: Border.all(width: 0, color: myDarkGrey),
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(14),
-                  ),
-                ),
-                child: Center(
-                  child: Text(
-                    "OK",
-                    style: TextStyle(color: myWhite, fontSize: 20),
-                  ),
-                ),
-              ),
-              onPressed: () {
-                Navigator.pop(context);
-              },
-            ),
+          SizedBox(
+            height: 15,
+          ),
+
+          // Genauere Erklärungen zu den Dreiecksdaten
+          // Max Automationsdauer
+          Text(
+            "Max. Automationsdauer:",
+            style: TextStyle(
+                color: myDarkGrey, fontSize: 17, fontWeight: FontWeight.bold),
+          ),
+          Text(
+            "Routen mit einem hohen Anteil an automatisierter Gesamtfahrzeit werden priorisiert.",
+            style: usedTextStyle,
+          ),
+          SizedBox(
+            height: 10,
+          ),
+          Text(
+            "Min. Reisezeit:",
+            style: TextStyle(
+                color: myDarkGrey, fontSize: 17, fontWeight: FontWeight.bold),
+          ),
+          Text(
+            "Routen mit einer geringeren Reisezeit werden priorisiert. Eine kurze Reisedauer lässt sich oftmals nur auf Kosten der gesamten Automationsdauer erreichen.",
+            style: usedTextStyle,
+          ),
+          SizedBox(
+            height: 10,
+          ),
+          Text(
+            "Wenig Wechsel AD/MD:",
+            style: TextStyle(
+                color: myDarkGrey, fontSize: 17, fontWeight: FontWeight.bold),
+          ),
+          Text(
+            "Routen mit einer geringen Anzahl an Wechsel zwischen automatisiertem und manuellem Fahren werden priorisiert.",
+            style: usedTextStyle,
           ),
         ],
       ),

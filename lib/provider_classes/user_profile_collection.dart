@@ -145,30 +145,6 @@ class UserProfileCollection with ChangeNotifier {
     //////////////// KOPIEREN DER TRAVELPROFILES ///////////////
     // Suche alle Travel Profile des zu kopierenden Users
     Database db = await DatabaseHelper.instance.database;
-    /*
-    var copiedTravelProfiles = await db.rawQuery('''
-    SELECT *
-    FROM TravelProfile
-    WHERE UserID = ?
-    ''', [userProfileCollection[indexUserProfile].databaseID]);
-    // Füge leeres Profil hinzu, modifiziere es dann im Anschluss gleich,
-    // sodass es die kopierten Werte enthält
-    for (int i = 0; i < copiedTravelProfiles.length; i++) {
-      var row = copiedTravelProfiles[i];
-      Provider.of<TravelProfileCollection>(context, listen: false)
-          .addEmptyTravelProfile(
-              name: row["NameTrav"],
-              userID: userProfileCollection.last.databaseID);
-      Provider.of<TravelProfileCollection>(context, listen: false)
-          .modifyTravelProfile(
-        profileIndex: i,
-        maxDetour: row["MaxDetour"],
-        minDurationAutomSegment: row["MinSegment"].toDouble(),
-        indexTriangle: row["IndexTriangle"],
-        userID: userProfileCollection.last.databaseID,
-      );
-    }
-    */
     // Suche alle Reiseprofile raus uns speichere sie unter einem neuen Nutzer
     await db.rawInsert('''
     INSERT INTO TravelProfile (UserID, NameTrav, MaxDetour, MinSegment, IndexTriangle)

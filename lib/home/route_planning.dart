@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:routenplaner/data/layoutData.dart';
 import 'package:routenplaner/home_favorites/favorites.dart';
 import '../data/custom_colors.dart';
 import '../drawer/drawer_home.dart';
@@ -28,7 +27,6 @@ class _RoutePlanningState extends State<RoutePlanning> {
       ), // Drawer in externer Klasse
       body: Scrollbar(
         controller: _scrollController,
-        isAlwaysShown: true,
         child: SingleChildScrollView(
           controller: _scrollController,
           child: Container(

@@ -105,25 +105,18 @@ class FinalRoutes with ChangeNotifier {
 
       // Randomise die Dauer der Fahrt, und darauf basierend dann die Ankommzeit
       // Die Dauer der Fahrt darf nicht länger sein als die
-      // Fehlt: XArrivalDateTime, automationDuration, manualDuration,
-      // XautomSections, XautomMintes
 
-      // Variiere die ReiseDauer, um 0% bis 20%
-      /*
-      Duration duration = getTravelTime() +
-          Duration(
-            minutes: rng.nextInt(
-              (getTravelTime().inMinutes * durationFactor).toInt(),
-            ),
-          );
-       */
+      // Hole die Startzeit
+      DateTime startDateTime = routeDetails.startDateTime;
+
       // Hole die Reisezeit und variiere sie dann
       Duration duration = Duration(
           minutes: (travelTime.inMinutes *
                   (1 + (rng.nextInt((100 * durationFactor).toInt()) / 100)))
               .toInt());
+
       // Berechne Ankunftszeit
-      DateTime arrivalDateTime = DateTime.now().add(duration);
+      DateTime arrivalDateTime = startDateTime.add(duration);
 
       // Setze zufällig die Automatisierten Minuten
       var automMinutes = getRandomAutomMinutes(
@@ -131,12 +124,16 @@ class FinalRoutes with ChangeNotifier {
           desiredAutomSections.sections,
           routeDetails.startDateTime,
           duration);
+
       // Setze die Automation Sections in der Map
       var automSections = getAutomSections(automMinutes);
 
       // Bestimme die automatisierte Fahrzeit
-      var automationDuration =
-          Duration(minutes: automMinutes.fold(0, (p, c) => p + c));
+      int automDurMinutes = 0;
+      for (int i = 0; i < automMinutes.length; i++) {
+        if (automMinutes[i] > 0) automDurMinutes++;
+      }
+      var automationDuration = Duration(minutes: automDurMinutes);
 
       // Bestimme die Manuelle Fahrzeit
       var manualDuration =
@@ -145,7 +142,7 @@ class FinalRoutes with ChangeNotifier {
       // Füge fertiges Objekt der Liste hinzu
       routes.add(
         FinalRoute(
-          startDateTime: routeDetails.startDateTime,
+          startDateTime: startDateTime,
           arrivalDateTime: arrivalDateTime,
           duration: duration,
           automationDuration: automationDuration,
@@ -185,7 +182,7 @@ class FinalRoutes with ChangeNotifier {
         int totalSectionCount = 0;
         int validSectionCount = 0;
         for (int j = 0; j < routes[i].automationSections.length; j++) {
-          if (automDriving[j] == true) {
+          if (automDriving[j] > 0) {
             // Automatisiertes segment erkannt
             totalSectionCount++;
             if (sections[j][1] - sections[j][0] >= minSegmentDuration) {
@@ -209,14 +206,12 @@ class FinalRoutes with ChangeNotifier {
         double actualDuration = routes[i].duration.inMinutes.toDouble();
         // Abweichung soll-ist/soll
         double deviation = (targetDuration - actualDuration) / targetDuration;
-        // TODO: Evtl 1+diviation quadrieren um Unterschied zu verstärken
         points[i] += (1 + deviation) * detourFactor;
       }
       ///////////
       // Dreieck Daten verwerten
       // Interpretiere zunächst den Dreecksindex
       // [automDauer, MinReisezeit, admd]
-      // TODO: ÄNDERE ZU FUNKTIONAL
       var interpretIndex = interpretTrianglePosition(
           travelProfile.xPosTriangle,
           travelProfile.yPosTriangle,
@@ -351,29 +346,39 @@ class FinalRoutes with ChangeNotifier {
 
   // Wandle das minuten Array in die vorgesehene Map um:
   // Zeitraum : true bzw [4, 20] : true
-  Map<List<int>, bool> getAutomSections(List<int> automMinutes) {
-    var automSections = Map<List<int>, bool>();
+  Map<List<int>, int> getAutomSections(List<int> automMinutes) {
+    var automSections = Map<List<int>, int>();
     for (int i = 0; i < automMinutes.length;) {
       int start = i;
       int end = i;
-      // Start erkannt
-      if (automMinutes[i] == 1) {
-        while (i < automMinutes.length && automMinutes[i] != 0) {
+      // Timed Automatisierung erkannt
+      if (automMinutes[i] == 2) {
+        while (i < automMinutes.length && automMinutes[i] == 2) {
           end++;
           i++;
         }
         // Füge zur Map hinzu
-        automSections.putIfAbsent([start, (end - 1)], () => true);
+        automSections.putIfAbsent([start, (end - 1)], () => 2);
+        start = end;
+      }
+      // Normale Automatisierung erkannt
+      if (automMinutes[i] == 1) {
+        while (i < automMinutes.length && automMinutes[i] == 1) {
+          end++;
+          i++;
+        }
+        // Füge zur Map hinzu
+        automSections.putIfAbsent([start, (end - 1)], () => 1);
         start = end;
       }
       // Keine Automatisierung erkannt
       if (automMinutes[i] == 0) {
-        while (i < automMinutes.length && automMinutes[i] != 1) {
+        while (i < automMinutes.length && automMinutes[i] == 0) {
           end++;
           i++;
         }
         // Füge zur Map hinzu
-        automSections.putIfAbsent([start, (end - 1)], () => false);
+        automSections.putIfAbsent([start, (end - 1)], () => 0);
         start = end;
       }
     }
@@ -403,15 +408,6 @@ class FinalRoutes with ChangeNotifier {
     };
 
     //Verschiebung in die Mitte
-    // ROTATION GEHT NOCH NICHT
-    // TODO: Wenn odirekt nach dem Start das ein Reiseprofil gewählt, ist die größe
-    // des Dreicks nicht bekannt, entweder Wichtigkeitswerte speichern und dann bei  Bedarf umrechenen
-    // oder immer die Größe des Bildschirms merken
-    // Rechne immer die Höhre der Mitte drauf um keine negativen Wert zu erhalten
-    // Icon hat eine gewisse Eigengröße, weshalb 0 nicht ganz erreicht werden kann.
-    // da aber trotzdem viel kleiner egal
-    // TODO: GANZE interpretation der Reisedreiecke in das Reiseprofil, merke dann nur
-    // die ergebnisse in der DB, Rückinterpretiere die ergebnisse zu der Position
     posIcon -= posMiddle;
     // Abstand zu maxAutom direkt ablesbar
     posVals["maxAutom"] = posIcon.y + posMiddle.y;
@@ -438,11 +434,13 @@ class FinalRoutes with ChangeNotifier {
   // Setze die gewünschten Automatisierten Abschnitte, füge, falls weniger
   // als 70% automatisiert zufällig automatisierte Abschnitte hinzu
   // timedSections: start : dauer
+  // Die liste enthält 0 = keine Automation
+  // 1 = normale Automation
+  // 2 = terminierte automation
   List<int> getRandomAutomMinutes(Map<DateTime, Duration> timedSections,
       List<Duration> sections, DateTime start, Duration duration) {
-    // Random number generator
-    Random rng = Random();
-    // Array, jeder Eintrag eine minute, immer true oder false,
+    Random rng = Random(); // Random number generator
+    // Array, jeder Eintrag eine minute, immer 0, 1, 2
     // gesamtlänge = duration
     List<int> automMinutes = List<int>.filled(duration.inMinutes, 0);
 
@@ -452,6 +450,7 @@ class FinalRoutes with ChangeNotifier {
     for (int i = 0; i < timedSections.length; i++) {
       // Bei dieser Minute startet autom Fahren
       int startInMin = startOfSegment[i].difference(start).inMinutes;
+      print(startInMin);
       // Breche ab, sobald autom Section nach ankunft noch gefordert werden würde
       for (int j = startInMin;
           j < startInMin + segmentDuration[i].inMinutes &&
@@ -459,10 +458,11 @@ class FinalRoutes with ChangeNotifier {
           j++) {
         if (j >= 0) {
           automMinutes[j] =
-              1; // Überprüfe, ob ner Nutzer nicht einen Zeitpunkt zu früh anegegeben hat
+              2; // Überprüfe, ob ner Nutzer nicht einen Zeitpunkt zu früh anegegeben hat
         }
       }
     }
+
     // Versuche die Terminlosen Sections unter zu bringen, beschränke die maximale
     // automatisierte Dauer auf einen Wert zwischen 60% und 90%
     // Maximaler Anteil an automatisierten Segmenten
@@ -470,9 +470,15 @@ class FinalRoutes with ChangeNotifier {
         rng.nextInt(
             (duration.inMinutes * (automationFactorMax - automationFactorMin))
                 .round());
-
     // Fülle leere Stellen
     for (int i = 0; i < sections.length; i++) {
+      // Überprüfe, ob die max Anteil an automatisierten Segmenten erreicht, breche ab, wenn ja
+      int total = 0;
+      for (int i = 0; i < automMinutes.length; i++) {
+        if (automMinutes[i] > 0) total++;
+      }
+      if (total >= maxAutomTime) break;
+
       // Suche die leeren Stellen raus, speichere diese
       List<List<int>> emptySections = List<List<int>>();
       for (int i = 0; i < automMinutes.length; i++) {
@@ -498,28 +504,30 @@ class FinalRoutes with ChangeNotifier {
           break;
         }
       }
-      // Überprüfe, ob die max Anteil an automatisierten Segmenten erreicht, breche ab, wenn ja
-      if (automMinutes.fold(0, (p, c) => p + c) >= maxAutomTime) {
-        break;
-      }
     }
+
     // Setze nun, falls maxAutomTime noch nicht erreicht zufällig weitere automSegmente
     // segmente müssen eine gewisse Länge haben, damit nicht zu winzig
     while (true) {
       // breche ab, falls die maximale automationsdauer erreicht
       // breche ab, wenn die Route zu kurz ist
-      if (automMinutes.fold(0, (p, c) => p + c) >= maxAutomTime ||
-          duration.inMinutes < 4) {
-        break;
+      int total = 0;
+      for (int i = 0; i < automMinutes.length; i++) {
+        if (automMinutes[i] > 0) total++;
       }
+      if (total >= maxAutomTime) break;
+
       int maxLength = (duration.inMinutes.toDouble() * maxRandomSegment).ceil();
       int minLength =
           (duration.inMinutes.toDouble() * minRandomSegment).floor();
       int randLength = rng.nextInt(maxLength - minLength) + minLength;
       int randStart = rng.nextInt(automMinutes.length - randLength);
-      automMinutes.fillRange(randStart, randStart + randLength, 1);
+      // Setze nur dann 1, wenn diese Stelle noch frei, sonst würden timedSections
+      // verloren gehen können
+      for (int i = 0; i < randLength; i++) {
+        if (automMinutes[randStart + i] == 0) automMinutes[randStart + i] = 1;
+      }
     }
-
     return automMinutes;
   }
 
@@ -624,7 +632,7 @@ class FinalRoute {
   // Weitere Routen Zugaben
   List<int> automMinutes = List<int>();
   String routeLetter;
-  var automationSections = Map<List<int>, bool>();
+  var automationSections = Map<List<int>, int>();
 
   // Constructor, named, um die Daten zu füllen
   FinalRoute({

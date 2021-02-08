@@ -42,9 +42,6 @@ class _DeletePopUpState extends State<DeletePopUp> {
         MaterialButton(
           child: Container(
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.all(
-                Radius.circular(14),
-              ),
               color: myDarkGrey,
             ),
             padding: EdgeInsets.all(10),
@@ -72,9 +69,6 @@ class _DeletePopUpState extends State<DeletePopUp> {
         MaterialButton(
           child: Container(
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.all(
-                Radius.circular(14),
-              ),
               color: myMiddleTurquoise,
             ),
             padding: EdgeInsets.all(10),

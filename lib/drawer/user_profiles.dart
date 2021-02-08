@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:routenplaner/drawer/user_profile_addUser.dart';
-import 'package:routenplaner/home/footer.dart';
 import 'package:routenplaner/provider_classes/user_profile_collection.dart';
 import 'delete_pupup.dart';
 import 'drawer_home.dart';
@@ -237,14 +236,6 @@ class _UserProfilesState extends State<UserProfiles> {
       ),
       body: Container(
         decoration: BoxDecoration(
-          /*
-          image: DecorationImage(
-            colorFilter: new ColorFilter.mode(
-                Colors.grey.withOpacity(0.15), BlendMode.dstATop),
-            image: AssetImage("assets/images/citybackground.png"),
-            fit: BoxFit.fitWidth,
-          ),
-          */
           color: backgroundColor,
         ),
         child: Consumer<UserProfileCollection>(

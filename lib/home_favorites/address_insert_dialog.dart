@@ -87,11 +87,8 @@ class _AddressInsertDialogState extends State<AddressInsertDialog> {
                     decoration: BoxDecoration(
                       color: myMiddleTurquoise,
                       border: Border.all(width: 0, color: myDarkGrey),
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(10),
-                      ),
                     ),
-                    child: FlatButton(
+                    child: MaterialButton(
                       child: Text(
                         "Start",
                         style: TextStyle(fontSize: 15, color: myWhite),
@@ -155,11 +152,8 @@ class _AddressInsertDialogState extends State<AddressInsertDialog> {
                     decoration: BoxDecoration(
                       color: myMiddleTurquoise,
                       border: Border.all(width: 0, color: myDarkGrey),
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(10),
-                      ),
                     ),
-                    child: FlatButton(
+                    child: MaterialButton(
                       child: Text(
                         "Ziel",
                         style: TextStyle(fontSize: 15, color: myWhite),

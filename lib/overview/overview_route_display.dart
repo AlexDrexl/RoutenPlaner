@@ -10,6 +10,24 @@ class RouteDisplay extends StatelessWidget {
   final TimeOfDay totalAutomation = TimeOfDay(hour: 0, minute: 30);
   final TimeOfDay totalManual = TimeOfDay(hour: 0, minute: 10);
 
+  Widget explanation(Color color, String text) {
+    return Row(
+      children: <Widget>[
+        // Quadrat
+        Container(
+          height: 30,
+          width: 30,
+          color: color,
+        ),
+        SizedBox(width: 20),
+        Text(
+          text,
+          style: TextStyle(color: myDarkGrey),
+        )
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -63,39 +81,20 @@ class RouteDisplay extends StatelessWidget {
                 ),
                 SizedBox(height: 15),
                 // Reihe mit der Erklärung, was Manuell Fahrt ist
-                Row(
-                  children: <Widget>[
-                    // Quadrat
-                    Container(
-                      height: 30,
-                      width: 30,
-                      color: myDarkGrey,
-                    ),
-                    SizedBox(width: 20),
-                    Text(
-                      "Manuelle Fahrt",
-                      style: TextStyle(color: myDarkGrey),
-                    )
-                  ],
+                explanation(myDarkGrey, "Manuelle Fahrt"),
+                SizedBox(
+                  height: 10,
                 ),
-                SizedBox(height: 10),
                 // Reihe mit der Erklärung, was Atomatisierte Fahrt ist
-                Row(
-                  children: <Widget>[
-                    // Quadrat
-                    Container(
-                      height: 30,
-                      width: 30,
-                      color: myMiddleTurquoise,
-                    ),
-                    SizedBox(width: 20),
-                    Text(
-                      "Automatisierte Fahrt",
-                      style: TextStyle(color: myDarkGrey),
-                    )
-                  ],
+                explanation(myMiddleTurquoise, "Automatisierte Fahrt"),
+                SizedBox(
+                  height: 10,
                 ),
-                SizedBox(height: 20)
+                // Erklärung der terminierten automatisierten Segmente
+                explanation(myDarkTurquoise, "Gewünschtes autom. Segment"),
+                SizedBox(
+                  height: 10,
+                ),
               ],
             ),
           ),

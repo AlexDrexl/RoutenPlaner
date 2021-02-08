@@ -112,30 +112,17 @@ class _DestinationInputDetailsState extends State<DestinationInputDetails> {
           SizedBox(
             height: 8,
           ),
-          // Date Picker und Time Picker
+          // Date Picker und Date Picker
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
+              // Button für Time Picker
               Row(
                 children: [
-                  Icon(Icons.calendar_today, color: iconColor),
-                  SizedBox(
-                    width: 20,
+                  Padding(
+                    padding: EdgeInsets.only(left: 10),
+                    child: Icon(Icons.access_time, color: iconColor),
                   ),
-                  MaterialButton(
-                    color: myMiddleTurquoise,
-                    textColor: myWhite,
-                    child: Text(
-                      "${pickedDate.day.toString().padLeft(2, '0')}.${pickedDate.month.toString().padLeft(2, '0')}.${pickedDate.year.toString()}",
-                    ),
-                    onPressed: _pickDate,
-                  ),
-                ],
-              ),
-              // Button für DatePicker
-              Row(
-                children: [
-                  Icon(Icons.access_time, color: iconColor),
                   SizedBox(
                     width: 20,
                   ),
@@ -148,7 +135,26 @@ class _DestinationInputDetailsState extends State<DestinationInputDetails> {
                   ),
                 ],
               ),
-              // Button für den TimePicker
+              // Button für Date Picker
+              Row(
+                children: [
+                  Icon(Icons.calendar_today, color: iconColor),
+                  SizedBox(
+                    width: 20,
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(right: 10),
+                    child: MaterialButton(
+                      color: myMiddleTurquoise,
+                      textColor: myWhite,
+                      child: Text(
+                        "${pickedDate.day.toString().padLeft(2, '0')}.${pickedDate.month.toString().padLeft(2, '0')}.${pickedDate.year.toString()}",
+                      ),
+                      onPressed: _pickDate,
+                    ),
+                  ),
+                ],
+              ),
             ],
           ),
           SizedBox(height: 20),
@@ -224,10 +230,16 @@ class _DestinationInputDetailsState extends State<DestinationInputDetails> {
                           ),
                         ],
                       ),
+                      SizedBox(
+                        height: 30,
+                      ),
                       // String "Autom. Fahrsegment.."
                       Text(
                         'Autom. Fahrsegment hinzufügen',
                         style: TextStyle(fontSize: 17, color: myDarkGrey),
+                      ),
+                      SizedBox(
+                        height: 10,
                       ),
                       //// Hier die Automatisierten Segmente einfügen
                       HomeAutomationSegments(),
@@ -235,10 +247,6 @@ class _DestinationInputDetailsState extends State<DestinationInputDetails> {
                       SizedBox(
                         height: 8,
                       ),
-                      SizedBox(
-                        height: 8,
-                      ),
-                      // Los gets Button, startet Routenberechnung
                     ],
                   ),
                 ),

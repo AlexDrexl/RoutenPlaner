@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:routenplaner/data/custom_colors.dart';
+import 'package:routenplaner/drawer/travel_profiles.dart';
+import 'package:routenplaner/drawer/user_profiles.dart';
 import 'package:routenplaner/home/route_planning.dart';
 import 'package:routenplaner/provider_classes/desired_Autom_Sections.dart';
 import 'package:provider/provider.dart';
@@ -7,12 +9,17 @@ import 'package:routenplaner/provider_classes/final_routes.dart';
 import 'package:routenplaner/provider_classes/route_details.dart';
 
 class OveriewConfirmation extends StatefulWidget {
+  final String targetPage;
+  OveriewConfirmation({@required this.targetPage});
   @override
-  _OveriewConfirmationState createState() => _OveriewConfirmationState();
+  _OveriewConfirmationState createState() =>
+      _OveriewConfirmationState(targetPage: targetPage);
 }
 
 class _OveriewConfirmationState extends State<OveriewConfirmation> {
-  bool homeButtonPressed = false;
+  // bool homeButtonPressed = false;
+  String targetPage;
+  _OveriewConfirmationState({@required this.targetPage});
 
   @override
   Widget build(BuildContext context) {
@@ -73,7 +80,6 @@ class _OveriewConfirmationState extends State<OveriewConfirmation> {
               //////////////////// ZURÜCKSETZEN ALLER WICHTIGEN DATEN
               /// Eingegebene Routen
               onPressed: () {
-                print("GO BACK TO HOME");
                 // Lösche die Automatisierten Segmente
                 Provider.of<DesiredAutomSections>(context, listen: false)
                     .sections
@@ -95,6 +101,34 @@ class _OveriewConfirmationState extends State<OveriewConfirmation> {
                     builder: (BuildContext context) => RoutePlanning(),
                   ),
                 );
+                switch (targetPage) {
+                  case "home":
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute<Widget>(
+                        builder: (BuildContext context) => RoutePlanning(),
+                      ),
+                    );
+                    break;
+                  case "userprofiles":
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute<Widget>(
+                        builder: (BuildContext context) => UserProfiles(),
+                      ),
+                    );
+                    break;
+                  case "travelprofiles":
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute<Widget>(
+                        builder: (BuildContext context) => TravelProfiles(),
+                      ),
+                    );
+                    break;
+                  default:
+                    break;
+                }
               },
             ),
           )

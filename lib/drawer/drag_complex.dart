@@ -1,4 +1,3 @@
-import 'package:dart_math/dart_math.dart';
 import 'package:flutter/material.dart';
 import 'package:routenplaner/data/custom_colors.dart';
 import 'package:provider/provider.dart';
@@ -6,7 +5,6 @@ import 'package:routenplaner/provider_classes/travel_profile_modifier.dart';
 import 'package:routenplaner/provider_classes/travel_profiles_collection.dart';
 import 'dart:math';
 import 'package:vector_math/vector_math.dart' as vec;
-import 'package:dart_math/algebra.dart';
 
 class DragComplex extends StatefulWidget {
   final BuildContext context;
@@ -86,12 +84,12 @@ class _DragComplexState extends State<DragComplex> {
   }
 
   // Dreiecksdaten
-
   Offset getOldPosition() {
     RenderBox box = key.currentContext.findRenderObject();
     return box.localToGlobal(Offset.zero);
   }
 
+  // Überprüfe, ob das Icon ausserhalb des Dreiecks
   Offset checkPosition(double x, double y) {
     var vecPoint = vec.Vector2(x, y);
     if (outOfBound(vecPoint)) {
@@ -100,13 +98,8 @@ class _DragComplexState extends State<DragComplex> {
     return Offset(vecPoint.x, vecPoint.y);
   }
 
-  // Distanz über Formel d = (p-a)xb/|b|
-  // mit: g=a+lambda*b und Punkt p
-  // VIELLEICHT DOCH MIT radialer verschiebung Berechne den schnittpunkt der Dreieckskanten und
-  // radialer verschiebungslinie. Distanz davon berechen. Entlang der radialen verschiebungslinie verschieben
-  // Schwierig, wenn rad verschiebungslinie und dreickslinei nicht parallel, dann sp im irgendwo.
+  // Sche Schnittpunkt mit einer der Dreiecksseiten
   vec.Vector2 getclosestIntersection(vec.Vector2 point) {
-    // List<vec.Vector2> intersections = List<vec.Vector2>();
     // Berechne den Winkel, den Mid zu Point zur x achse hat. Lese daran ab, in welchen Abschnitt
     var phiInDegrees = 180 +
         atan2((point - positionMiddle).y, (point - positionMiddle).x) *

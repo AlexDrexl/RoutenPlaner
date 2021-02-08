@@ -20,35 +20,36 @@ class AutomationGraphic extends StatefulWidget {
 class _AutomationGraphicState extends State<AutomationGraphic>
     with TickerProviderStateMixin {
   final routeLetter = "A";
-  bool showTimes = false;
+  bool zoomIn = false;
+  GlobalKey key = GlobalKey();
 
-  final _transformationController = TransformationController();
-  TapDownDetails _doubleTapDetails;
+  final transformationController = TransformationController();
+  // TapDownDetails doubleTapDetails;
+  var position = Offset(0, 0);
 
-  void _handleDoubleTapDown(TapDownDetails details) {
-    _doubleTapDetails = details;
+  void tabDownSetPosition(Offset locPosition) {
+    position = locPosition;
   }
 
-  void _handleDoubleTap() {
+  void zoom() {
     // Zoom out
-    if (_transformationController.value != Matrix4.identity()) {
-      _transformationController.value = Matrix4.identity();
+    if (transformationController.value != Matrix4.identity()) {
+      transformationController.value = Matrix4.identity();
       setState(() {
-        showTimes = false;
+        zoomIn = false;
       });
     }
     // Zoom in
     else {
-      final position = _doubleTapDetails.localPosition;
       // For a 3x zoom
-      _transformationController.value = Matrix4.identity()
+      transformationController.value = Matrix4.identity()
         ..translate(-position.dx * 2, -position.dy * 2)
         ..scale(3.0);
       // Fox a 2x zoom
       // ..translate(-position.dx, -position.dy)
       // ..scale(2.0);
       setState(() {
-        showTimes = true;
+        zoomIn = true;
       });
     }
   }
@@ -56,15 +57,16 @@ class _AutomationGraphicState extends State<AutomationGraphic>
   // Gebe eine Reihe von Drei Columns zurück, 1. Column ist icon + start, dann Linie + Zeiten
   // dann icon + ende
   Widget graphLine(
-      Map<List<int>, bool> automationSections, DateTime start, DateTime end) {
-    double myHeight;
-    Color myColor;
+      Map<List<int>, int> automationSections, DateTime start, DateTime end) {
     // Liste der Widgets
     List<Widget> widgetList = [];
+    List<Widget> widgetListGraph = [];
+    List<Widget> widgetListTimeTop = [];
+    List<Widget> widgetListTimeBottom = [];
     // Liste mit den Start/End Einträgen
     var listOfSections = automationSections.keys.toList();
     // Liste mit Bool, ob autom oder nicht
-    List<bool> listOfAutomation = automationSections.values.toList();
+    List<int> listOfAutomation = automationSections.values.toList();
     // Einzelnen Flex Werte
     List<int> flexValues = [];
     // Textstyle, wird immer wieder verwendet
@@ -75,70 +77,134 @@ class _AutomationGraphicState extends State<AutomationGraphic>
 
     // Füge das Start Icon + Zeitr am Anfang der Linie hinzu
     widgetList.add(
-      Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(
-            Icons.location_on,
-            color: myDarkGrey,
-            size: 20,
-          ),
-          showTimes
-              ? Text(
-                  "${start.hour.toString().padLeft(2, '0')}:${start.minute.toString().padLeft(2, '0')}",
-                  style: smallTextStyle,
-                )
-              : Container(),
-        ],
+      Expanded(
+        flex: 1,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              Icons.location_on,
+              color: myDarkGrey,
+              size: 20,
+            ),
+            zoomIn
+                ? Text(
+                    "${start.hour.toString().padLeft(2, '0')}:${start.minute.toString().padLeft(2, '0')}",
+                    style: smallTextStyle,
+                  )
+                : Container(),
+          ],
+        ),
       ),
     );
 
-    // Erstelle die Reihe mit den Segmenten
+    // Erstelle die Reihe mit den Grafik Segmenten
     for (int i = 0; i < listOfSections.length; i++) {
       flexValues
           .add(listOfSections[i][1] - listOfSections[i][0] + 1); // Flex Val
-      // If Else um herauszufinden, ob denn blau oder net
-      if (listOfAutomation[i] == true) {
-        // BLAU / AUTOM
-        myColor = myMiddleTurquoise;
-        myHeight = 7;
-      } else {
-        // GRAU / NICHT AUTOM
-        myColor = myDarkGrey;
-        myHeight = 5;
-      }
-      widgetList.add(
-        Flexible(
+      widgetListGraph.add(
+        Expanded(
           flex: flexValues[i],
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(
-                height: myHeight,
-                color: myColor,
-              ),
-            ],
+          child: Container(
+              height: listOfAutomation[i] == 2
+                  ? 7
+                  : listOfAutomation[i] == 1
+                      ? 6
+                      : 5,
+              color: listOfAutomation[i] == 2
+                  ? myDarkTurquoise
+                  : listOfAutomation[i] == 1
+                      ? myMiddleTurquoise
+                      : myDarkGrey),
+        ),
+      );
+    }
+
+    // Liste mit den Segmente für die Zeit, oben
+    for (int i = 0; i < listOfSections.length - 1; i += 2) {
+      // Flex bis dahin aufaddieren
+      var flexRaw = 0.0; // Im endeffekt auch gleich die dauer bis dahin
+      var flexTotal = flexValues.fold(0, (p, e) => p + e);
+      for (int j = 0; j <= i; j++) {
+        flexRaw += flexValues[j];
+      }
+      var time = start.add(Duration(minutes: flexRaw.toInt()));
+      widgetListTimeTop.add(
+        Align(
+          alignment: Alignment((2 * flexRaw / flexTotal) - 1, 0),
+          child: Container(
+              child: Text(
+            "${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}",
+            style: smallTextStyle,
+          )),
+        ),
+      );
+    }
+    // Liste für Zeitangaben unten
+    for (int i = 1; i < listOfSections.length - 1; i += 2) {
+      // Flex bis dahin aufaddieren
+      var flexRaw = 0.0; // Im endeffekt auch gleich die dauer bis dahin
+      var flexTotal = flexValues.fold(0, (p, e) => p + e);
+      for (int j = 0; j <= i; j++) {
+        flexRaw += flexValues[j];
+      }
+      var time = start.add(Duration(minutes: flexRaw.toInt()));
+      widgetListTimeBottom.add(
+        Align(
+          alignment: Alignment((2 * flexRaw / flexTotal) - 1, 0),
+          child: Container(
+            child: Text(
+              "${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}",
+              style: smallTextStyle,
+            ),
           ),
         ),
       );
     }
+    // Füge Zeiten und Graph der Liste hinzu
+    widgetList.add(
+      Expanded(
+        flex: 10,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              height: 10,
+              child: zoomIn ? Stack(children: widgetListTimeTop) : Container(),
+            ),
+            Row(
+              children: widgetListGraph,
+            ),
+            Container(
+              height: 10,
+              child:
+                  zoomIn ? Stack(children: widgetListTimeBottom) : Container(),
+            ),
+          ],
+        ),
+      ),
+    );
+
     // Füge die Fahne + Zeit am Ende hinzu
     widgetList.add(
-      Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(
-            Icons.flag_rounded,
-            color: myDarkGrey,
-            size: 20,
-          ),
-          showTimes
-              ? Text(
-                  "${end.hour.toString().padLeft(2, '0')}:${end.minute.toString().padLeft(2, '0')}",
-                  style: smallTextStyle,
-                )
-              : Container(),
-        ],
+      Expanded(
+        flex: 1,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              Icons.flag_rounded,
+              color: myDarkGrey,
+              size: 20,
+            ),
+            zoomIn
+                ? Text(
+                    "${end.hour.toString().padLeft(2, '0')}:${end.minute.toString().padLeft(2, '0')}",
+                    style: smallTextStyle,
+                  )
+                : Container(),
+          ],
+        ),
       ),
     );
     return Row(
@@ -158,48 +224,76 @@ class _AutomationGraphicState extends State<AutomationGraphic>
       onVerticalDragStart: (DragStartDetails _) {
         // NeverScrollableScrollPhysics();
       },
-      onDoubleTap: _handleDoubleTap,
-      onDoubleTapDown: _handleDoubleTapDown,
-      child: Container(
-        height: 150,
-        decoration: BoxDecoration(
-          color: myWhite,
-          border: Border.all(width: 0, color: myDarkGrey),
-          borderRadius: BorderRadius.all(
-            Radius.circular(14),
-          ),
-        ),
-        child: ClipRect(
-          child: InteractiveViewer(
-            transformationController: _transformationController,
-            onInteractionEnd: (details) {
-              // Gibt die TrafoMatrix einträge zurück, wenn voll eingezoomed
-              // dann sind die DIagonaleneinträge, bis auf den Letzten, bei 2.57
-              if (_transformationController.value.row0.x > 2) {
-                setState(() {
-                  showTimes = true;
-                });
-              } else if (showTimes == true) {
-                setState(() {
-                  showTimes = false;
-                });
-              }
-            },
-            child: Container(
-              child: graphLine(
-                  Provider.of<FinalRoutes>(context, listen: false)
-                      .routes[widget.routeIndex]
-                      .automationSections,
-                  Provider.of<FinalRoutes>(context, listen: false)
-                      .routes[widget.routeIndex]
-                      .startDateTime,
-                  Provider.of<FinalRoutes>(context, listen: false)
-                      .routes[widget.routeIndex]
-                      .arrivalDateTime),
-              constraints: BoxConstraints.expand(),
+      onDoubleTap: () => zoom(),
+      // Wenn der nutzer nach dem Zweiten Tippen den Finger vom Bildschirm lässt
+      onDoubleTapDown: (details) {
+        tabDownSetPosition(details.localPosition);
+      },
+      child: Stack(
+        key: key,
+        fit: StackFit.loose,
+        children: [
+          Container(
+            height: 150,
+            decoration: BoxDecoration(
+              color: myWhite,
+              border: Border.all(width: 0, color: myDarkGrey),
+              borderRadius: BorderRadius.all(
+                Radius.circular(14),
+              ),
+            ),
+            child: ClipRect(
+              child: InteractiveViewer(
+                transformationController: transformationController,
+                onInteractionEnd: (details) {
+                  // Gibt die TrafoMatrix einträge zurück, wenn voll eingezoomed
+                  // dann sind die DIagonaleneinträge, bis auf den Letzten, bei 2.57
+                  if (transformationController.value.row0.x > 2) {
+                    setState(() {
+                      zoomIn = true;
+                    });
+                  } else if (zoomIn == true) {
+                    setState(() {
+                      zoomIn = false;
+                    });
+                  }
+                },
+                child: Container(
+                  child: graphLine(
+                      Provider.of<FinalRoutes>(context, listen: false)
+                          .routes[widget.routeIndex]
+                          .automationSections,
+                      Provider.of<FinalRoutes>(context, listen: false)
+                          .routes[widget.routeIndex]
+                          .startDateTime,
+                      Provider.of<FinalRoutes>(context, listen: false)
+                          .routes[widget.routeIndex]
+                          .arrivalDateTime),
+                  constraints: BoxConstraints.expand(),
+                ),
+              ),
             ),
           ),
-        ),
+          Align(
+            alignment: Alignment.topRight,
+            child: GestureDetector(
+              onTapDown: (details) {
+                Offset center = Offset(details.localPosition.dx - 10,
+                    details.localPosition.dy + 50);
+                tabDownSetPosition(center);
+              },
+              onTap: () => zoom(),
+              child: Container(
+                padding: EdgeInsets.only(right: 10, top: 10),
+                child: Icon(
+                  zoomIn ? Icons.zoom_out : Icons.zoom_in,
+                  color: iconColor,
+                  size: 40,
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -327,109 +421,3 @@ class TimeTotals extends StatelessWidget {
     );
   }
 }
-
-/*
-Row(
-                  children: [
-                    // Container für die Anzeige der Gesamt Manuel Fahrzeit
-                    Container(
-                      padding: EdgeInsets.fromLTRB(30, 2, 30, 2),
-                      decoration: BoxDecoration(
-                        color: myDarkGrey,
-                        borderRadius: BorderRadius.only(
-                          bottomLeft: Radius.circular(10),
-                          topLeft: Radius.circular(10),
-                        ),
-                      ),
-                      child: Center(
-                        child: Text(
-                          "${totalManual.hour}:${totalManual.minute}h",
-                          style: TextStyle(
-                            color: myWhite,
-                          ),
-                        ),
-                      ),
-                    ),
-                    // Container für die Anzeig der gesamt Automation Fahrzeit
-                    Container(
-                      padding: EdgeInsets.fromLTRB(30, 2, 30, 2),
-                      decoration: BoxDecoration(
-                        color: myMiddleTurquoise,
-                        borderRadius: BorderRadius.only(
-                          topRight: Radius.circular(10),
-                          bottomRight: Radius.circular(10),
-                        ),
-                      ),
-                      child: Center(
-                        child: Text(
-                          "${totalAutomation.hour}:${totalAutomation.minute}h",
-                          style: TextStyle(
-                            color: myWhite,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-*/
-
-/*
-
-
-  @override
-  Widget build(BuildContext context) {
-    return Consumer<AutomationSections>(
-      builder: (context, automationSections, chil) => Expanded(
-        child: Container(
-          padding: EdgeInsets.only(right: 20),
-          child: Row(
-            children: [
-              // Manuelle Fahrzeit
-              ConstrainedBox(
-                constraints: BoxConstraints(minWidth: 60),
-                child: Expanded(
-                  flex: automationSections.totalManual.minute +
-                      automationSections.totalManual.hour * 60,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: myDarkGrey,
-                      borderRadius: BorderRadius.only(
-                        bottomLeft: Radius.circular(10),
-                        topLeft: Radius.circular(10),
-                      ),
-                    ),
-                    child: Center(
-                      child: Text(
-                        "${automationSections.totalManual.hour} : ${automationSections.totalManual.minute}h",
-                        style: TextStyle(fontSize: 17, color: myWhite),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              Expanded(
-                flex: automationSections.totalAutom.minute +
-                    automationSections.totalAutom.hour * 60,
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: myMiddleTurquoise,
-                    borderRadius: BorderRadius.only(
-                      bottomRight: Radius.circular(10),
-                      topRight: Radius.circular(10),
-                    ),
-                  ),
-                  child: Center(
-                    child: Text(
-                      "${automationSections.totalAutom.hour} : ${automationSections.totalAutom.minute}h",
-                      style: TextStyle(fontSize: 17, color: myWhite),
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-
-*/

@@ -54,10 +54,6 @@ class RoutePlaner extends StatelessWidget {
           primaryColor: myMiddleTurquoise,
           accentColor: myMiddleTurquoise,
           splashColor: myMiddleTurquoise,
-          //cardColor: Hexcolor('48ACB8'),
-          //highlightColor: Hexcolor('48ACB8'),
-          //timePickerTheme: null
-          // Define the default font family.
           fontFamily: 'Tahoma',
 
           // Define the default TextTheme. Use this to specify the default

@@ -68,14 +68,6 @@ class DrawerHome extends StatelessWidget {
               ),
             ),
             onTap: () {
-              /*
-              Navigator.push(
-                context,
-                MaterialPageRoute<Widget>(
-                  builder: (BuildContext context) => RoutePlanning(),
-                ),
-              );
-              */
               switch (screen) {
                 // In home soll nichts passieren
                 case "home":
@@ -87,7 +79,9 @@ class DrawerHome extends StatelessWidget {
                   showDialog(
                     context: context,
                     builder: (context) {
-                      return OveriewConfirmation();
+                      return OveriewConfirmation(
+                        targetPage: "home",
+                      );
                     },
                   );
                   break;
@@ -98,6 +92,7 @@ class DrawerHome extends StatelessWidget {
                     builder: (context) {
                       return TravelDetailConirmation(
                         indexProfile: indexTravelProfile,
+                        targetPage: "home",
                       );
                     },
                   );
@@ -117,6 +112,7 @@ class DrawerHome extends StatelessWidget {
           Divider(
             thickness: 1,
           ),
+
           // Listenzeile Nutzerprofile
           ListTile(
             leading: Icon(Icons.person, color: iconColor, size: 50),
@@ -128,12 +124,49 @@ class DrawerHome extends StatelessWidget {
               ),
             ),
             onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute<Widget>(
-                  builder: (BuildContext context) => UserProfiles(),
-                ),
-              );
+              switch (screen) {
+                // In home soll nichts passieren
+                case "home":
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute<Widget>(
+                      builder: (BuildContext context) => UserProfiles(),
+                    ),
+                  );
+
+                  break;
+                case "overview":
+                  showDialog(
+                    context: context,
+                    builder: (context) {
+                      return OveriewConfirmation(
+                        targetPage: "userprofiles",
+                      );
+                    },
+                  );
+                  break;
+                // In den Reiseprofilen soll abgefragt werden, ob gespeichert werden soll
+                case "travelprofiledetails":
+                  showDialog(
+                    context: context,
+                    builder: (context) {
+                      return TravelDetailConirmation(
+                        indexProfile: indexTravelProfile,
+                        targetPage: "userprofiles",
+                      );
+                    },
+                  );
+                  break;
+                // In allen anderen Fällen soll einfach zu home zurückgegangen werden
+                default:
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute<Widget>(
+                      builder: (BuildContext context) => UserProfiles(),
+                    ),
+                  );
+                  break;
+              }
             },
           ),
           Divider(
@@ -150,12 +183,50 @@ class DrawerHome extends StatelessWidget {
               ),
             ),
             onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute<Widget>(
-                  builder: (BuildContext context) => TravelProfiles(),
-                ),
-              );
+              switch (screen) {
+                // In home soll einfach zu Reiseprofilen gewechselt werden
+                case "home":
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute<Widget>(
+                      builder: (BuildContext context) => TravelProfiles(),
+                    ),
+                  );
+                  break;
+                // in overview soll geschaut werden, ob der Nutzer wirklich die Route verwerfen möchte
+                // Dazu zählt auch alternative Routes
+                case "overview":
+                  showDialog(
+                    context: context,
+                    builder: (context) {
+                      return OveriewConfirmation(
+                        targetPage: "travelprofiles",
+                      );
+                    },
+                  );
+                  break;
+                // In den Reiseprofilen soll abgefragt werden, ob gespeichert werden soll
+                case "travelprofiledetails":
+                  showDialog(
+                    context: context,
+                    builder: (context) {
+                      return TravelDetailConirmation(
+                        indexProfile: indexTravelProfile,
+                        targetPage: "travelprofiles",
+                      );
+                    },
+                  );
+                  break;
+                // In allen anderen Fällen soll einfach zu home zurückgegangen werden
+                default:
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute<Widget>(
+                      builder: (BuildContext context) => TravelProfiles(),
+                    ),
+                  );
+                  break;
+              }
             },
           ),
           Divider(

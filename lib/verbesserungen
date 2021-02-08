@@ -10,15 +10,22 @@ ToDo:
 - DONE Plus Icon zum Hinzufügen eines Automatisierten Segemnts kleiner machen
 - DONE "Reisprofil" zu Reiseprofil
 - DONE Home Button ändern bzw von Overview/Reiseprofile etc weg 
-- Weitere Angaben Design und Anordnung überarbeiten 
-- Reiseprofil hat auf der zeiten Seite ein anderes Icon als auf der ersten Seite
-- Reiseprofil icon stimmt nicht ?
-- Popup hinzufügen von autom segment ändern 
+- DONE Weitere Angaben Design und Anordnung überarbeiten 
+- DONE Reiseprofil hat auf der zeiten Seite ein anderes Icon als auf der ersten Seite
+- DONE Reiseprofil icon stimmt nicht ?
+- DONE Popup hinzufügen von autom segment ändern 
 - Alternative ROuten Button noch nicht aligned mit dem Darüber
-- Wenn in Overview auf zurückbutton gedrückt, dann auch Abfrage, ob die ROute verworfen werden soll
-- wenn im overviewv auf entwas anderes als home gedrückt wird, dann kommt keine abfrage ob die Route verworfen werden soll
-- home Kasten hat unten noch abgerundete ecken
+- DONE Wenn in Overview auf zurückbutton gedrückt, dann auch Abfrage, ob die ROute verworfen werden soll
+- DONE wenn im overviewv auf entwas anderes als home gedrückt wird, dann kommt keine abfrage ob die Route verworfen werden soll
+- DONE home Kasten hat unten noch abgerundete ecken
 - Footer löschen
-- Hintergurnd in Reiseprofil und Nutzerprofil ändern
+- DONE Hintergurnd in Reiseprofil und Nutzerprofil ändern
 - Hintergrund dateien löschen
-- Welcome Bildschirme in Nutzer und Reiseprofile
+- DONE Welcome Bildschirme in Nutzer und Reiseprofile
+- DONE Time und Date Picker nächer zusammen 
+- DONE Bei Automationsgrafik die manuell erstellten Routen extra anzeigen
+- DONE Zeit wird nicht zurückgesetzte
+- DONE Reiseprofile Welcome Bildschirm
+- DONE Reiseprofil kasten ändern
+- DONE Reiseprofil Anzeige von Slider werten 
+- DONE bessere Erklärung bei dem Reisedreieck 

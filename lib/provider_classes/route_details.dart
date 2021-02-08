@@ -7,7 +7,7 @@ class RouteDetails with ChangeNotifier {
   String startingLocation;
   String destinationLocation;
   // TravelProfileData selectedTravelProfile = TravelProfileData();
-  DateTime startDateTime = DateTime.now();
+  DateTime startDateTime;
   LatLng geoCoordStart;
   LatLng geoCoordDestination;
   bool startLocValid = true;
@@ -19,6 +19,12 @@ class RouteDetails with ChangeNotifier {
   String hintTextDestination = "Ziel";
   Color hintColorDestination = myDarkGrey;
 
+  // Konstruktor zum setzen der Startzeit
+  RouteDetails() {
+    startDateTime = DateTime.now();
+    startDateTime = DateTime(startDateTime.year, startDateTime.month,
+        startDateTime.day, startDateTime.hour, startDateTime.minute, 0, 0);
+  }
   // reset aller Eingaben
   void resetRouteDetails() {
     hintTextStart = "Start";
@@ -102,7 +108,7 @@ class RouteDetails with ChangeNotifier {
     // kopieren des bisherigen stands, geht nicht anders
     var localDateTime = startDateTime;
     startDateTime = DateTime(localDateTime.year, localDateTime.month,
-        localDateTime.day, hour, min, 0);
+        localDateTime.day, hour, min, 0, 0);
   }
 
   void setStartDate(int year, int month, int day) {

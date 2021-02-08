@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:routenplaner/data/custom_colors.dart';
 import 'package:routenplaner/drawer/travel_profiles.dart';
+import 'package:routenplaner/drawer/user_profiles.dart';
 import 'package:routenplaner/home/route_planning.dart';
 import 'package:routenplaner/provider_classes/travel_profile_modifier.dart';
 import 'package:provider/provider.dart';
 
 class TravelDetailConirmation extends StatelessWidget {
   final int indexProfile;
-  TravelDetailConirmation({@required this.indexProfile});
+  final String targetPage;
+  TravelDetailConirmation(
+      {@required this.indexProfile, @required this.targetPage});
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
@@ -55,12 +58,34 @@ class TravelDetailConirmation extends StatelessWidget {
                 ),
               ),
               onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute<Widget>(
-                    builder: (BuildContext context) => RoutePlanning(),
-                  ),
-                );
+                switch (targetPage) {
+                  case "home":
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute<Widget>(
+                        builder: (BuildContext context) => RoutePlanning(),
+                      ),
+                    );
+                    break;
+                  case "travelprofiles":
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute<Widget>(
+                        builder: (BuildContext context) => TravelProfiles(),
+                      ),
+                    );
+                    break;
+                  case "userprofiles":
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute<Widget>(
+                        builder: (BuildContext context) => UserProfiles(),
+                      ),
+                    );
+                    break;
+                  default:
+                    break;
+                }
               },
             ),
           ),
@@ -78,18 +103,36 @@ class TravelDetailConirmation extends StatelessWidget {
                 ),
               ),
               onPressed: () {
-                // Wenn gedrückt, dann sollen alle Daten auch wirklich in
-                // Travel Profile Collection gespeichert werden bzw in der
-                // Datenbank
                 Provider.of<TravelProfileDetailModifier>(context, listen: false)
                     .safe(indexProfile, context);
-
-                Navigator.push(
-                  context,
-                  MaterialPageRoute<Widget>(
-                    builder: (BuildContext context) => RoutePlanning(),
-                  ),
-                );
+                switch (targetPage) {
+                  case "home":
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute<Widget>(
+                        builder: (BuildContext context) => RoutePlanning(),
+                      ),
+                    );
+                    break;
+                  case "travelprofiles":
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute<Widget>(
+                        builder: (BuildContext context) => TravelProfiles(),
+                      ),
+                    );
+                    break;
+                  case "userprofiles":
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute<Widget>(
+                        builder: (BuildContext context) => UserProfiles(),
+                      ),
+                    );
+                    break;
+                  default:
+                    break;
+                }
               },
             ),
           )

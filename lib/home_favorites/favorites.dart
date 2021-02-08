@@ -66,7 +66,6 @@ class _FavoritesState extends State<Favorites>
                 onPressed: () async {
                   // Wenn gedrückt, dann werden die Koordinaten basierend auf
                   // dem namen gesucht, nicht optimal, da es bei fehlender Internet verbindung fehl schlägt
-                  // TODO: Ectl doch noch ändern und LatLng in Database speichern
                   bool start = await showDialog(
                     context: context,
                     builder: (context) {
@@ -127,7 +126,6 @@ class _FavoritesState extends State<Favorites>
                 color: myMiddleTurquoise,
               ),
               onPressed: () async {
-                // TODO: EVtl latlng in Datenbank speichern
                 Provider.of<RouteDetails>(context, listen: false)
                     .setStart(start);
                 Provider.of<RouteDetails>(context, listen: false)

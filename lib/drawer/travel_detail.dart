@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:routenplaner/data/layoutData.dart';
 import 'package:routenplaner/drawer/drawer_home.dart';
 import 'package:routenplaner/drawer/input_triangle.dart';
 import 'package:routenplaner/drawer/travel_profile_addTravelProfile.dart';
@@ -25,6 +26,7 @@ class _TravelDetailState extends State<TravelDetail> {
   int indexProfile;
   bool homeButtonPressed = false;
   String newTravelProfileName = "";
+  SliderThemeData sliderTheme = SliderThemeData();
   _TravelDetailState(this.indexProfile) {
     // Übergebe das Profi an den Modifier, als Startwert
   }
@@ -182,78 +184,31 @@ class _TravelDetailState extends State<TravelDetail> {
           },
         ),
       ),
-      /*
-      bottomNavigationBar: Stack(
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            // Mit margin hindeichseln
-            children: [
-              Container(
-                margin: EdgeInsets.only(top: 5, bottom: 5, left: 5, right: 50),
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  boxShadow: [
-                    BoxShadow(blurRadius: 10, color: myWhite, spreadRadius: 5),
-                  ],
-                ),
-                child: CircleAvatar(
-                  radius: 30,
-                  backgroundColor: myMiddleTurquoise,
-                  child: IconButton(
-                    icon: Icon(
-                      Icons.save,
-                      color: myWhite,
-                      size: 30,
-                    ),
-                    onPressed: () {
-                      Provider.of<TravelProfileDetailModifier>(context,
-                              listen: false)
-                          .safe(indexProfile, context);
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute<Widget>(
-                          builder: (BuildContext context) => TravelProfiles(),
-                        ),
-                      );
-                    },
-                  ),
-                ),
-              ),
-            ],
-          )
-        ],
-      ),
-      */
       // Eigentliches Reiseprofil
       body: WillPopScope(
         onWillPop: safeChanges,
         child: Scrollbar(
           controller: _scrollController,
-          isAlwaysShown: true,
+          isAlwaysShown: false,
           child: SingleChildScrollView(
             controller: _scrollController,
             child: Container(
+              margin: EdgeInsets.fromLTRB(contentMarginLR, contentMarginTB,
+                  contentMarginLR, contentMarginTB),
               decoration: BoxDecoration(
-                image: DecorationImage(
-                  colorFilter: new ColorFilter.mode(
-                      Colors.grey.withOpacity(0.15), BlendMode.dstATop),
-                  image: AssetImage("assets/images/citybackground.png"),
-                  fit: BoxFit.fitWidth,
-                ),
+                color: backgroundColor,
               ),
               child: Container(
                 child: Column(
-                  mainAxisSize: MainAxisSize.max,
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
+                    SizedBox(
+                      height: distanceBoxes,
+                    ),
+                    // Container für Name des Reiseprofils und edit Reiseprofil
                     Container(
-                      margin: EdgeInsets.only(
-                          left: 25, right: 25, top: 25, bottom: 25),
-                      padding: EdgeInsets.only(left: 10, right: 10),
                       decoration: BoxDecoration(
                           border: Border.all(width: 0, color: myMiddleGrey),
-                          borderRadius: BorderRadius.all(Radius.circular(14)),
                           color: myWhite,
                           boxShadow: [
                             BoxShadow(
@@ -262,11 +217,8 @@ class _TravelDetailState extends State<TravelDetail> {
                             )
                           ]),
                       child: ListTile(
-                        contentPadding: EdgeInsets.only(
-                            left: 15, right: 15, top: 8, bottom: 8),
                         leading:
                             Icon(Icons.card_travel, color: iconColor, size: 50),
-                        //////////////////// PROBLEM, Name aktualisiert nicht
                         title: Consumer<TravelProfileCollection>(
                           builder: (context, travelProfiles, _) => Container(
                             child: Text(
@@ -305,221 +257,276 @@ class _TravelDetailState extends State<TravelDetail> {
                         ),
                       ),
                     ),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Container(
-                            margin: EdgeInsets.only(
-                                left: 25, right: 25, bottom: 25),
-                            padding: EdgeInsets.only(
-                                left: 25, right: 25, top: 25, bottom: 25),
-                            decoration: BoxDecoration(
-                              border: Border.all(width: 0, color: myMiddleGrey),
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(14)),
-                              color: myWhite,
-                              boxShadow: [
-                                BoxShadow(
-                                  color: myMiddleGrey,
-                                  blurRadius: 4,
-                                )
-                              ],
-                            ),
-                            child: Column(
+                    SizedBox(
+                      height: distanceBoxes,
+                    ),
+                    // Container für das Dreieck
+                    Container(
+                      padding: EdgeInsets.fromLTRB(contentPaddingLR,
+                          contentPaddingTB, contentPaddingTB, contentPaddingTB),
+                      decoration: BoxDecoration(
+                        border: Border.all(width: 0, color: myMiddleGrey),
+                        color: myWhite,
+                        boxShadow: [
+                          BoxShadow(
+                            color: myMiddleGrey,
+                            blurRadius: 4,
+                          )
+                        ],
+                      ),
+                      child: Column(
+                        children: [
+                          Container(
+                            margin: EdgeInsets.only(left: 10, right: 10),
+                            child: Row(
                               children: [
-                                Container(
-                                  margin: EdgeInsets.only(left: 10, right: 10),
-                                  child: Row(
-                                    children: [
-                                      Expanded(
-                                        flex: 1,
-                                        child: Container(),
+                                Expanded(
+                                  flex: 1,
+                                  child: Container(),
+                                ),
+                                Expanded(
+                                  flex: 6,
+                                  child: Center(
+                                    child: Text(
+                                      'Max. Automationsdauer',
+                                      style: TextStyle(fontSize: 17),
+                                    ),
+                                  ),
+                                ),
+                                Expanded(
+                                  flex: 1,
+                                  child: FloatingActionButton(
+                                    child: Text(
+                                      "?",
+                                      style: TextStyle(
+                                        color: myWhite,
+                                        fontSize: 30,
                                       ),
-                                      Expanded(
-                                        flex: 6,
-                                        child: Center(
-                                          child: Text(
-                                            'Max. Automationsdauer',
-                                            style: TextStyle(fontSize: 17),
-                                          ),
-                                        ),
-                                      ),
-                                      Expanded(
-                                        flex: 1,
-                                        child: FloatingActionButton(
-                                          child: Text(
-                                            "?",
-                                            style: TextStyle(
-                                              color: myWhite,
-                                              fontSize: 30,
-                                            ),
-                                          ),
-                                          onPressed: () {
-                                            print("helper");
-                                            showDialog(
-                                              context: context,
-                                              // Dialog Popup, fragt den user nach bestätigung
-                                              builder: (context) => Builder(
-                                                builder:
-                                                    (BuildContext context) {
-                                                  return TriangleHelper();
-                                                },
-                                              ),
-                                            );
+                                    ),
+                                    onPressed: () {
+                                      print("helper");
+                                      showDialog(
+                                        context: context,
+                                        // Dialog Popup, fragt den user nach bestätigung
+                                        builder: (context) => Builder(
+                                          builder: (BuildContext context) {
+                                            return TriangleHelper();
                                           },
                                         ),
-                                        // Popup das das dreieck erklären soll
-                                      ),
-                                    ],
+                                      );
+                                    },
                                   ),
-                                ),
-                                // HIER DAS DREIECK
-                                AspectRatio(
-                                  aspectRatio: 1 / (0.5 * sqrt(3)),
-                                  child: Container(
-                                    child: InputTriangle(
-                                      indexProfile: widget.indexProfile,
-                                    ),
-                                  ),
-                                ),
-                                // HIER DAS DREIECK
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      'Min. Reisezeit',
-                                      style: TextStyle(fontSize: 17),
-                                    ),
-                                    Text(
-                                      'Wenig Wechsel\n        AD/MD',
-                                      style: TextStyle(fontSize: 17),
-                                    ),
-                                  ],
                                 ),
                               ],
                             ),
                           ),
-                        ),
-                      ],
+                          // HIER DAS DREIECK
+                          AspectRatio(
+                            aspectRatio: 1 / (0.5 * sqrt(3)),
+                            child: Container(
+                              child: InputTriangle(
+                                indexProfile: widget.indexProfile,
+                              ),
+                            ),
+                          ),
+                          // HIER DAS DREIECK
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                'Min. Reisezeit',
+                                style: TextStyle(fontSize: 17),
+                              ),
+                              Text(
+                                'Wenig Wechsel\n        AD/MD',
+                                style: TextStyle(fontSize: 17),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Container(
-                            margin: EdgeInsets.only(
-                                left: 25, right: 25, bottom: 25),
-                            padding: EdgeInsets.only(
-                                left: 25, right: 25, top: 25, bottom: 25),
-                            decoration: BoxDecoration(
+                    SizedBox(
+                      height: distanceBoxes,
+                    ),
+                    // Container für den ersten Slider
+                    Container(
+                      padding: EdgeInsets.fromLTRB(contentPaddingLR,
+                          contentPaddingTB, contentPaddingLR, contentPaddingTB),
+                      decoration: BoxDecoration(
+                        border: Border.all(width: 0, color: myMiddleGrey),
+                        color: myWhite,
+                        boxShadow: [
+                          BoxShadow(
+                            color: myMiddleGrey,
+                            blurRadius: 4,
+                          )
+                        ],
+                      ),
+                      // Max Umweg verglichen zur kürzesten Route
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            child: Text(
+                              'Max. Umweg im Vergleich zur kürzesten Route',
+                              style: TextStyle(fontSize: 17),
+                            ),
+                          ),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          // Anzeige des aktuellen werts
+                          Center(
+                            child: Container(
+                              padding: EdgeInsets.symmetric(
+                                  vertical: 5, horizontal: 10),
+                              decoration: BoxDecoration(
+                                color: myWhite,
                                 border:
                                     Border.all(width: 0, color: myMiddleGrey),
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(14)),
-                                color: myWhite,
                                 boxShadow: [
                                   BoxShadow(
                                     color: myMiddleGrey,
                                     blurRadius: 4,
                                   )
-                                ]),
-                            // Max Umweg verglichen zur kürzesten Route
-                            child: Column(
-                              children: [
-                                Container(
-                                  child: Text(
-                                    'Max. Umweg im Vergleich zur kürzesten Route',
-                                    style: TextStyle(fontSize: 17),
+                                ],
+                              ),
+                              child: Consumer<TravelProfileDetailModifier>(
+                                builder: (context, modifier, __) => Text(
+                                  // EINFÜGEN
+                                  modifier.getMaxDetour().round().toString() +
+                                      ' %',
+                                  style: TextStyle(
+                                    color: myDarkGrey,
+                                    fontSize: 16,
                                   ),
                                 ),
-                                // Max detour
-                                Consumer<TravelProfileDetailModifier>(
-                                  builder: (context, modifier, __) => Slider(
-                                    value: modifier
-                                        .getMaxDetour()
-                                        .toDouble(), // EINFÜGEN
-                                    min: 0,
-                                    max: 100,
-                                    divisions: 100,
-                                    activeColor: myMiddleTurquoise,
-                                    inactiveColor: myMiddleGrey,
-                                    label: modifier
-                                            .getMaxDetour()
-                                            .round()
-                                            .toString() + // EINFÜGEN
-                                        ' %',
-                                    onChanged: (double value) {
-                                      modifier.setMaxDetour(
-                                        length: value.toInt(),
-                                      );
-                                    },
-                                  ),
-                                ),
-                              ],
+                              ),
                             ),
                           ),
-                        ),
-                      ],
+                          // Slider
+                          Consumer<TravelProfileDetailModifier>(
+                            builder: (context, modifier, __) => SliderTheme(
+                              data: SliderThemeData(
+                                  showValueIndicator: ShowValueIndicator.never),
+                              child: Slider(
+                                value: modifier
+                                    .getMaxDetour()
+                                    .toDouble(), // EINFÜGEN
+                                min: 0,
+                                max: 100,
+                                divisions: 100,
+                                activeColor: myMiddleTurquoise,
+                                inactiveColor: myMiddleGrey,
+                                label: "",
+                                onChanged: (double value) {
+                                  modifier.setMaxDetour(
+                                    length: value.toInt(),
+                                  );
+                                },
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
                     ),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Container(
-                            margin: EdgeInsets.only(
-                                left: 25, right: 25, bottom: 25),
-                            padding: EdgeInsets.only(
-                                left: 25, right: 25, top: 25, bottom: 25),
-                            decoration: BoxDecoration(
-                                border: Border.all(
-                                  width: 0,
-                                  color: myMiddleGrey,
-                                ),
-                                borderRadius: BorderRadius.all(
-                                  Radius.circular(14),
-                                ),
+                    SizedBox(
+                      height: distanceBoxes,
+                    ),
+                    // Container für den zweiten Slider
+                    Container(
+                      padding: EdgeInsets.fromLTRB(contentPaddingLR,
+                          contentPaddingTB, contentPaddingLR, contentPaddingTB),
+                      decoration: BoxDecoration(
+                          border: Border.all(
+                            width: 0,
+                            color: myMiddleGrey,
+                          ),
+                          color: myWhite,
+                          boxShadow: [
+                            BoxShadow(
+                              color: myMiddleGrey,
+                              blurRadius: 4,
+                            )
+                          ]),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // Auswahl einselner automatisierter Segmente
+                          Container(
+                            child: Text(
+                              'Min. Dauer einzelner automatisierter Segmente',
+                              style: TextStyle(
+                                fontSize: 17,
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          // Anzeige des Eingestellten wertes
+                          Center(
+                            child: Container(
+                              padding: EdgeInsets.symmetric(
+                                  vertical: 5, horizontal: 10),
+                              decoration: BoxDecoration(
                                 color: myWhite,
+                                border:
+                                    Border.all(width: 0, color: myMiddleGrey),
                                 boxShadow: [
                                   BoxShadow(
                                     color: myMiddleGrey,
                                     blurRadius: 4,
                                   )
-                                ]),
-                            child: Column(
-                              children: [
-                                // Auswahl einselner automatisierter Segmente
-                                Container(
-                                    child: Text(
-                                        'Min. Dauer einzelner automatisierter Segmente',
-                                        style: TextStyle(fontSize: 17))),
-                                Consumer<TravelProfileDetailModifier>(
-                                  builder: (context, modifier, child) => Slider(
-                                    value: modifier
-                                        .getMinAutomLength()
-                                        .toDouble(), // EINFÜGEN
-                                    min: 0,
-                                    max: 60,
-                                    divisions: 60,
-                                    activeColor: myMiddleTurquoise,
-                                    inactiveColor: myMiddleGrey,
-                                    label: modifier
-                                            .getMinAutomLength()
-                                            .round()
-                                            .toString() + // EINFÜGEN
-                                        ' min',
-                                    // Evtl ändern, falls Slider wirklich zu langsam
-                                    // onChangeEnd: (double value) {},
-                                    onChanged: (double value) {
-                                      modifier.setMinAutomLength(
-                                        length: value.toInt(),
-                                      );
-                                    },
+                                ],
+                              ),
+                              child: Consumer<TravelProfileDetailModifier>(
+                                builder: (context, modifier, __) => Text(
+                                  // EINFÜGEN
+                                  modifier
+                                          .getMinAutomLength()
+                                          .round()
+                                          .toString() + // EINFÜGEN
+                                      ' min',
+                                  style: TextStyle(
+                                    color: myDarkGrey,
+                                    fontSize: 16,
                                   ),
                                 ),
-                              ],
+                              ),
                             ),
                           ),
-                        )
-                      ],
+                          // Slider
+                          Consumer<TravelProfileDetailModifier>(
+                            builder: (context, modifier, child) => SliderTheme(
+                              data: SliderThemeData(
+                                  showValueIndicator: ShowValueIndicator.never),
+                              child: Slider(
+                                value: modifier
+                                    .getMinAutomLength()
+                                    .toDouble(), // EINFÜGEN
+                                min: 0,
+                                max: 60,
+                                divisions: 60,
+                                activeColor: myMiddleTurquoise,
+                                inactiveColor: myMiddleGrey,
+                                label: "",
+                                // Evtl ändern, falls Slider wirklich zu langsam
+                                // onChangeEnd: (double value) {},
+                                onChanged: (double value) {
+                                  modifier.setMinAutomLength(
+                                    length: value.toInt(),
+                                  );
+                                },
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(
+                      height: 80,
                     ),
                   ],
                 ),

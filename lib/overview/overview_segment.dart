@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:routenplaner/data/custom_colors.dart';
 import 'package:routenplaner/data/layoutData.dart';
-import 'package:routenplaner/overview/segment_pupup_dialogue.dart';
+import 'package:routenplaner/overview/autom_segment_pupup.dart';
 import 'package:provider/provider.dart';
 import 'package:routenplaner/provider_classes/desired_Autom_Sections.dart';
 
@@ -183,18 +183,8 @@ class _OverviewSegmentsState extends State<OverviewSegments> {
                               showDialog(
                                 context: context,
                                 // Dialog Popup
-                                builder: (_) => AlertDialog(
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(14.0))),
-                                  contentPadding:
-                                      EdgeInsets.fromLTRB(0, 0, 0, 0),
-                                  content: PopUpInput(
-                                    myCallback: widget.callback,
-                                    segmentContext: context,
-                                    overviewMode: true,
-                                  ),
-                                ),
+                                builder: (_) => PupUpAutomInput(
+                                    overviewMode: true, context: context),
                               );
                             },
                             child: Icon(
@@ -216,153 +206,3 @@ class _OverviewSegmentsState extends State<OverviewSegments> {
     );
   }
 }
-/*
-Column(
-      children: [
-        Row(
-          children: <Widget>[
-            // Text, der nur sagt: Automat. Fahrsegment
-            Expanded(
-              flex: flexFirstColumn,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.start,
-                // texte mit dem "Automat. Fahrsegment"
-                children: <Widget>[
-                  Text(
-                    "Automat.",
-                    style: TextStyle(fontSize: 17, color: myDarkGrey),
-                  ),
-                  Text(
-                    "Fahrsegment",
-                    strutStyle: StrutStyle(),
-                    style: TextStyle(fontSize: 17, color: myDarkGrey),
-                  ),
-                ],
-              ),
-            ),
-            // Spalte, mit den ganzen Segmenten, falls diese hinzugefügt wurden
-            Expanded(
-              flex: flexSecondColumn + flexThirdColumn,
-              // Eigentliche Spalte mir Reihenelemten
-              child: Column(
-                children: <Widget>[
-                  ///////// LISTE VON SEGMENT ROWS ////////
-                  Consumer<DesiredAutomSections>(
-                    builder: (context, desiredAutomationSections, child) =>
-                        Column(
-                      children: printAllSegments(
-                        timedSections: desiredAutomationSections.timedSections,
-                        sections: desiredAutomationSections.sections,
-                      ),
-                    ),
-                  ),
-                  ////////LISTE VON SEGMENT ROWS////////
-                
-                  // Reihe, zum hinzufügen eines Elements
-                  Row(
-                    children: <Widget>[
-                      // Leerer Platz
-                      Expanded(
-                        flex: flexFirstColumn,
-                        child: Container(),
-                      ),
-                      // Auto Icon
-                      Expanded(
-                        flex: flexSecondColumn,
-                        child: Icon(
-                          Icons.directions_car_rounded,
-                          color: iconColor,
-                        ),
-                      ),
-                      // Button zum Hinzufügen eines Elements
-                      Expanded(
-                        flex: flexThirdColumn,
-                        child: Container(
-                          height: 30,
-                          width: 30,
-                          child: FloatingActionButton(
-                            // Wenn Button gedrückt, dann Popup Menu um die Länge einzustellen
-                            onPressed: () {
-                              showDialog(
-                                context: context,
-                                // Dialog Popup
-                                builder: (_) => AlertDialog(
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(14.0))),
-                                  contentPadding:
-                                      EdgeInsets.fromLTRB(0, 0, 0, 0),
-                                  content: PopUpInput(
-                                    myCallback: widget.callback,
-                                    segmentContext: context,
-                                    overviewMode: true,
-                                  ),
-                                ),
-                              );
-                            },
-                            child: Icon(
-                              Icons.add,
-                              color: myWhite,
-                              size: 20,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  )
-                ],
-              ),
-            )
-          ],
-        ),
-      ],
-    );
- */
-/*
-Row(
-                children: <Widget>[
-                  // Auto Icon
-                  Expanded(
-                    flex: flexSecondColumn,
-                    child: Icon(
-                      Icons.directions_car_rounded,
-                      color: iconColor,
-                    ),
-                  ),
-                  // Button zum Hinzufügen eines Elements
-                  Expanded(
-                    flex: flexThirdColumn,
-                    child: Container(
-                      height: 30,
-                      width: 30,
-                      child: FloatingActionButton(
-                        // Wenn Button gedrückt, dann Popup Menu um die Länge einzustellen
-                        onPressed: () {
-                          showDialog(
-                            context: context,
-                            // Dialog Popup
-                            builder: (_) => AlertDialog(
-                              shape: RoundedRectangleBorder(
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(14.0))),
-                              contentPadding: EdgeInsets.fromLTRB(0, 0, 0, 0),
-                              content: PopUpInput(
-                                myCallback: widget.callback,
-                                segmentContext: context,
-                                overviewMode: true,
-                              ),
-                            ),
-                          );
-                        },
-                        child: Icon(
-                          Icons.add,
-                          color: myWhite,
-                          size: 20,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              )
-*/

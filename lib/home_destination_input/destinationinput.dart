@@ -33,9 +33,6 @@ class _DestinationinputState extends State<Destinationinput> {
               contentPaddingLR, contentPaddingTB),
           decoration: BoxDecoration(
               border: Border.all(width: 0, color: myMiddleGrey),
-              borderRadius: BorderRadius.only(
-                  bottomRight: Radius.circular(14),
-                  bottomLeft: Radius.circular(14)),
               color: myWhite,
               boxShadow: [
                 BoxShadow(
