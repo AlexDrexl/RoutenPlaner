@@ -2,10 +2,10 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:routenplaner/data/custom_colors.dart';
 import 'package:routenplaner/home_destination_input/homeAutomationSegments.dart';
-import 'package:routenplaner/provider_classes/addresses.dart';
-import 'package:routenplaner/provider_classes/road_connections.dart';
-import 'package:routenplaner/provider_classes/route_details.dart';
-import 'package:routenplaner/provider_classes/travel_profiles_collection.dart';
+import 'package:routenplaner/controller/addresses.dart';
+import 'package:routenplaner/controller/road_connections.dart';
+import 'package:routenplaner/controller/route_details.dart';
+import 'package:routenplaner/controller/travel_profiles_collection.dart';
 import 'package:provider/provider.dart';
 import 'package:routenplaner/overview/overview_route.dart';
 
@@ -47,8 +47,10 @@ class _DestinationInputDetailsState extends State<DestinationInputDetails> {
 
   // Time Picker
   _pickTime() async {
-    TimeOfDay t =
-        await showTimePicker(context: context, initialTime: TimeOfDay.now());
+    TimeOfDay t = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay.now(),
+    );
     if (t != null)
       setState(() {
         Provider.of<RouteDetails>(context, listen: false)

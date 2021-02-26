@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:routenplaner/provider_classes/addresses.dart';
-import 'package:routenplaner/provider_classes/road_connections.dart';
+import 'package:routenplaner/controller/addresses.dart';
+import 'package:routenplaner/controller/road_connections.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:routenplaner/database/database_helper.dart';
 import 'package:provider/provider.dart';
 import 'travel_profiles_collection.dart';
+import 'package:routenplaner/data_structures/UserProfileData.dart';
 
 // Nutzerprofile haben verschiedene TravelProfile hinterlegt
 // ausserdem haben Verschiedene Favoriten
@@ -204,20 +205,4 @@ class UserProfileCollection with ChangeNotifier {
     ''', [name, email, userProfileCollection[userProfileIndex].databaseID]);
     notifyListeners();
   }
-}
-
-class UserProfileData {
-  String name;
-  String email;
-  int databaseID;
-  List<String> addressFavorite = List<String>();
-  List<String> addressLast = List<String>();
-  List<String> roadConnectionFavorite = List<String>();
-  List<String> roadConnectionLast = List<String>();
-
-  UserProfileData({
-    this.databaseID,
-    this.name,
-    this.email,
-  });
 }

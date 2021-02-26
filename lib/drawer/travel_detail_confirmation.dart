@@ -3,7 +3,7 @@ import 'package:routenplaner/data/custom_colors.dart';
 import 'package:routenplaner/drawer/travel_profiles.dart';
 import 'package:routenplaner/drawer/user_profiles.dart';
 import 'package:routenplaner/home/route_planning.dart';
-import 'package:routenplaner/provider_classes/travel_profile_modifier.dart';
+import 'package:routenplaner/controller/travel_profile_modifier.dart';
 import 'package:provider/provider.dart';
 
 class TravelDetailConirmation extends StatelessWidget {

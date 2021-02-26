@@ -3,19 +3,21 @@ import 'package:routenplaner/data/custom_colors.dart';
 import 'package:routenplaner/data/layoutData.dart';
 import 'package:routenplaner/overview/autom_segment_pupup.dart';
 import 'package:provider/provider.dart';
-import 'package:routenplaner/provider_classes/desired_Autom_Sections.dart';
+import 'package:routenplaner/controller/desired_Autom_Sections.dart';
 
 class OverviewSegments extends StatefulWidget {
   final Function callback;
   OverviewSegments({@required void myCallback()}) : callback = myCallback;
   @override
-  _OverviewSegmentsState createState() => _OverviewSegmentsState();
+  _OverviewSegmentsState createState() => _OverviewSegmentsState(callback);
 }
 
 class _OverviewSegmentsState extends State<OverviewSegments> {
   int flexFirstColumn = 4;
   int flexSecondColumn = 1;
   int flexThirdColumn = 8;
+  Function myCallback;
+  _OverviewSegmentsState(this.myCallback);
 
   Row segmentRow({DateTime keyWhen, Duration valueDuration, int index}) {
     // Dauer in int umrechnen(in minuten)
@@ -184,7 +186,9 @@ class _OverviewSegmentsState extends State<OverviewSegments> {
                                 context: context,
                                 // Dialog Popup
                                 builder: (_) => PupUpAutomInput(
-                                    overviewMode: true, context: context),
+                                    myCallback: myCallback,
+                                    overviewMode: true,
+                                    context: context),
                               );
                             },
                             child: Icon(

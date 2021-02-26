@@ -3,7 +3,7 @@ import 'package:routenplaner/drawer/travel_detail_confirmation.dart';
 import 'package:routenplaner/drawer/user_profiles.dart';
 import 'package:routenplaner/home/route_planning.dart';
 import 'package:routenplaner/overview/overview_footer_pupup.dart';
-import 'package:routenplaner/provider_classes/user_profile_collection.dart';
+import 'package:routenplaner/controller/user_profile_collection.dart';
 import 'package:provider/provider.dart';
 import 'travel_profiles.dart';
 import 'user_profiles.dart';

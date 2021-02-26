@@ -3,7 +3,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 import 'dart:async';
 import 'package:routenplaner/data/custom_colors.dart';
-import 'package:routenplaner/provider_classes/route_details.dart';
+import 'package:routenplaner/controller/route_details.dart';
 import 'package:google_maps_webservice/places.dart';
 import 'package:flutter_google_places/flutter_google_places.dart';
 
@@ -27,7 +27,8 @@ class _DestinationinputStartState extends State<DestinationinputStart> {
   }
 
   // WICHTIG: eigentlicher autocomplete algorythmus
-  Future<void> showPlacesPicker(BuildContext context) async {
+  Future<void> showPlacesPicker(
+      BuildContext context, LatLng currentLocation) async {
     print("SHOW PLACE PICKER");
     // show input autocomplete with selected mode
     // then get the Prediction selected
@@ -35,6 +36,7 @@ class _DestinationinputStartState extends State<DestinationinputStart> {
       hint: "Start:",
       context: context,
       apiKey: apiKey,
+      startText: null,
       onError: onError,
       mode: Mode.overlay,
       language: "de",
@@ -63,7 +65,7 @@ class _DestinationinputStartState extends State<DestinationinputStart> {
           maxLines: 1,
           // Input noch nicht in lokale Variable gespeichert
           readOnly: true,
-          onTap: () => showPlacesPicker(context),
+          onTap: () => showPlacesPicker(context, routeDetails.geoCoordStart),
           decoration: InputDecoration(
             border: OutlineInputBorder(),
             icon: Icon(

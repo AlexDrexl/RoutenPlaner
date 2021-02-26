@@ -3,10 +3,10 @@ import 'package:routenplaner/data/custom_colors.dart';
 import 'package:routenplaner/drawer/travel_profiles.dart';
 import 'package:routenplaner/drawer/user_profiles.dart';
 import 'package:routenplaner/home/route_planning.dart';
-import 'package:routenplaner/provider_classes/desired_Autom_Sections.dart';
+import 'package:routenplaner/controller/desired_Autom_Sections.dart';
 import 'package:provider/provider.dart';
-import 'package:routenplaner/provider_classes/final_routes.dart';
-import 'package:routenplaner/provider_classes/route_details.dart';
+import 'package:routenplaner/controller/final_routes.dart';
+import 'package:routenplaner/controller/route_details.dart';
 
 class OveriewConfirmation extends StatefulWidget {
   final String targetPage;
@@ -47,7 +47,6 @@ class _OveriewConfirmationState extends State<OveriewConfirmation> {
         children: [
           Container(
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.all(Radius.circular(14)),
               color: myLightGrey,
             ),
             // Abbrechen, schließen des Popups
@@ -66,7 +65,6 @@ class _OveriewConfirmationState extends State<OveriewConfirmation> {
           ),
           Container(
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.all(Radius.circular(14)),
               color: myMiddleTurquoise,
             ),
             child: MaterialButton(

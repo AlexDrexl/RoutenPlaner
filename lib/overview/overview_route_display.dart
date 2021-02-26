@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:routenplaner/data/custom_colors.dart';
 import 'package:routenplaner/overview/overview_automation_graphic.dart';
 import 'package:provider/provider.dart';
-import 'package:routenplaner/provider_classes/final_routes.dart';
+import 'package:routenplaner/controller/final_routes.dart';
 
 class RouteDisplay extends StatelessWidget {
   // Noch mit Hilfe von Provider ersetzen, da dies hier eigentlich ein Stateles

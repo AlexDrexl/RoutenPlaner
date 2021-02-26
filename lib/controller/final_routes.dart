@@ -2,13 +2,15 @@ import 'dart:math';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
-import 'package:routenplaner/provider_classes/travel_profiles_collection.dart';
+import 'package:routenplaner/controller/travel_profiles_collection.dart';
+import 'package:routenplaner/data_structures/TravelProfileData.dart';
 import 'package:vector_math/vector_math.dart' as vec;
 import 'desired_Autom_Sections.dart';
 import 'route_details.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'dart:math' show cos, sqrt, asin;
 import 'package:dio/dio.dart';
+import 'package:routenplaner/data_structures/RouteData.dart';
 
 // Übergestellte Klasse, erhält alle daten aus den verschiedenen provider Klassen
 // verwendet sie um finale Routen zu berechnen
@@ -21,11 +23,12 @@ class FinalRoutes with ChangeNotifier {
   // API KEY
   String apiKey = "AIzaSyC0DgP0BdEXEybFlEReSj_ghex8jTDOeWE";
   // Liste mit den verfügbaren Routen
-  List<FinalRoute> routes = List<FinalRoute>();
+  List<RouteData> routes = List<RouteData>();
   int indexSelectedRoute = 0;
+  int routeQuantity = 5;
 
   // Mehrere Faktoren, um den Zufallsprozess einzuschränken
-  double durationFactor = 0.2; // Varriert dauer um 0 bis 100%
+  double durationFactor = 0.2; // Varriert dauer um +0 bis +20%
   double automationFactorMin =
       0.6; // Varriert verhältnismäßige automFahrtdauer minimum
   double automationFactorMax =
@@ -98,7 +101,7 @@ class FinalRoutes with ChangeNotifier {
     // Berechne die theoretische Reisezeit, ist immer gleich
     Duration travelTime = await getTravelTime(polylineCoordinates,
         routeDetails.geoCoordStart, routeDetails.geoCoordDestination);
-    for (int i = 0; i < 5; i++) {
+    for (int i = 0; i < routeQuantity; i++) {
       // Für die Linie ist nur die Map Mit automatisierten Segmenten nötig
       // in overview automation graphic, bereits mit finalRoutes verbunden
       // Für die Anzeige an gesamt autom/manuel Fahrzeit sind autom und man duration nötig, berechne
@@ -141,7 +144,7 @@ class FinalRoutes with ChangeNotifier {
 
       // Füge fertiges Objekt der Liste hinzu
       routes.add(
-        FinalRoute(
+        RouteData(
           startDateTime: startDateTime,
           arrivalDateTime: arrivalDateTime,
           duration: duration,
@@ -443,14 +446,21 @@ class FinalRoutes with ChangeNotifier {
     // Array, jeder Eintrag eine minute, immer 0, 1, 2
     // gesamtlänge = duration
     List<int> automMinutes = List<int>.filled(duration.inMinutes, 0);
+    // Maximaler Anteil an automatisierten Segmenten
+    double maxAutomTime = duration.inMinutes * automationFactorMin +
+        rng.nextInt(
+            (duration.inMinutes * (automationFactorMax - automationFactorMin))
+                .round());
 
     // Setze die terminierten Sektionen
     var startOfSegment = timedSections.keys.toList();
     var segmentDuration = timedSections.values.toList();
     for (int i = 0; i < timedSections.length; i++) {
+      // Speichere ein Backuparray, falls zu viele Minuten hinzugefügt werden
+      List<int> backupArray = List.from(automMinutes);
+
       // Bei dieser Minute startet autom Fahren
       int startInMin = startOfSegment[i].difference(start).inMinutes;
-      print(startInMin);
       // Breche ab, sobald autom Section nach ankunft noch gefordert werden würde
       for (int j = startInMin;
           j < startInMin + segmentDuration[i].inMinutes &&
@@ -461,24 +471,18 @@ class FinalRoutes with ChangeNotifier {
               2; // Überprüfe, ob ner Nutzer nicht einen Zeitpunkt zu früh anegegeben hat
         }
       }
+      // Wenn maximale Autom zeit überschritten dann lade Backup
+      if (automMinutes.fold(0, (p, e) => p + e) / 2 >= maxAutomTime) {
+        automMinutes = backupArray;
+        break;
+      }
     }
 
-    // Versuche die Terminlosen Sections unter zu bringen, beschränke die maximale
-    // automatisierte Dauer auf einen Wert zwischen 60% und 90%
-    // Maximaler Anteil an automatisierten Segmenten
-    double maxAutomTime = duration.inMinutes * automationFactorMin +
-        rng.nextInt(
-            (duration.inMinutes * (automationFactorMax - automationFactorMin))
-                .round());
+    // Versuche die Terminlosen Sections unter zu bringen
     // Fülle leere Stellen
     for (int i = 0; i < sections.length; i++) {
-      // Überprüfe, ob die max Anteil an automatisierten Segmenten erreicht, breche ab, wenn ja
-      int total = 0;
-      for (int i = 0; i < automMinutes.length; i++) {
-        if (automMinutes[i] > 0) total++;
-      }
-      if (total >= maxAutomTime) break;
-
+      // Backup array, falls nach dem setzen des autom segments die Zeit überschitten wurde
+      List<int> backupArray = List.from(automMinutes);
       // Suche die leeren Stellen raus, speichere diese
       List<List<int>> emptySections = List<List<int>>();
       for (int i = 0; i < automMinutes.length; i++) {
@@ -492,6 +496,7 @@ class FinalRoutes with ChangeNotifier {
           }
         }
       }
+
       // Versuche den i-ten Eintrag in einer der Freien Stellen zu passen
       // Setze das autom segment in die erstbeste position
       for (int j = 0; j < emptySections.length; j++) {
@@ -504,18 +509,23 @@ class FinalRoutes with ChangeNotifier {
           break;
         }
       }
+
+      // Überprüfe, ob die max Anteil an automatisierten Segmenten erreicht, breche ab, wenn ja
+      int total = 0;
+      for (int i = 0; i < automMinutes.length; i++) {
+        if (automMinutes[i] > 0) total++;
+      }
+      if (total >= maxAutomTime) {
+        automMinutes = backupArray;
+        break;
+      }
     }
 
     // Setze nun, falls maxAutomTime noch nicht erreicht zufällig weitere automSegmente
     // segmente müssen eine gewisse Länge haben, damit nicht zu winzig
     while (true) {
-      // breche ab, falls die maximale automationsdauer erreicht
-      // breche ab, wenn die Route zu kurz ist
-      int total = 0;
-      for (int i = 0; i < automMinutes.length; i++) {
-        if (automMinutes[i] > 0) total++;
-      }
-      if (total >= maxAutomTime) break;
+      // Backup Array, falls die max automationsdauer überschritten wurde
+      List<int> backupArray = List.from(automMinutes);
 
       int maxLength = (duration.inMinutes.toDouble() * maxRandomSegment).ceil();
       int minLength =
@@ -526,6 +536,16 @@ class FinalRoutes with ChangeNotifier {
       // verloren gehen können
       for (int i = 0; i < randLength; i++) {
         if (automMinutes[randStart + i] == 0) automMinutes[randStart + i] = 1;
+      }
+
+      // Überprüfe, ob zu viel autom Zeit, Undo falls ja, break falls ja
+      int total = 0;
+      for (int i = 0; i < automMinutes.length; i++) {
+        if (automMinutes[i] > 0) total++;
+      }
+      if (total >= maxAutomTime) {
+        automMinutes = backupArray;
+        break;
       }
     }
     return automMinutes;
@@ -613,40 +633,4 @@ class FinalRoutes with ChangeNotifier {
     );
     polylines[id] = polyline;
   }
-}
-
-// Erzeuger für das RoutenObjekt, hält im Endeffekt nur die einzelnen Parameter
-// Dadurch einfach zu übergeben
-class FinalRoute {
-  DateTime startDateTime = DateTime(0);
-  DateTime arrivalDateTime = DateTime(0);
-  Duration duration = Duration();
-  Duration automationDuration;
-  Duration manualDuration;
-  // TravelProfileData selectedTravelProfile;
-  // Orte und Zwischenstopps
-  String startLocation;
-  String destinationLocation;
-  LatLng geoCoordStart;
-  LatLng geoCoordDestination;
-  // Weitere Routen Zugaben
-  List<int> automMinutes = List<int>();
-  String routeLetter;
-  var automationSections = Map<List<int>, int>();
-
-  // Constructor, named, um die Daten zu füllen
-  FinalRoute({
-    this.startDateTime,
-    this.arrivalDateTime,
-    this.duration,
-    this.automationDuration,
-    this.manualDuration,
-    this.startLocation,
-    this.destinationLocation,
-    this.geoCoordStart,
-    this.geoCoordDestination,
-    this.automMinutes,
-    this.automationSections,
-    this.routeLetter,
-  });
 }

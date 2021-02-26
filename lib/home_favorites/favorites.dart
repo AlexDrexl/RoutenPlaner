@@ -4,9 +4,9 @@ import 'package:routenplaner/data/custom_colors.dart';
 import 'package:provider/provider.dart';
 import 'package:routenplaner/data/layoutData.dart';
 import 'package:routenplaner/home_favorites/address_insert_dialog.dart';
-import 'package:routenplaner/provider_classes/addresses.dart';
-import 'package:routenplaner/provider_classes/route_details.dart';
-import 'package:routenplaner/provider_classes/road_connections.dart';
+import 'package:routenplaner/controller/addresses.dart';
+import 'package:routenplaner/controller/route_details.dart';
+import 'package:routenplaner/controller/road_connections.dart';
 import 'package:google_maps_webservice/places.dart';
 
 // Globale Variablen, für Google benötigt

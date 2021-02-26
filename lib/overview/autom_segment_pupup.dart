@@ -6,8 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:routenplaner/data/custom_colors.dart';
 import 'package:provider/provider.dart';
 import 'package:routenplaner/data/layoutData.dart';
-import 'package:routenplaner/provider_classes/desired_Autom_Sections.dart';
-import 'package:routenplaner/provider_classes/route_details.dart';
+import 'package:routenplaner/controller/desired_Autom_Sections.dart';
+import 'package:routenplaner/controller/route_details.dart';
 
 class PupUpAutomInput extends StatefulWidget {
   final bool overviewMode;
@@ -24,24 +24,31 @@ class PupUpAutomInput extends StatefulWidget {
 
 class _PupUpAutomInputState extends State<PupUpAutomInput>
     with SingleTickerProviderStateMixin {
-  // Benutzte Variablen, evtl noch mit Provider verknüpfen!
   double duration = 1;
   TabController _controller;
-  DateTime beginningOfAutom = DateTime.now();
-  DateTime endOfAutom = DateTime.now();
+  DateTime beginningOfAutom;
+  DateTime endOfAutom;
   BuildContext context;
+  bool firstTimeSelected = true;
 
   bool overviewMode;
   _PupUpAutomInputState({this.overviewMode, this.context}) {
     beginningOfAutom =
         Provider.of<RouteDetails>(context, listen: false).startDateTime;
+    endOfAutom =
+        Provider.of<RouteDetails>(context, listen: false).startDateTime;
   }
 
   // Methoden
   Future<Null> selectTime(BuildContext context, bool start) async {
+    // Startzeit bestimmen
+    var startDateTime =
+        Provider.of<RouteDetails>(context, listen: false).startDateTime;
     TimeOfDay locTimeVar = await showTimePicker(
       context: context,
-      initialTime: TimeOfDay.now(),
+      // initialEntryMode: TimePickerEntryMode.input,
+      initialTime:
+          TimeOfDay(hour: startDateTime.hour, minute: startDateTime.minute),
     );
     if (locTimeVar != null) {
       setState(() {
@@ -52,6 +59,10 @@ class _PupUpAutomInputState extends State<PupUpAutomInput>
               beginningOfAutom.day,
               locTimeVar.hour,
               locTimeVar.minute);
+          if (firstTimeSelected) {
+            endOfAutom = beginningOfAutom;
+            firstTimeSelected = false;
+          }
         } else {
           endOfAutom = DateTime(
             endOfAutom.year,
@@ -68,6 +79,13 @@ class _PupUpAutomInputState extends State<PupUpAutomInput>
   void initState() {
     super.initState();
     _controller = new TabController(length: 2, vsync: this);
+  }
+
+  void correctTime() {
+    // Wenn start NACH dem Ende ist, dann muss das Ende am nächsten Tag sein
+    if (beginningOfAutom.isAfter(endOfAutom)) {
+      endOfAutom = endOfAutom.add(Duration(days: 1));
+    }
   }
 
   @override
@@ -322,7 +340,9 @@ class _PupUpAutomInputState extends State<PupUpAutomInput>
                                   MaterialButton(
                                     color: myMiddleTurquoise,
                                     onPressed: () {
-                                      // IMPLEMENTIERUNG
+                                      // Überprüfe, ob die Zeiten passen, also Start nicht nach Ende
+                                      correctTime();
+                                      // Übergabe an Provider
                                       Provider.of<DesiredAutomSections>(context,
                                               listen: false)
                                           .addTimedSection(

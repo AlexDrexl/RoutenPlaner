@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:routenplaner/database/database_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:routenplaner/data_structures/TravelProfileData.dart';
 
 // Ähnlich wie Final Routes hat auch TravelProfileCollection mehrere
 // Objekte der Klasse Travel Profile
@@ -30,10 +31,34 @@ class TravelProfileCollection with ChangeNotifier {
     Database db = await DatabaseHelper.instance.database;
     var selectedTravelProfiles = await db.rawQuery('''
     SELECT UserID, NameTrav, MaxDetour, MinSegment, XPosTriangle, YPosTriangle, HeightTriangle, WidthTriangle
-    FROM TravelProfile LEFT JOIN User
+    FROM TravelProfile JOIN User
     ON User.ID = TravelProfile.UserID
     WHERE User.Selected = ?
       ''', [1]);
+    // QUERY Beispiel
+    /*
+    var myQuery = await db.rawQuery('''
+    SELECT *Namen der Spalten*
+    FROM *Namen der Tabellen*
+    WHERE *Zu erfüllende Bedinung der Einträge*
+    ''');
+    // TODO DELETE
+    // Join Beispiel
+    var test = await db.rawQuery('''
+    SELECT *
+    FROM TravelProfile JOIN User
+    ON User.ID = TravelProfile.UserID
+    ''');
+    print(test);
+    print(selectedTravelProfiles);
+    var test = await db.rawQuery('''
+    SELECT *
+    FROM TravelProfile  JOIN User
+    ON User.ID = TravelProfile.UserID
+    WHERE User.Selected = ?
+      ''', [1]);
+    print(test);
+    */
     // Schreibe die Werte aus der Datenbank in das collection Objekt
     for (int i = 0; i < selectedTravelProfiles.length; i++) {
       var valuesList = selectedTravelProfiles[i].values.toList();
@@ -223,35 +248,4 @@ class TravelProfileCollection with ChangeNotifier {
     }
     return names;
   }
-}
-
-// Klasse, nur als Struct verwended
-class TravelProfileData {
-  int userID = 0;
-  String name = "";
-  // Alle Zeiten in minuten, da man in der Datenbank keine komplexeren Datentypen
-  // speichern kann
-  int maxDetour = 0; // In %, Verglichen zur minimalen möglichen Route
-  int minDurationAutomSegment = 0;
-  // Index des DropTargets aus dem Dreieck, muss noch interpretiert werden
-  double xPosTriangle, yPosTriangle;
-  // Höhe und Breite des Dreicks
-  double triangleWidth, triangleHeight;
-
-  // Anteilige Routeneinstellungen
-  int maxAutomDuration = 0;
-  int minTravelTime = 0;
-  int admd = 0;
-
-  // Konstruktor um Daten zu füllen
-  TravelProfileData({
-    this.userID,
-    this.name,
-    this.maxDetour,
-    this.xPosTriangle,
-    this.yPosTriangle,
-    this.minDurationAutomSegment,
-    this.triangleWidth,
-    this.triangleHeight,
-  });
 }

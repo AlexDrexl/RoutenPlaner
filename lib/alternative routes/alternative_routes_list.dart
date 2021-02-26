@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:routenplaner/data/custom_colors.dart';
 import 'package:routenplaner/overview/overview_automation_graphic.dart';
-import 'package:routenplaner/provider_classes/final_routes.dart';
+import 'package:routenplaner/controller/final_routes.dart';
 import 'package:provider/provider.dart';
 
 class AlternativeRoutesList extends StatelessWidget {

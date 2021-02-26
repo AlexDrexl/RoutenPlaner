@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:routenplaner/data/custom_colors.dart';
 import 'package:provider/provider.dart';
-import 'package:routenplaner/provider_classes/travel_profile_modifier.dart';
-import 'package:routenplaner/provider_classes/travel_profiles_collection.dart';
+import 'package:routenplaner/controller/travel_profile_modifier.dart';
+import 'package:routenplaner/controller/travel_profiles_collection.dart';
 import 'dart:math';
 import 'package:vector_math/vector_math.dart' as vec;
 

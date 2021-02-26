@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:routenplaner/data/custom_colors.dart';
 import 'package:routenplaner/overview/autom_segment_pupup.dart';
-import 'package:routenplaner/provider_classes/desired_Autom_Sections.dart';
+import 'package:routenplaner/controller/desired_Autom_Sections.dart';
 import 'package:provider/provider.dart';
 
 class HomeAutomationSegments extends StatefulWidget {

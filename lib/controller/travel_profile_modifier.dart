@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'travel_profiles_collection.dart';
 import 'package:provider/provider.dart';
+import 'package:routenplaner/data_structures/TravelProfileData.dart';
 
 // travel Proile Modifier speichert die eingegebenen Daten in dieser
 // datei. Sollte der User speichern wollen, werden diese durch die funktion

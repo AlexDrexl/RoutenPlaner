@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:routenplaner/data/custom_colors.dart';
 import 'package:provider/provider.dart';
-import 'package:routenplaner/provider_classes/final_routes.dart';
+import 'package:routenplaner/controller/final_routes.dart';
 
 // Automationsgrafik, basierend auf den Automationsabschnitten in einer Map
 // start : ende

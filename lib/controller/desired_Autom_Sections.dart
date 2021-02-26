@@ -5,20 +5,19 @@ class DesiredAutomSections with ChangeNotifier {
   Map<DateTime, Duration> timedSections = Map<DateTime, Duration>();
   List<Duration> sections = List<Duration>();
 
-  void deleteSection(int index) {
-    sections.removeAt(index);
-    notifyListeners();
-  }
-
   void addSection(Duration duration) {
     sections.add(duration);
     notifyListeners();
   }
 
-  // immer gleiche kombi: StartZeit und Dauer
   void addTimedSection(DateTime start, DateTime end) {
     var duration = Duration(minutes: end.difference(start).inMinutes);
     timedSections.putIfAbsent(start, () => duration);
+    notifyListeners();
+  }
+
+  void deleteSection(int index) {
+    sections.removeAt(index);
     notifyListeners();
   }
 

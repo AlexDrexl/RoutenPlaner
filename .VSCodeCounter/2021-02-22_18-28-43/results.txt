@@ -1,0 +1,81 @@
+Date : 2021-02-22 18:28:43
+Directory : c:\Uni\Bachelorarbeit\App\routenplaner\lib
+Total : 47 files,  6566 codes, 1002 comments, 343 blanks, all 7911 lines
+
+Languages
++----------+------------+------------+------------+------------+------------+
+| language | files      | code       | comment    | blank      | total      |
++----------+------------+------------+------------+------------+------------+
+| Dart     |         47 |      6,566 |      1,002 |        343 |      7,911 |
++----------+------------+------------+------------+------------+------------+
+
+Directories
++-----------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| path                                                                                                | files      | code       | comment    | blank      | total      |
++-----------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| .                                                                                                   |         47 |      6,566 |      1,002 |        343 |      7,911 |
+| alternative routes                                                                                  |          2 |        209 |         22 |          7 |        238 |
+| data                                                                                                |          2 |         14 |          0 |          3 |         17 |
+| database                                                                                            |          1 |        158 |         24 |         17 |        199 |
+| drawer                                                                                              |         15 |      2,281 |        314 |         76 |      2,671 |
+| home                                                                                                |          1 |         39 |          1 |          4 |         44 |
+| home_destination_input                                                                              |          5 |        585 |         74 |         36 |        695 |
+| home_favorites                                                                                      |          2 |        441 |         40 |         17 |        498 |
+| maps                                                                                                |          1 |         47 |          0 |          5 |         52 |
+| overview                                                                                            |          9 |      1,589 |        187 |         65 |      1,841 |
+| provider_classes                                                                                    |          8 |      1,136 |        335 |        109 |      1,580 |
++-----------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+
+Files
++-----------------------------------------------------------------------------------------------------+----------+------------+------------+------------+------------+
+| filename                                                                                            | language | code       | comment    | blank      | total      |
++-----------------------------------------------------------------------------------------------------+----------+------------+------------+------------+------------+
+| c:\Uni\Bachelorarbeit\App\routenplaner\lib\alternative routes\alternative_routes.dart               | Dart     |         86 |          6 |          2 |         94 |
+| c:\Uni\Bachelorarbeit\App\routenplaner\lib\alternative routes\alternative_routes_list.dart          | Dart     |        123 |         16 |          5 |        144 |
+| c:\Uni\Bachelorarbeit\App\routenplaner\lib\data\custom_colors.dart                                  | Dart     |          9 |          0 |          2 |         11 |
+| c:\Uni\Bachelorarbeit\App\routenplaner\lib\data\layoutData.dart                                     | Dart     |          5 |          0 |          1 |          6 |
+| c:\Uni\Bachelorarbeit\App\routenplaner\lib\database\database_helper.dart                            | Dart     |        158 |         24 |         17 |        199 |
+| c:\Uni\Bachelorarbeit\App\routenplaner\lib\drawer\delete_pupup.dart                                 | Dart     |         83 |          4 |          4 |         91 |
+| c:\Uni\Bachelorarbeit\App\routenplaner\lib\drawer\drag_complex.dart                                 | Dart     |        184 |        171 |         12 |        367 |
+| c:\Uni\Bachelorarbeit\App\routenplaner\lib\drawer\drawer_home.dart                                  | Dart     |        212 |         22 |          6 |        240 |
+| c:\Uni\Bachelorarbeit\App\routenplaner\lib\drawer\input_dashed_line.dart                            | Dart     |         58 |          5 |          7 |         70 |
+| c:\Uni\Bachelorarbeit\App\routenplaner\lib\drawer\input_triangle.dart                               | Dart     |         60 |          5 |          4 |         69 |
+| c:\Uni\Bachelorarbeit\App\routenplaner\lib\drawer\travel_detail.dart                                | Dart     |        508 |         26 |          7 |        541 |
+| c:\Uni\Bachelorarbeit\App\routenplaner\lib\drawer\travel_detail_confirmation.dart                   | Dart     |        140 |          0 |          2 |        142 |
+| c:\Uni\Bachelorarbeit\App\routenplaner\lib\drawer\travel_profile_addTravelProfile.dart              | Dart     |        120 |          8 |          5 |        133 |
+| c:\Uni\Bachelorarbeit\App\routenplaner\lib\drawer\travel_profiles.dart                              | Dart     |        307 |         30 |          4 |        341 |
+| c:\Uni\Bachelorarbeit\App\routenplaner\lib\drawer\travel_profiles_button.dart                       | Dart     |         38 |          5 |          2 |         45 |
+| c:\Uni\Bachelorarbeit\App\routenplaner\lib\drawer\travel_profiles_welcome.dart                      | Dart     |         51 |          0 |          2 |         53 |
+| c:\Uni\Bachelorarbeit\App\routenplaner\lib\drawer\triangle_help.dart                                | Dart     |        106 |          5 |          5 |        116 |
+| c:\Uni\Bachelorarbeit\App\routenplaner\lib\drawer\triangle_painter.dart                             | Dart     |         29 |          3 |          6 |         38 |
+| c:\Uni\Bachelorarbeit\App\routenplaner\lib\drawer\user_profile_addUser.dart                         | Dart     |        145 |         10 |          5 |        160 |
+| c:\Uni\Bachelorarbeit\App\routenplaner\lib\drawer\user_profiles.dart                                | Dart     |        240 |         20 |          5 |        265 |
+| c:\Uni\Bachelorarbeit\App\routenplaner\lib\home\route_planning.dart                                 | Dart     |         39 |          1 |          4 |         44 |
+| c:\Uni\Bachelorarbeit\App\routenplaner\lib\home_destination_input\destinationinput.dart             | Dart     |         52 |          6 |          3 |         61 |
+| c:\Uni\Bachelorarbeit\App\routenplaner\lib\home_destination_input\destinationinput_destination.dart | Dart     |         64 |          8 |          9 |         81 |
+| c:\Uni\Bachelorarbeit\App\routenplaner\lib\home_destination_input\destinationinput_details.dart     | Dart     |        281 |         28 |          9 |        318 |
+| c:\Uni\Bachelorarbeit\App\routenplaner\lib\home_destination_input\destinationinput_start.dart       | Dart     |         63 |         12 |          8 |         83 |
+| c:\Uni\Bachelorarbeit\App\routenplaner\lib\home_destination_input\homeAutomationSegments.dart       | Dart     |        125 |         20 |          7 |        152 |
+| c:\Uni\Bachelorarbeit\App\routenplaner\lib\home_favorites\address_insert_dialog.dart                | Dart     |        161 |         11 |          6 |        178 |
+| c:\Uni\Bachelorarbeit\App\routenplaner\lib\home_favorites\favorites.dart                            | Dart     |        280 |         29 |         11 |        320 |
+| c:\Uni\Bachelorarbeit\App\routenplaner\lib\main.dart                                                | Dart     |         67 |          5 |          4 |         76 |
+| c:\Uni\Bachelorarbeit\App\routenplaner\lib\maps\maps.dart                                           | Dart     |         47 |          0 |          5 |         52 |
+| c:\Uni\Bachelorarbeit\App\routenplaner\lib\overview\autom_segment_pupup.dart                        | Dart     |        311 |         37 |          9 |        357 |
+| c:\Uni\Bachelorarbeit\App\routenplaner\lib\overview\overview_automation_graphic.dart                | Dart     |        360 |         45 |         19 |        424 |
+| c:\Uni\Bachelorarbeit\App\routenplaner\lib\overview\overview_footer_pupup.dart                      | Dart     |        129 |          7 |          4 |        140 |
+| c:\Uni\Bachelorarbeit\App\routenplaner\lib\overview\overview_route.dart                             | Dart     |        211 |         38 |          5 |        254 |
+| c:\Uni\Bachelorarbeit\App\routenplaner\lib\overview\overview_route_builder.dart                     | Dart     |         73 |          0 |          5 |         78 |
+| c:\Uni\Bachelorarbeit\App\routenplaner\lib\overview\overview_route_display.dart                     | Dart     |         88 |         13 |          5 |        106 |
+| c:\Uni\Bachelorarbeit\App\routenplaner\lib\overview\overview_route_input.dart                       | Dart     |        159 |         18 |          7 |        184 |
+| c:\Uni\Bachelorarbeit\App\routenplaner\lib\overview\overview_route_options.dart                     | Dart     |         78 |          8 |          3 |         89 |
+| c:\Uni\Bachelorarbeit\App\routenplaner\lib\overview\overview_segment.dart                           | Dart     |        180 |         21 |          8 |        209 |
+| c:\Uni\Bachelorarbeit\App\routenplaner\lib\provider_classes\addresses.dart                          | Dart     |         61 |         13 |          7 |         81 |
+| c:\Uni\Bachelorarbeit\App\routenplaner\lib\provider_classes\desired_Autom_Sections.dart             | Dart     |         22 |          2 |          6 |         30 |
+| c:\Uni\Bachelorarbeit\App\routenplaner\lib\provider_classes\final_routes.dart                       | Dart     |        448 |        165 |         40 |        653 |
+| c:\Uni\Bachelorarbeit\App\routenplaner\lib\provider_classes\road_connections.dart                   | Dart     |         73 |         11 |          6 |         90 |
+| c:\Uni\Bachelorarbeit\App\routenplaner\lib\provider_classes\route_details.dart                      | Dart     |        111 |         14 |         14 |        139 |
+| c:\Uni\Bachelorarbeit\App\routenplaner\lib\provider_classes\travel_profile_modifier.dart            | Dart     |         58 |         14 |          9 |         81 |
+| c:\Uni\Bachelorarbeit\App\routenplaner\lib\provider_classes\travel_profiles_collection.dart         | Dart     |        199 |         69 |         14 |        282 |
+| c:\Uni\Bachelorarbeit\App\routenplaner\lib\provider_classes\user_profile_collection.dart            | Dart     |        164 |         47 |         13 |        224 |
+| Total                                                                                               |          |      6,566 |      1,002 |        343 |      7,911 |
++-----------------------------------------------------------------------------------------------------+----------+------------+------------+------------+------------+

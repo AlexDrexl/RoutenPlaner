@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:routenplaner/provider_classes/final_routes.dart';
+import 'package:routenplaner/controller/final_routes.dart';
 import 'package:provider/provider.dart';
-import 'package:routenplaner/provider_classes/route_details.dart';
+import 'package:routenplaner/controller/route_details.dart';
 
 class Maps extends StatefulWidget {
   @override

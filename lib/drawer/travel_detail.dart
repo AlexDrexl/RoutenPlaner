@@ -3,11 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:routenplaner/data/layoutData.dart';
 import 'package:routenplaner/drawer/drawer_home.dart';
 import 'package:routenplaner/drawer/input_triangle.dart';
+import 'package:routenplaner/drawer/travel_detail_confirmation.dart';
 import 'package:routenplaner/drawer/travel_profile_addTravelProfile.dart';
 import 'package:routenplaner/drawer/travel_profiles.dart';
 import 'package:routenplaner/drawer/triangle_help.dart';
-import 'package:routenplaner/provider_classes/travel_profile_modifier.dart';
-import 'package:routenplaner/provider_classes/travel_profiles_collection.dart';
+import 'package:routenplaner/controller/travel_profile_modifier.dart';
+import 'package:routenplaner/controller/travel_profiles_collection.dart';
 import 'package:routenplaner/home/route_planning.dart';
 import '../data/custom_colors.dart';
 import 'package:provider/provider.dart';
@@ -36,112 +37,8 @@ class _TravelDetailState extends State<TravelDetail> {
     return showDialog(
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
-          title: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Expanded(
-                flex: 6,
-                child: Text(
-                  "Möchten Sie die Änderungen speichern?",
-                  overflow: TextOverflow.ellipsis,
-                  maxLines: 3,
-                ),
-              ),
-              Expanded(
-                flex: 1,
-                child: FloatingActionButton(
-                  child: Icon(
-                    Icons.close,
-                    color: myWhite,
-                    size: 40,
-                  ),
-                  onPressed: () {
-                    Navigator.of(context).pop(false);
-                  },
-                ),
-              ),
-            ],
-          ),
-          content: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.all(Radius.circular(14)),
-                  color: myLightGrey,
-                ),
-                child: MaterialButton(
-                  child: Text(
-                    "Nicht Speichern",
-                    style: TextStyle(
-                      fontSize: 15,
-                      color: myDarkGrey,
-                    ),
-                  ),
-                  onPressed: () {
-                    if (homeButtonPressed) {
-                      homeButtonPressed = false;
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute<Widget>(
-                          builder: (BuildContext context) => RoutePlanning(),
-                        ),
-                      );
-                    } else {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute<Widget>(
-                          builder: (BuildContext context) => TravelProfiles(),
-                        ),
-                      );
-                    }
-                  },
-                ),
-              ),
-              Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.all(Radius.circular(14)),
-                  color: myMiddleTurquoise,
-                ),
-                child: MaterialButton(
-                  child: Text(
-                    "Speichern",
-                    style: TextStyle(
-                      fontSize: 15,
-                      color: myWhite,
-                    ),
-                  ),
-                  onPressed: () {
-                    // Wenn gedrückt, dann sollen alle Daten auch wirklich in
-                    // Travel Profile Collection gespeichert werden bzw in der
-                    // Datenbank
-                    Provider.of<TravelProfileDetailModifier>(context,
-                            listen: false)
-                        .safe(indexProfile, context);
-                    if (homeButtonPressed) {
-                      homeButtonPressed = false;
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute<Widget>(
-                          builder: (BuildContext context) => RoutePlanning(),
-                        ),
-                      );
-                    } else {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute<Widget>(
-                          builder: (BuildContext context) => TravelProfiles(),
-                        ),
-                      );
-                    }
-                  },
-                ),
-              )
-            ],
-          ),
-        );
+        return TravelDetailConirmation(
+            indexProfile: indexProfile, targetPage: "travelprofiles");
       },
     );
   }

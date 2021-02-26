@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:routenplaner/drawer/travel_detail.dart';
-import 'package:routenplaner/provider_classes/travel_profiles_collection.dart';
+import 'package:routenplaner/controller/travel_profiles_collection.dart';
 
 class AddTravelProfileDialogue extends StatefulWidget {
   final int indexTravelProfile;

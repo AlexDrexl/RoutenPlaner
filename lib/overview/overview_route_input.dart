@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:routenplaner/data/custom_colors.dart';
 import 'package:provider/provider.dart';
 import 'package:routenplaner/overview/overview_segment.dart';
-import 'package:routenplaner/provider_classes/route_details.dart';
-import 'package:routenplaner/provider_classes/travel_profiles_collection.dart';
+import 'package:routenplaner/controller/route_details.dart';
+import 'package:routenplaner/controller/travel_profiles_collection.dart';
+import 'package:routenplaner/data_structures/TravelProfileData.dart';
 
 // Callback ist notwendig, da ansonsten der FutureBuilder nicht neu gestartet werden kann
 // Overview_route übergribt eine setstate FUnktion an diese Datei. Wenn diese
