@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:routenplaner/data/custom_colors.dart';
 import 'package:provider/provider.dart';
-import 'package:routenplaner/controller/route_details.dart';
+import 'package:routenplaner/provider_classes/route_details.dart';
 import 'package:google_maps_webservice/places.dart';
 
 // Globale Variablen, für Google benötigt
@@ -53,7 +53,7 @@ class _AddressInsertDialogState extends State<AddressInsertDialog> {
                   ),
                 ),
                 // X Button fürs schließen
-                Expanded(
+                /*Expanded(
                   flex: 1,
                   child: Container(
                     height: 40,
@@ -69,7 +69,7 @@ class _AddressInsertDialogState extends State<AddressInsertDialog> {
                       },
                     ),
                   ),
-                )
+                ) */
               ],
             ),
             SizedBox(
@@ -86,9 +86,17 @@ class _AddressInsertDialogState extends State<AddressInsertDialog> {
                   child: Container(
                     decoration: BoxDecoration(
                       color: myMiddleTurquoise,
-                      border: Border.all(width: 0, color: myDarkGrey),
+                      borderRadius: BorderRadius.all(Radius.circular(3)),
+                      boxShadow: [
+                        BoxShadow(
+                        color: myMiddleGrey,
+                        blurRadius: 3,
+                        ), 
+                      ]
+                      //border: Border.all(width: 0, color: myDarkGrey),
                     ),
                     child: MaterialButton(
+                      //elevation: 3,
                       child: Text(
                         "Start",
                         style: TextStyle(fontSize: 15, color: myWhite),
@@ -151,7 +159,14 @@ class _AddressInsertDialogState extends State<AddressInsertDialog> {
                   child: Container(
                     decoration: BoxDecoration(
                       color: myMiddleTurquoise,
-                      border: Border.all(width: 0, color: myDarkGrey),
+                      borderRadius: BorderRadius.all(Radius.circular(3)),
+                      boxShadow: [
+                        BoxShadow(
+                        color: myMiddleGrey,
+                        blurRadius: 3,
+                        ), 
+                      ]
+                      //border: Border.all(width: 0, color: myDarkGrey),
                     ),
                     child: MaterialButton(
                       child: Text(

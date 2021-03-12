@@ -1,12 +1,14 @@
+//import 'dart:html';
+
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:routenplaner/data/custom_colors.dart';
 import 'package:provider/provider.dart';
 import 'package:routenplaner/data/layoutData.dart';
 import 'package:routenplaner/home_favorites/address_insert_dialog.dart';
-import 'package:routenplaner/controller/addresses.dart';
-import 'package:routenplaner/controller/route_details.dart';
-import 'package:routenplaner/controller/road_connections.dart';
+import 'package:routenplaner/provider_classes/addresses.dart';
+import 'package:routenplaner/provider_classes/route_details.dart';
+import 'package:routenplaner/provider_classes/road_connections.dart';
 import 'package:google_maps_webservice/places.dart';
 
 // Globale Variablen, für Google benötigt
@@ -14,13 +16,19 @@ final String apiKey = 'AIzaSyC0DgP0BdEXEybFlEReSj_ghex8jTDOeWE';
 GoogleMapsPlaces _places = GoogleMapsPlaces(apiKey: apiKey);
 
 class Favorites extends StatefulWidget {
+  final Function goToTopCallback;
+  Favorites({@required this.goToTopCallback});
   @override
-  _FavoritesState createState() => _FavoritesState();
+  _FavoritesState createState() =>
+      _FavoritesState(goToTopCallback: goToTopCallback);
 }
 
 class _FavoritesState extends State<Favorites>
     with SingleTickerProviderStateMixin {
   // Tabcontroller, wird benötogt um Tabs anzeigen zu können
+  _FavoritesState({@required this.goToTopCallback});
+  // Callback, um wieder zurück nach oben zu gelangen
+  Function goToTopCallback;
   TabController _controller;
   void initState() {
     super.initState();
@@ -28,7 +36,7 @@ class _FavoritesState extends State<Favorites>
     _controller = new TabController(length: 2, vsync: this);
   }
 
-  // eine Zeile mit Icon und String und Button
+  // Adresse: eine Zeile mit Icon, String und Button
   Widget informationRowAddress({bool favourite, String addressName}) {
     return Column(
       children: [
@@ -65,7 +73,7 @@ class _FavoritesState extends State<Favorites>
                 ),
                 onPressed: () async {
                   // Wenn gedrückt, dann werden die Koordinaten basierend auf
-                  // dem namen gesucht, nicht optimal, da es bei fehlender Internet verbindung fehl schlägt
+                  // dem Namen gesucht, nicht optimal, da es bei fehlender Internet verbindung fehl schlägt
                   bool start = await showDialog(
                     context: context,
                     builder: (context) {
@@ -86,6 +94,7 @@ class _FavoritesState extends State<Favorites>
                     Provider.of<RouteDetails>(context, listen: false)
                         .setDestination(addressName);
                   }
+                  goToTopCallback();
                 },
               ),
             ),
@@ -95,24 +104,28 @@ class _FavoritesState extends State<Favorites>
     );
   }
 
-  // eine Zeile mit Icon String un Button für Verbindungen
+  // Verbindungen: eine Zeile mit Icon, String und Button
   Widget informationRowConnection(
       {bool favourite, String start, String destination}) {
     return Column(
       children: [
         SizedBox(height: 10),
         Row(
-          mainAxisAlignment: MainAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.start, //start
           children: [
-            Icon(
-              favourite ? Icons.star : Icons.location_city_outlined,
-              size: 30,
-              color: iconColor,
+            Expanded(
+              flex: 1,
+              child: Icon(
+                favourite ? Icons.star : Icons.location_city_outlined,
+                size: 30,
+                color: iconColor,
+              ),
             ),
             SizedBox(
-              width: 20,
+              width: 10,
             ),
             Expanded(
+              flex: 5,
               child: Text(
                 "$start > $destination",
                 maxLines: 3,
@@ -120,35 +133,39 @@ class _FavoritesState extends State<Favorites>
                 style: TextStyle(color: myDarkGrey, fontSize: 15),
               ),
             ),
-            FlatButton(
-              child: Icon(
-                Icons.forward,
-                color: myMiddleTurquoise,
+            Expanded(
+              flex: 1,
+              child: FlatButton(
+                child: Icon(
+                  Icons.forward,
+                  color: myMiddleTurquoise,
+                ),
+                onPressed: () async {
+                  goToTopCallback();
+                  Provider.of<RouteDetails>(context, listen: false)
+                      .setStart(start);
+                  Provider.of<RouteDetails>(context, listen: false)
+                      .setDestination(destination);
+                  var detailsStart = await _places.searchByText(start);
+                  var detailsDestination =
+                      await _places.searchByText(destination);
+
+                  // Nehme das beste Ergebnis
+                  var latStart = detailsStart.results[0].geometry.location.lat;
+                  var lngStart = detailsStart.results[0].geometry.location.lng;
+                  var latDestination =
+                      detailsDestination.results[0].geometry.location.lat;
+                  var lngDestination =
+                      detailsDestination.results[0].geometry.location.lng;
+
+                  // Speichere in Provider
+                  Provider.of<RouteDetails>(context, listen: false)
+                      .geoCoordStart = LatLng(latStart, lngStart);
+                  Provider.of<RouteDetails>(context, listen: false)
+                          .geoCoordDestination =
+                      LatLng(latDestination, lngDestination);
+                },
               ),
-              onPressed: () async {
-                Provider.of<RouteDetails>(context, listen: false)
-                    .setStart(start);
-                Provider.of<RouteDetails>(context, listen: false)
-                    .setDestination(destination);
-                var detailsStart = await _places.searchByText(start);
-                var detailsDestination =
-                    await _places.searchByText(destination);
-
-                // Nehme das beste Ergebnis
-                var latStart = detailsStart.results[0].geometry.location.lat;
-                var lngStart = detailsStart.results[0].geometry.location.lng;
-                var latDestination =
-                    detailsDestination.results[0].geometry.location.lat;
-                var lngDestination =
-                    detailsDestination.results[0].geometry.location.lng;
-
-                // Speichere in Provider
-                Provider.of<RouteDetails>(context, listen: false)
-                    .geoCoordStart = LatLng(latStart, lngStart);
-                Provider.of<RouteDetails>(context, listen: false)
-                        .geoCoordDestination =
-                    LatLng(latDestination, lngDestination);
-              },
             ),
           ],
         ),
@@ -156,17 +173,18 @@ class _FavoritesState extends State<Favorites>
     );
   }
 
-  // AdressenKarte, die Überschrift, Icons und Texte enthält
+  // Adressen: Karte, die Überschrift, Icons und Texte enthält
   Widget customCardAddress(
       {List<String> entries, bool favorite, BuildContext context}) {
     return Card(
       margin: EdgeInsets.all(20),
+      elevation: 0.0,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           // Titel
           Text(
-            favorite ? "FAVORITEN" : "LETZTE ZIELE",
+            favorite ? "FAVORITEN" : "LETZTE ADRESSEN",
             style: TextStyle(fontSize: 17, color: myDarkGrey),
           ),
           // Strich
@@ -187,11 +205,12 @@ class _FavoritesState extends State<Favorites>
     );
   }
 
-  // Verbindungen Karte
+  // Verbindungen: Karte, die Überschrift, Icons und Texte enthält
   Widget customCardConnection(
       {List<List<String>> entries, bool favorite, BuildContext context}) {
     return Card(
       margin: EdgeInsets.all(20),
+      elevation: 0.0,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
@@ -227,12 +246,12 @@ class _FavoritesState extends State<Favorites>
           margin:
               EdgeInsets.only(left: contentMarginLR, right: contentMarginLR),
           decoration: BoxDecoration(
-            border: Border.all(width: 1, color: Colors.grey),
+            //border: Border.all(width: 1, color: myLightGrey),
             color: myWhite,
             boxShadow: [
               BoxShadow(
                 color: myMiddleGrey, //Colors.grey,
-                blurRadius: 6,
+                blurRadius: 6, //6
               )
             ],
           ),
@@ -245,11 +264,11 @@ class _FavoritesState extends State<Favorites>
             tabs: [
               Tab(
                 //icon: const Icon(Icons.flag),
-                text: 'ADRESSE',
+                text: 'VERBINDUNG',
               ),
               Tab(
                 //icon: const Icon(Icons.compare_arrows),
-                text: 'VERBINDUNG',
+                text: 'ADRESSE',
               ),
             ],
           ),
@@ -268,15 +287,31 @@ class _FavoritesState extends State<Favorites>
             boxShadow: [
               BoxShadow(
                 color: myMiddleGrey, //Colors.grey,
-                blurRadius: 4,
+                blurRadius: 4, //4
               )
             ],
           ),
-          // inhalt der Tabs
+          // Inhalt der Tabs
           child: TabBarView(
             controller: _controller,
             children: [
-              // Erster Tab, ADRESSEN
+              // Zweiter Tab: VERBINDUNGEN
+              Consumer<RoadConnections>(
+                builder: (context, roadConnections, _) => Column(
+                  children: [
+                    customCardConnection(
+                        favorite: true,
+                        entries: roadConnections.favoriteConnections,
+                        context: context),
+                    customCardConnection(
+                      favorite: false,
+                      entries: roadConnections.lastConnections,
+                      context: context,
+                    ),
+                  ],
+                ),
+              ),
+              // Erster Tab: ADRESSEN
               Consumer<AddressCollection>(
                 builder: (context, address, _) => Column(
                   children: [
@@ -294,22 +329,6 @@ class _FavoritesState extends State<Favorites>
                   ],
                 ),
               ),
-              // Zweiter Tab, VERBINDUNGEN
-              Consumer<RoadConnections>(
-                builder: (context, roadConnections, _) => Column(
-                  children: [
-                    customCardConnection(
-                        favorite: true,
-                        entries: roadConnections.favoriteConnections,
-                        context: context),
-                    customCardConnection(
-                      favorite: false,
-                      entries: roadConnections.lastConnections,
-                      context: context,
-                    ),
-                  ],
-                ),
-              )
             ],
           ),
         )

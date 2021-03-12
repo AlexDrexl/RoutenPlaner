@@ -2,12 +2,14 @@
 // Slider lässt im Moment noch das Gesamte Popup aktualisieren -> Performance
 // nicht gut, evtl mit provider Slider -> Text Im popup, Text im Overview
 
+//import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:routenplaner/data/custom_colors.dart';
 import 'package:provider/provider.dart';
 import 'package:routenplaner/data/layoutData.dart';
-import 'package:routenplaner/controller/desired_Autom_Sections.dart';
-import 'package:routenplaner/controller/route_details.dart';
+import 'package:routenplaner/provider_classes/desired_Autom_Sections.dart';
+import 'package:routenplaner/provider_classes/route_details.dart';
 
 class PupUpAutomInput extends StatefulWidget {
   final bool overviewMode;
@@ -24,10 +26,11 @@ class PupUpAutomInput extends StatefulWidget {
 
 class _PupUpAutomInputState extends State<PupUpAutomInput>
     with SingleTickerProviderStateMixin {
+  // Benutzte Variablen, evtl noch mit Provider verknüpfen!
   double duration = 1;
   TabController _controller;
-  DateTime beginningOfAutom;
-  DateTime endOfAutom;
+  DateTime beginningOfAutom; // = DateTime.now();
+  DateTime endOfAutom; // = DateTime.now();
   BuildContext context;
   bool firstTimeSelected = true;
 
@@ -35,21 +38,23 @@ class _PupUpAutomInputState extends State<PupUpAutomInput>
   _PupUpAutomInputState({this.overviewMode, this.context}) {
     beginningOfAutom =
         Provider.of<RouteDetails>(context, listen: false).startDateTime;
-    endOfAutom =
-        Provider.of<RouteDetails>(context, listen: false).startDateTime;
+    endOfAutom = 
+        Provider.of<RouteDetails>(context, listen: false).startDateTime; //startDateTime
   }
 
   // Methoden
   Future<Null> selectTime(BuildContext context, bool start) async {
-    // Startzeit bestimmen
-    var startDateTime =
-        Provider.of<RouteDetails>(context, listen: false).startDateTime;
+    //Startzeit bestimmen
+    //var startDateTime = beginningOfAutom;
+        //Provider.of<RouteDetails>(context, listen: false).startDateTime; //Provider.of<RouteDetails>(context, listen: false).startDateTime
     TimeOfDay locTimeVar = await showTimePicker(
       context: context,
-      // initialEntryMode: TimePickerEntryMode.input,
-      initialTime:
-          TimeOfDay(hour: startDateTime.hour, minute: startDateTime.minute),
+      cancelText: "ABBRECHEN",
+      helpText: "ZEIT AUSWÄHLEN",
+      initialTime: 
+        TimeOfDay(hour: beginningOfAutom.hour, minute: beginningOfAutom.minute), //TimeOfDay(hour: startDateTime.hour, minute: startDateTime.minute),
     );
+    
     if (locTimeVar != null) {
       setState(() {
         if (start) {
@@ -59,10 +64,10 @@ class _PupUpAutomInputState extends State<PupUpAutomInput>
               beginningOfAutom.day,
               locTimeVar.hour,
               locTimeVar.minute);
-          if (firstTimeSelected) {
-            endOfAutom = beginningOfAutom;
-            firstTimeSelected = false;
-          }
+        if (firstTimeSelected) {
+          endOfAutom = beginningOfAutom;
+          firstTimeSelected = false;
+        }
         } else {
           endOfAutom = DateTime(
             endOfAutom.year,
@@ -82,7 +87,7 @@ class _PupUpAutomInputState extends State<PupUpAutomInput>
   }
 
   void correctTime() {
-    // Wenn start NACH dem Ende ist, dann muss das Ende am nächsten Tag sein
+    //wenn Start nach dem Ende ist, dann muss das am nächsten Tag sein
     if (beginningOfAutom.isAfter(endOfAutom)) {
       endOfAutom = endOfAutom.add(Duration(days: 1));
     }
@@ -93,21 +98,27 @@ class _PupUpAutomInputState extends State<PupUpAutomInput>
     return Builder(
       // Selber Bauen eines PopUps, da die verfügbaren schlecht sind
       builder: (context) {
-        var height = MediaQuery.of(context).size.height;
+        //var height = MediaQuery.of(context).size.height;
         var width = MediaQuery.of(context).size.width;
 
         return Dialog(
-          // contentPadding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+          //contentPadding: EdgeInsets.fromLTRB(0, 0, 0, 0),
           child: Container(
-            height: height - 500,
-            width: width,
+            //height: height - 500, //-500
+            height: 280,
+            width: width + 10,
             child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                // COntainer für die TabBar
+                // Container für die TabBar
                 Container(
-                  // Container Desing
+                  // Container Design
                   decoration: BoxDecoration(
-                    border: Border.all(width: 1, color: Colors.grey),
+                    borderRadius: BorderRadius.vertical(
+                      top: Radius.circular(5),
+                      bottom: Radius.zero,
+                    ),
+                    border: Border.all(width: 0, color: Colors.grey), //1
                     color: myWhite,
                   ),
                   // Tab Bar mit DAUER UND UHRZEIT
@@ -140,7 +151,7 @@ class _PupUpAutomInputState extends State<PupUpAutomInput>
                 ),
                 // Zwei Tabs
                 Container(
-                  height: 170, // Höhe hardcoden, sonst geht das nicht ka wieso
+                  height: 220, // 170 Höhe hardcoden, sonst geht das nicht ka wieso
                   // Nur ein bisschen Kosmetik
                   decoration: BoxDecoration(
                     color: myWhite, //Colors.white,
@@ -152,19 +163,19 @@ class _PupUpAutomInputState extends State<PupUpAutomInput>
                       // ERSTER TAB
                       Container(
                         padding: EdgeInsets.symmetric(
-                            horizontal: contentPaddingLR,
-                            vertical: contentMarginTB),
+                            horizontal: contentPaddingLR1,
+                            vertical: contentMarginTB), //contentMarginTB
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: <Widget>[
                             SizedBox(
-                              height: 15,
+                              height: 15, //15
                             ),
                             // Vom Slider eingestellte Dauer
                             Center(
                               child: Container(
                                 padding: EdgeInsets.symmetric(
-                                    vertical: 5, horizontal: 10),
+                                    vertical: 5, horizontal: 10), //5, 10
                                 decoration: BoxDecoration(
                                   color: myWhite,
                                   border:
@@ -172,7 +183,7 @@ class _PupUpAutomInputState extends State<PupUpAutomInput>
                                   boxShadow: [
                                     BoxShadow(
                                       color: myMiddleGrey,
-                                      blurRadius: 4,
+                                      blurRadius: 0,
                                     )
                                   ],
                                 ),
@@ -205,9 +216,14 @@ class _PupUpAutomInputState extends State<PupUpAutomInput>
                                     ),
                                   ],
                                 ),
-                                // Slider zum Einstellen vo Dauer
+                                // Slider zum Einstellen von Dauer
                                 SliderTheme(
                                   data: SliderThemeData(
+                                      valueIndicatorColor: myMiddleTurquoise,
+                                      inactiveTrackColor: myMiddleGrey,
+                                      activeTrackColor: myMiddleTurquoise, 
+                                      thumbColor: myMiddleTurquoise,
+                                      //overlayColor: myMiddleTurquoise,
                                       showValueIndicator:
                                           ShowValueIndicator.never),
                                   child: Slider(
@@ -229,19 +245,19 @@ class _PupUpAutomInputState extends State<PupUpAutomInput>
                             // Zurück Button, MUSS zurück zum Overview springen
                             // und auch die werte an Provider übergeben
                             SizedBox(
-                              height: 9,
+                              height: 9, //9
                             ),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 MaterialButton(
-                                  color: myDarkGrey,
+                                  //color: myDarkGrey,
                                   onPressed: () {
                                     Navigator.of(context).pop(false);
                                   },
                                   child: Text("Abbrechen",
                                       style: TextStyle(
-                                          color: myWhite, fontSize: 15)),
+                                          color: myMiddleTurquoise, fontSize: 15)),
                                 ),
                                 MaterialButton(
                                   color: myMiddleTurquoise,
@@ -263,25 +279,30 @@ class _PupUpAutomInputState extends State<PupUpAutomInput>
                                       widget.callback();
                                     }
                                   },
-                                  child: Text("Segment hinzufügen",
+                                  child: Text("Abschnitt hinzufügen",
                                       style: TextStyle(
                                           color: myWhite, fontSize: 15)),
+                                          
                                 ),
                               ],
                             ),
+                            /*SizedBox(
+                              height: 200,
+                            ),*/
                           ],
                         ),
                       ),
+
                       // ZWEITER TAB
                       Container(
                         padding: EdgeInsets.symmetric(
-                            horizontal: contentPaddingLR,
-                            vertical: contentMarginTB),
+                            horizontal: contentPaddingLR1,
+                            vertical: 15), //contentMarginTB
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: <Widget>[
                             SizedBox(
-                              height: 1,
+                              height: 1, //1
                             ),
                             // Die beiden Time Picker
                             Row(
@@ -328,21 +349,22 @@ class _PupUpAutomInputState extends State<PupUpAutomInput>
                                 children: [
                                   // Abbrechen Button
                                   MaterialButton(
-                                    color: myDarkGrey,
+                                    //color: myDarkGrey,
                                     onPressed: () {
                                       Navigator.of(context).pop(false);
                                     },
                                     child: Text("Abbrechen",
                                         style: TextStyle(
-                                            color: myWhite, fontSize: 15)),
+                                            color: myMiddleTurquoise, fontSize: 15)), //myWhite
                                   ),
                                   // Hinzufügen Button
                                   MaterialButton(
                                     color: myMiddleTurquoise,
+                                    elevation: 2,
                                     onPressed: () {
-                                      // Überprüfe, ob die Zeiten passen, also Start nicht nach Ende
+                                      //Überprüfe, ob die Zeiten passen (Start nicht nach Ende)
                                       correctTime();
-                                      // Übergabe an Provider
+                                      // IMPLEMENTIERUNG
                                       Provider.of<DesiredAutomSections>(context,
                                               listen: false)
                                           .addTimedSection(
@@ -353,7 +375,7 @@ class _PupUpAutomInputState extends State<PupUpAutomInput>
                                         widget.callback();
                                       }
                                     },
-                                    child: Text("Segment hinzufügen",
+                                    child: Text("Abschnitt hinzufügen",
                                         style: TextStyle(
                                             color: myWhite, fontSize: 15)),
                                   ),

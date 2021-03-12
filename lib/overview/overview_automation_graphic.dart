@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:routenplaner/data/custom_colors.dart';
 import 'package:provider/provider.dart';
-import 'package:routenplaner/controller/final_routes.dart';
+import 'package:routenplaner/provider_classes/final_routes.dart';
 
 // Automationsgrafik, basierend auf den Automationsabschnitten in einer Map
 // start : ende
-
 // Grafik für die dynamische Übersicht über die Automationslängen
 class AutomationGraphic extends StatefulWidget {
   // Map mit Liste an Start/Ende Zeitabschnitte, und dazugehörig bool ob Autom oder nicht
@@ -21,43 +20,40 @@ class _AutomationGraphicState extends State<AutomationGraphic>
     with TickerProviderStateMixin {
   final routeLetter = "A";
   bool zoomIn = false;
-  GlobalKey key = GlobalKey();
+  double zoomFactor = 1;
+  ScrollController scrollController = ScrollController();
 
-  final transformationController = TransformationController();
-  // TapDownDetails doubleTapDetails;
-  var position = Offset(0, 0);
-
-  void tabDownSetPosition(Offset locPosition) {
-    position = locPosition;
-  }
-
-  void zoom() {
-    // Zoom out
-    if (transformationController.value != Matrix4.identity()) {
-      transformationController.value = Matrix4.identity();
-      setState(() {
-        zoomIn = false;
-      });
-    }
-    // Zoom in
-    else {
-      // For a 3x zoom
-      transformationController.value = Matrix4.identity()
-        ..translate(-position.dx * 2, -position.dy * 2)
-        ..scale(3.0);
-      // Fox a 2x zoom
-      // ..translate(-position.dx, -position.dy)
-      // ..scale(2.0);
-      setState(() {
-        zoomIn = true;
-      });
-    }
+  void zoom({Offset targetPosition}) {
+    zoomIn = !zoomIn;
+    setState(() {
+      // Reinzoomen
+      if (zoomIn) {
+        zoomFactor = 3;
+        if (targetPosition != null) {
+          // Zielposition *2, Grund nicht ganz klar
+          scrollController.jumpTo(targetPosition.dx * 2);
+        }
+        return;
+      }
+      zoomFactor = 1;
+    });
   }
 
   // Gebe eine Reihe von Drei Columns zurück, 1. Column ist icon + start, dann Linie + Zeiten
   // dann icon + ende
-  Widget graphLine(
-      Map<List<int>, int> automationSections, DateTime start, DateTime end) {
+  Widget graphLine(BuildContext context) {
+    // Daten aus Provider
+    Map<List<int>, int> automationSections =
+        Provider.of<FinalRoutes>(context, listen: false)
+            .routes[widget.routeIndex]
+            .automationSections;
+    DateTime start = Provider.of<FinalRoutes>(context, listen: false)
+        .routes[widget.routeIndex]
+        .startDateTime;
+    DateTime end = Provider.of<FinalRoutes>(context, listen: false)
+        .routes[widget.routeIndex]
+        .arrivalDateTime;
+
     // Liste der Widgets
     List<Widget> widgetList = [];
     List<Widget> widgetListGraph = [];
@@ -70,12 +66,12 @@ class _AutomationGraphicState extends State<AutomationGraphic>
     // Einzelnen Flex Werte
     List<int> flexValues = [];
     // Textstyle, wird immer wieder verwendet
-    var smallTextStyle = TextStyle(
+    var customTextStyle = TextStyle(
       color: myDarkGrey,
-      fontSize: 6,
+      fontSize: 15,
     );
 
-    // Füge das Start Icon + Zeitr am Anfang der Linie hinzu
+    // Füge das Start Icon + Zeit am Anfang der Linie hinzu
     widgetList.add(
       Expanded(
         flex: 1,
@@ -85,12 +81,12 @@ class _AutomationGraphicState extends State<AutomationGraphic>
             Icon(
               Icons.location_on,
               color: myDarkGrey,
-              size: 20,
+              size: zoomIn ? 40 : 20,
             ),
             zoomIn
                 ? Text(
                     "${start.hour.toString().padLeft(2, '0')}:${start.minute.toString().padLeft(2, '0')}",
-                    style: smallTextStyle,
+                    style: customTextStyle,
                   )
                 : Container(),
           ],
@@ -106,16 +102,17 @@ class _AutomationGraphicState extends State<AutomationGraphic>
         Expanded(
           flex: flexValues[i],
           child: Container(
-              height: listOfAutomation[i] == 2
-                  ? 7
-                  : listOfAutomation[i] == 1
-                      ? 6
-                      : 5,
-              color: listOfAutomation[i] == 2
-                  ? myDarkTurquoise
-                  : listOfAutomation[i] == 1
-                      ? myMiddleTurquoise
-                      : myDarkGrey),
+            height: listOfAutomation[i] == 2
+                ? 7 * zoomFactor
+                : listOfAutomation[i] == 1
+                    ? 6 * zoomFactor
+                    : 5 * zoomFactor,
+            color: listOfAutomation[i] == 2
+                ? myDarkTurquoise
+                : listOfAutomation[i] == 1
+                    ? myMiddleTurquoise
+                    : myDarkGrey,
+          ),
         ),
       );
     }
@@ -133,10 +130,11 @@ class _AutomationGraphicState extends State<AutomationGraphic>
         Align(
           alignment: Alignment((2 * flexRaw / flexTotal) - 1, 0),
           child: Container(
-              child: Text(
-            "${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}",
-            style: smallTextStyle,
-          )),
+            child: Text(
+              "${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}",
+              style: customTextStyle,
+            ),
+          ),
         ),
       );
     }
@@ -155,7 +153,7 @@ class _AutomationGraphicState extends State<AutomationGraphic>
           child: Container(
             child: Text(
               "${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}",
-              style: smallTextStyle,
+              style: customTextStyle,
             ),
           ),
         ),
@@ -169,16 +167,23 @@ class _AutomationGraphicState extends State<AutomationGraphic>
           mainAxisSize: MainAxisSize.min,
           children: [
             Container(
-              height: 10,
-              child: zoomIn ? Stack(children: widgetListTimeTop) : Container(),
+              height: 20,
+              child: zoomIn
+                  ? Stack(
+                      children: widgetListTimeTop,
+                    )
+                  : Container(),
             ),
             Row(
               children: widgetListGraph,
             ),
             Container(
-              height: 10,
-              child:
-                  zoomIn ? Stack(children: widgetListTimeBottom) : Container(),
+              height: 20,
+              child: zoomIn
+                  ? Stack(
+                      children: widgetListTimeBottom,
+                    )
+                  : Container(),
             ),
           ],
         ),
@@ -195,12 +200,12 @@ class _AutomationGraphicState extends State<AutomationGraphic>
             Icon(
               Icons.flag_rounded,
               color: myDarkGrey,
-              size: 20,
+              size: zoomIn ? 40 : 20,
             ),
             zoomIn
                 ? Text(
                     "${end.hour.toString().padLeft(2, '0')}:${end.minute.toString().padLeft(2, '0')}",
-                    style: smallTextStyle,
+                    style: customTextStyle,
                   )
                 : Container(),
           ],
@@ -218,77 +223,57 @@ class _AutomationGraphicState extends State<AutomationGraphic>
     // GEsture Detector benötigt um das Scrollen zu verhindern
     // dadurch kein Gesture disambiguation
     return GestureDetector(
-      onTap: () {
-        // NeverScrollableScrollPhysics();
-      },
-      onVerticalDragStart: (DragStartDetails _) {
-        // NeverScrollableScrollPhysics();
-      },
-      onDoubleTap: () => zoom(),
+      // NICHT Entfernen, Macht zwar eigentlich nichts, nur funktioniert der
+      // Code nicht mehr, wenn fehlt
+      onDoubleTap: () {},
       // Wenn der nutzer nach dem Zweiten Tippen den Finger vom Bildschirm lässt
-      onDoubleTapDown: (details) {
-        tabDownSetPosition(details.localPosition);
-      },
+      onDoubleTapDown: (details) => zoom(targetPosition: details.localPosition),
       child: Stack(
-        key: key,
         fit: StackFit.loose,
         children: [
           Container(
-            height: 150,
+            height: 120,
             decoration: BoxDecoration(
               color: myWhite,
               border: Border.all(width: 0, color: myDarkGrey),
               borderRadius: BorderRadius.all(
-                Radius.circular(14),
+                Radius.circular(10),
               ),
             ),
-            child: ClipRect(
-              child: InteractiveViewer(
-                transformationController: transformationController,
-                onInteractionEnd: (details) {
-                  // Gibt die TrafoMatrix einträge zurück, wenn voll eingezoomed
-                  // dann sind die DIagonaleneinträge, bis auf den Letzten, bei 2.57
-                  if (transformationController.value.row0.x > 2) {
-                    setState(() {
-                      zoomIn = true;
-                    });
-                  } else if (zoomIn == true) {
-                    setState(() {
-                      zoomIn = false;
-                    });
-                  }
-                },
-                child: Container(
-                  child: graphLine(
-                      Provider.of<FinalRoutes>(context, listen: false)
-                          .routes[widget.routeIndex]
-                          .automationSections,
-                      Provider.of<FinalRoutes>(context, listen: false)
-                          .routes[widget.routeIndex]
-                          .startDateTime,
-                      Provider.of<FinalRoutes>(context, listen: false)
-                          .routes[widget.routeIndex]
-                          .arrivalDateTime),
-                  constraints: BoxConstraints.expand(),
-                ),
-              ),
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                return Container(
+                  height: constraints.maxHeight,
+                  width: constraints.maxWidth,
+                  child: Scrollbar(
+                    // isAlwaysShown: true,
+                    thickness: 8,
+                    controller: scrollController,
+                    child: ListView.builder(
+                      controller: scrollController,
+                      scrollDirection: Axis.horizontal,
+                      itemCount: 1,
+                      itemBuilder: (context, index) => Container(
+                        height: constraints.maxHeight,
+                        width: constraints.maxWidth * zoomFactor,
+                        child: graphLine(context),
+                      ),
+                    ),
+                  ),
+                );
+              },
             ),
           ),
           Align(
             alignment: Alignment.topRight,
             child: GestureDetector(
-              onTapDown: (details) {
-                Offset center = Offset(details.localPosition.dx - 10,
-                    details.localPosition.dy + 50);
-                tabDownSetPosition(center);
-              },
               onTap: () => zoom(),
               child: Container(
-                padding: EdgeInsets.only(right: 10, top: 10),
+                padding: EdgeInsets.only(right: 10, top: 10), //10, 10
                 child: Icon(
                   zoomIn ? Icons.zoom_out : Icons.zoom_in,
                   color: iconColor,
-                  size: 40,
+                  size: 30,
                 ),
               ),
             ),
@@ -405,6 +390,21 @@ class TimeTotals extends StatelessWidget {
             SizedBox(
               height: 5,
             ),
+
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                "Ankunftszeit: ${finalRoutes.routes[routeIndex].arrivalDateTime.hour.toString().padLeft(2, '0')}:${finalRoutes.routes[routeIndex].arrivalDateTime.minute.toString().padLeft(2, '0')} Uhr",
+                style: TextStyle(
+                  color: myDarkGrey,
+                  fontSize: 15,
+                ),
+              ),
+            ),
+            SizedBox(
+              height: 5,
+            ),
+
             Align(
               alignment: Alignment.centerLeft,
               child: Text(

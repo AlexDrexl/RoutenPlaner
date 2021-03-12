@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:routenplaner/data/custom_colors.dart';
-import 'package:routenplaner/controller/travel_profiles_collection.dart';
-import 'package:routenplaner/controller/user_profile_collection.dart';
+import 'package:routenplaner/provider_classes/travel_profiles_collection.dart';
+import 'package:routenplaner/provider_classes/user_profile_collection.dart';
 
 class DeletePopUp extends StatefulWidget {
   final TravelProfileCollection travelProfileCollection;
@@ -39,10 +39,34 @@ class _DeletePopUpState extends State<DeletePopUp> {
           : Text("Nutzerprofil wirklich löschen?"),
       actions: [
         // Löschen
+
+        FlatButton( //MaterialButton
+          child: Container(
+            decoration: BoxDecoration(
+              //color: myDarkGrey,
+            ),
+            padding: EdgeInsets.all(10),
+            child: Text(
+              "Abbrechen",
+              style: TextStyle(
+                color: myMiddleTurquoise, //myWhite
+                fontSize: 15,
+              ),
+            ),
+          ),
+
+          onPressed: () {
+            Navigator.of(context).pop(true);
+          },
+
+
+        ),
+        // Abbrechen
         MaterialButton(
           child: Container(
             decoration: BoxDecoration(
-              color: myDarkGrey,
+              color: myMiddleTurquoise,
+              borderRadius: BorderRadius.all(Radius.circular(3)),
             ),
             padding: EdgeInsets.all(10),
             child: Text(
@@ -53,6 +77,7 @@ class _DeletePopUpState extends State<DeletePopUp> {
               ),
             ),
           ),
+
           onPressed: () {
             // Lösche das Reiseprofil mit dem Index i
             if (travProf) {
@@ -64,25 +89,7 @@ class _DeletePopUpState extends State<DeletePopUp> {
               Navigator.of(context).pop(true);
             }
           },
-        ),
-        // Abbrechen
-        MaterialButton(
-          child: Container(
-            decoration: BoxDecoration(
-              color: myMiddleTurquoise,
-            ),
-            padding: EdgeInsets.all(10),
-            child: Text(
-              "Abbrechen",
-              style: TextStyle(
-                color: myWhite,
-                fontSize: 15,
-              ),
-            ),
-          ),
-          onPressed: () {
-            Navigator.of(context).pop(true);
-          },
+        
         ),
       ],
     );

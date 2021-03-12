@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:routenplaner/data/custom_colors.dart';
 import 'package:routenplaner/overview/autom_segment_pupup.dart';
-import 'package:routenplaner/controller/desired_Autom_Sections.dart';
+import 'package:routenplaner/provider_classes/desired_Autom_Sections.dart';
 import 'package:provider/provider.dart';
 
 class HomeAutomationSegments extends StatefulWidget {
@@ -25,27 +25,42 @@ class _HomeAutomationSegmentsState extends State<HomeAutomationSegments> {
         SizedBox(height: 10), // Nur um ein wenig Abstand zu schaffen
         // Eigentliche Row
         Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisAlignment: MainAxisAlignment.start, //spaceBetween
           children: <Widget>[
             Icon(
               Icons.directions_car_rounded,
               color: iconColor,
             ),
-            // Minuten Anzahl und Löschen Button
+          
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 20),
+            // Abschnitt Löschen-Button
             // Wenn getimed
-            keyWhen != null
-                ? Text(
-                    timedSection,
-                    style: TextStyle(fontSize: 17, color: myDarkGrey),
-                  )
-                // Wenn nicht getimed
-                : Text(
-                    "$automationLength" + " min",
-                    style: TextStyle(fontSize: 17, color: myDarkGrey),
-                  ),
-            RawMaterialButton(
-              shape: CircleBorder(),
-              highlightColor: myWhite,
+              child: keyWhen != null
+                  ? Text(
+                      timedSection,
+                      style: TextStyle(fontSize: 17, color: myDarkGrey),
+                    )
+                  // Wenn nicht getimed
+                  : Text(
+                      "$automationLength" + " min",
+                      style: TextStyle(fontSize: 17, color: myDarkGrey),
+                    ),
+            ),
+            SizedBox(
+              width: 25,
+              child: RawMaterialButton(  //RawMaterialButton
+              //color: myMiddleTurquoise,
+                shape: CircleBorder(),
+                elevation: 2.0,
+                fillColor: myMiddleTurquoise,
+                child: Icon(
+                  Icons.delete,
+                  size: 18, //30
+                  color: myWhite,
+                ),
+
+              
               onPressed: () {
                 // LÖSCHE WIDGET
                 // wenn getimed
@@ -58,12 +73,9 @@ class _HomeAutomationSegmentsState extends State<HomeAutomationSegments> {
                       .deleteSection(index);
                 }
               },
-              child: Icon(
-                Icons.delete,
-                size: 30,
-                color: myMiddleTurquoise,
-              ),
-            )
+              
+            ),)
+            
           ],
         ),
       ],
@@ -95,7 +107,7 @@ class _HomeAutomationSegmentsState extends State<HomeAutomationSegments> {
   @override
   Widget build(BuildContext context) {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start, //CrossAxisAlignment.start
       children: [
         // Hier die Segment rows
         Consumer<DesiredAutomSections>(
@@ -106,9 +118,9 @@ class _HomeAutomationSegmentsState extends State<HomeAutomationSegments> {
             ),
           ),
         ),
-        // Gesamte Reihe zum hinzufügen eines Elements
+        // Gesamte Reihe zum Hinzufügen eines Elements
         Row(
-          mainAxisAlignment: MainAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.start, //start
           children: [
             // Expanded für das Auto Symbol
             Icon(
@@ -117,17 +129,20 @@ class _HomeAutomationSegmentsState extends State<HomeAutomationSegments> {
             ),
             Padding(
               padding: EdgeInsets.only(left: 10),
-              child: Text(
+              /*child: Text(
                 "Segment hinzufügen",
                 style: TextStyle(fontSize: 15, color: myDarkGrey),
-              ),
-            ),
-            // Expanded für den Button zum hinzufügen eines Elements
+              ), */
+            ), 
+            // Expanded für den Button zum Hinzufügen eines Elements
             Container(
-              height: 35,
-              width: 35,
+              height: 60, //35, Abstand nach oben zur Überschrift
+              width: 35, //35
               padding: EdgeInsets.only(left: 10),
-              child: FloatingActionButton(
+              child: RawMaterialButton( //FloatingActionButton,
+                shape: CircleBorder(),
+                elevation: 2.0,
+                fillColor: myMiddleTurquoise,
                 // Wenn Button gedrückt, dann Popup Menu um die Länge einzustellen
                 onPressed: () {
                   showDialog(

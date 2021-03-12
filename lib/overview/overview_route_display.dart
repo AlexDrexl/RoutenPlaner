@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:routenplaner/data/custom_colors.dart';
 import 'package:routenplaner/overview/overview_automation_graphic.dart';
 import 'package:provider/provider.dart';
-import 'package:routenplaner/controller/final_routes.dart';
+import 'package:routenplaner/provider_classes/final_routes.dart';
 
 class RouteDisplay extends StatelessWidget {
   // Noch mit Hilfe von Provider ersetzen, da dies hier eigentlich ein Stateles
@@ -15,8 +15,8 @@ class RouteDisplay extends StatelessWidget {
       children: <Widget>[
         // Quadrat
         Container(
-          height: 30,
-          width: 30,
+          height: 20, //30
+          width: 20,
           color: color,
         ),
         SizedBox(width: 20),
@@ -91,7 +91,7 @@ class RouteDisplay extends StatelessWidget {
                   height: 10,
                 ),
                 // Erklärung der terminierten automatisierten Segmente
-                explanation(myDarkTurquoise, "Gewünschtes autom. Segment"),
+                explanation(myDarkTurquoise, "Gewünschter autom. Abschnitt"),
                 SizedBox(
                   height: 10,
                 ),

@@ -4,7 +4,7 @@ import 'package:routenplaner/drawer/travel_detail.dart';
 import 'package:routenplaner/drawer/travel_profile_addTravelProfile.dart';
 import 'package:routenplaner/drawer/travel_profiles_button.dart';
 import 'package:routenplaner/drawer/travel_profiles_welcome.dart';
-import 'package:routenplaner/controller/travel_profiles_collection.dart';
+import 'package:routenplaner/provider_classes/travel_profiles_collection.dart';
 import 'drawer_home.dart';
 import '../data/custom_colors.dart';
 import 'package:provider/provider.dart';
@@ -26,16 +26,16 @@ class _TravelProfilesState extends State<TravelProfiles> {
       widgetList.add(
         Column(
           children: [
-            SizedBox(height: 30),
+            SizedBox(height: 20), //30
             // Container für die Karten
             Container(
               key: key,
-              padding: EdgeInsets.fromLTRB(5, 5, 5, 5),
-              width: MediaQuery.of(context).size.width - 30,
+              padding: EdgeInsets.all(10), //padding: EdgeInsets.fromLTRB(5, 5, 5, 5),
+              width: MediaQuery.of(context).size.width - 30, //-30
               alignment: Alignment.center,
               decoration: BoxDecoration(
                 color: myWhite,
-                borderRadius: BorderRadius.circular(14),
+                borderRadius: BorderRadius.circular(10), //14
                 border: Border.all(
                   width: 0,
                   color: myLightGrey,
@@ -43,8 +43,8 @@ class _TravelProfilesState extends State<TravelProfiles> {
                 boxShadow: [
                   BoxShadow(
                     color: Colors.grey.withOpacity(0.5),
-                    spreadRadius: 5,
-                    blurRadius: 7,
+                    //spreadRadius: 3, //5
+                    blurRadius: 4, //7
                   ),
                 ],
               ),
@@ -111,6 +111,8 @@ class _TravelProfilesState extends State<TravelProfiles> {
                           color: myMiddleTurquoise,
                           size: 50,
                         ),
+
+                        //Ausklapp-Pop-Up:
                         onPressed: () {
                           // profiles.deleteProfile(indexUserProfile: i);
                           RenderBox box = key.currentContext.findRenderObject();
@@ -122,9 +124,9 @@ class _TravelProfilesState extends State<TravelProfiles> {
                             builder: (BuildContext context) {
                               return Dialog(
                                 insetPadding: EdgeInsets.only(
-                                  top: position.dy - 25,
+                                  top: position.dy -25, //-25
                                   right: 15,
-                                  bottom: fullHeight - position.dy - 60,
+                                  bottom: fullHeight - position.dy - 70, //-60
                                   left: fullWidth - 310,
                                 ),
                                 backgroundColor: myMiddleTurquoise,
@@ -135,8 +137,8 @@ class _TravelProfilesState extends State<TravelProfiles> {
                                     // Drei Container für die Drei Button
                                     // Bearbeiten
                                     Container(
-                                      padding: EdgeInsets.only(right: 5),
-                                      child: FloatingActionButton(
+                                      padding: EdgeInsets.only(right: 5, top: 10, bottom: 10), //5
+                                      child: FloatingActionButton( //FloatingActionButton
                                         onPressed: () {
                                           Navigator.of(context).pop(true);
                                           showDialog(
@@ -194,7 +196,7 @@ class _TravelProfilesState extends State<TravelProfiles> {
                                     ),
                                     // Duplicate
                                     Container(
-                                      padding: EdgeInsets.only(right: 5),
+                                      padding: EdgeInsets.only(right: 20), //5
                                       child: FloatingActionButton(
                                         onPressed: () {
                                           travelProfileCollection
@@ -217,8 +219,8 @@ class _TravelProfilesState extends State<TravelProfiles> {
                                     // Container für den Drei Punkte Icon, Wird
                                     // verwendet um Höhe einzustellen
                                     Container(
-                                      padding: EdgeInsets.only(
-                                          right: 0, top: 5, bottom: 15),
+                                      //padding: EdgeInsets.only(
+                                          //right: 0, top: 15, bottom: 15), //0,5,15
                                       child: MaterialButton(
                                         minWidth: 0,
                                         onPressed: () {
@@ -256,7 +258,7 @@ class _TravelProfilesState extends State<TravelProfiles> {
       backgroundColor: backgroundColor,
       appBar: AppBar(
         title: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween, //spaceBetween
           children: [
             Text(
               'Reiseprofile',
@@ -264,9 +266,9 @@ class _TravelProfilesState extends State<TravelProfiles> {
             ),
             FlatButton(
               child: Icon(
-                Icons.help,
+                Icons.info,
                 color: myWhite,
-                size: 40,
+                size: 30, //40
               ),
               onPressed: () {
                 showDialog(
@@ -274,23 +276,25 @@ class _TravelProfilesState extends State<TravelProfiles> {
                   builder: (context) {
                     return SimpleDialog(
                       title: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,  //spaceBetween
                         children: [
                           Text(
-                            "Reiseprofile:",
+                            "Reiseprofile",
                             style: TextStyle(color: myDarkGrey, fontSize: 25),
                           ),
                           Container(
-                            width: 50,
-                            height: 50,
-                            child: FloatingActionButton(
+                            width: 25, //50
+                            height: 50, //50
+                            child: RawMaterialButton( //FloatingActionButton
+                              fillColor: myMiddleTurquoise,
+                              shape: CircleBorder(),
                               onPressed: () {
                                 Navigator.pop(context);
                               },
                               child: Icon(
                                 Icons.close,
                                 color: myWhite,
-                                size: 40,
+                                size: 20, //40
                               ),
                             ),
                           )
@@ -298,7 +302,7 @@ class _TravelProfilesState extends State<TravelProfiles> {
                       ),
                       titleTextStyle:
                           TextStyle(color: myDarkGrey, fontSize: 25),
-                      contentPadding: EdgeInsets.fromLTRB(10, 10, 30, 20),
+                      contentPadding: EdgeInsets.fromLTRB(25, 10, 30, 20),
                       children: [
                         Row(
                           children: [

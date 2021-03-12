@@ -4,6 +4,7 @@ import 'package:routenplaner/drawer/drawer_home.dart';
 import 'package:routenplaner/overview/overview_footer_pupup.dart';
 import 'package:routenplaner/overview/overview_route_builder.dart';
 import 'overview_route_input.dart';
+import 'package:routenplaner/overview/final_popup.dart';
 import 'package:routenplaner/data/layoutData.dart';
 
 class Overview extends StatefulWidget {
@@ -53,21 +54,23 @@ class _OverviewState extends State<Overview> {
                 // Damit der Container über die gesamte Breite geht
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: <Widget>[
+                  
                   // Abstand zu Oben
                   SizedBox(
-                    height: distanceBoxes,
+                    height: 10, //distanceBoxes
                   ),
-                  // Überschrift ROUTENEINGABE
+
+                  // Überschrift ÜBERSICHT
                   Container(
                     padding: EdgeInsets.only(
-                        top: contentPaddingTB,
-                        bottom: contentPaddingTB,
+                        top: contentPaddingTB1,
+                        bottom: contentPaddingTB1,
                         left: contentPaddingLR,
                         right: contentPaddingLR),
                     // generelles Aussehen
                     decoration: BoxDecoration(
-                      border: Border.all(width: 0, color: myMiddleGrey),
-                      color: myMiddleTurquoise,
+                      //border: Border.all(width: 0, color: myMiddleGrey),
+                      color: myWhite,
                       boxShadow: [
                         BoxShadow(
                           color: myMiddleGrey,
@@ -80,15 +83,22 @@ class _OverviewState extends State<Overview> {
                     child: Text(
                       "ÜBERSICHT",
                       style: TextStyle(
-                        color: myWhite,
+                        color: myDarkGrey,
                         fontSize: 20,
                       ),
                     ),
-                  ),
-                  // Eigentlicher Überblick über eingegebe Route
-                  // Routen input Overview
+                  ), 
+
+                  //türkiser Strich unter der Überschrift
                   Container(
-                    // generelles Aussehen
+                    height: 4,
+                    decoration: BoxDecoration(
+                      color: myMiddleTurquoise,
+                      ),
+                    ),
+
+                  // Eigentlicher Überblick über die Eingaben von Seite 1
+                  Container(
                     decoration: BoxDecoration(
                         border: Border.all(width: 0, color: myMiddleGrey),
                         color: myWhite,
@@ -107,14 +117,14 @@ class _OverviewState extends State<Overview> {
                   ),
                   // Abstand zwischen den Boxen
                   SizedBox(
-                    height: distanceBoxes,
+                    height: 10, //distanceBoxes
                   ),
-                  // Überschrift ROUTENOPTIONEN
+
+                  // Überschrift MEINE ROUTE
                   Container(
-                    // generelles Aussehen
                     decoration: BoxDecoration(
-                        border: Border.all(width: 0, color: myMiddleGrey),
-                        color: myMiddleTurquoise,
+                        //border: Border.all(width: 0, color: myMiddleGrey),
+                        color: myWhite,
                         boxShadow: [
                           BoxShadow(
                             color: myMiddleGrey,
@@ -123,36 +133,43 @@ class _OverviewState extends State<Overview> {
                         ]),
                     // Platzierung des Text Widgets in der Zeile
                     padding: EdgeInsets.fromLTRB(contentPaddingLR,
-                        contentPaddingTB, contentPaddingLR, contentPaddingTB),
+                        contentPaddingTB1, contentPaddingLR, contentPaddingTB1),
                     // String ROUTENEINGABE
                     child: Text(
-                      "ROUTENOPTIONEN",
+                      "MEINE ROUTE",
                       style: TextStyle(
-                        color: myWhite,
+                        color: myDarkGrey,
                         fontSize: 20,
                       ),
                     ),
-                    // Eigentlicher Überblick über eingegebe Route
                   ),
-                  // Routen Optionen
+
+                  //türkiser Strich unter der Überschrift
                   Container(
-                    // generelles Aussehen
+                    height: 4,
+                    decoration: BoxDecoration(
+                      color: myMiddleTurquoise,
+                    ),
+                    ),
+
+                  // Routenvorschlag vom System (Meine Route)
+                  Container(
                     decoration: BoxDecoration(
                       border: Border.all(width: 0, color: myMiddleGrey),
+                      borderRadius: BorderRadius.circular(0),
                       color: myWhite,
                       boxShadow: [
                         BoxShadow(
                           color: myMiddleGrey,
-                          blurRadius: 4,
+                          blurRadius: 4, //4
                         )
                       ],
                     ),
-                    padding: EdgeInsets.fromLTRB(contentPaddingLR,
-                        contentPaddingTB, contentPaddingLR, contentPaddingTB),
-                    // Gesamtübersicht Routenoptionen
-                    ///////////
-                    ///
-                    ///
+                    padding: EdgeInsets.fromLTRB(0,10,0,10),
+                    
+                    //(contentPaddingLR,
+                       // contentPaddingTB1, contentPaddingLR, contentPaddingTB1),
+                     ///
                     /// WICHTIG: Wenn Änderung, dann wird dieser Block rebuilded
                     /// dadurch wird der gesamte Routenerstellungsprozess erneut gestartet
                     /// DIESES WIDGET WIRD AUS IRGENDEINEM GRUND IMMER WIEDER NEU AUFGEBAUT
@@ -160,15 +177,18 @@ class _OverviewState extends State<Overview> {
                       myCallback: mySetState,
                     ),
                   ),
+                  
+                  
                   // Abstand zwischen den Boxen
                   SizedBox(
-                    height: distanceBoxes,
+                    height: 10,
                   ),
-                  // Überschrift "and das Fahrzeug übertragen"
+                  /*
+
+                  // Überschrift "NAVIGATION STARTEN"
                   Container(
-                    // generelles Aussehen
                     decoration: BoxDecoration(
-                        border: Border.all(width: 0, color: myMiddleGrey),
+                        //border: Border.all(width: 0, color: myMiddleGrey),
                         color: myMiddleTurquoise,
                         boxShadow: [
                           BoxShadow(
@@ -178,22 +198,22 @@ class _OverviewState extends State<Overview> {
                         ]),
                     // Platzierung des Text Widgets in der Zeile
                     padding: EdgeInsets.fromLTRB(contentPaddingLR,
-                        contentPaddingTB, contentPaddingLR, contentPaddingTB),
-                    // String ROUTENEINGABE
+                        contentPaddingTB1, contentPaddingLR, contentPaddingTB1),
+
                     child: Text(
-                      "ÜBERTRAGUNG STARTEN",
+                      "NAVIGATION STARTEN",
                       style: TextStyle(
                         color: myWhite,
                         fontSize: 20,
                       ),
                     ),
-                    // Eigentlicher Überblick über eingegebe Route
                   ),
-                  // An das Fahrzeug übertragen
+                  */
+
+                  //Text: Disclaimer
                   Container(
                     padding: EdgeInsets.fromLTRB(contentPaddingLR,
                         contentPaddingTB, contentPaddingLR, contentPaddingTB),
-                    // generelles Aussehen
                     decoration: BoxDecoration(
                       border: Border.all(width: 0, color: myMiddleGrey),
                       color: myWhite,
@@ -209,20 +229,35 @@ class _OverviewState extends State<Overview> {
                         // Text mit Disclaimer
                         Container(
                           child: Text(
-                            "Durch kurzfristige Änderungen bei Verkehr und Umgebungsbedingungen kann es zu Abweichungen von Planung und tatsächlichem Fahrtverlauf kommen",
+                            "Durch kurzfristige Änderungen bei Verkehr und Umgebungsbedingungen kann es zu Abweichungen von Planung und tatsächlichem Fahrtverlauf kommen.",
                             style: TextStyle(fontSize: 10, color: myDarkGrey),
                           ),
                         ),
                         SizedBox(
-                          height: 10,
-                        ),
-                        // Material Button
+                          height: 10, //distanceBoxes
+                        ), 
+
+                        // Material Button: An das Fahrzeug übertragen
                         Container(
-                          color: myDarkTurquoise,
+                          //color: myDarkTurquoise,
                           child: MaterialButton(
+                            height: 40,
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3)),
+                            color: myDarkTurquoise,
+                            textColor: myWhite,
                             onPressed: () {
                               ///////
-                              ///Übertragen an das Fahrzeug
+                              ///Übertragen an das Fahrzeug: PopUp als Bestätigung
+                              ///
+                              showDialog(
+                                context: context,
+                                builder: (context) {
+                                    return FinalConfirmation(
+                                      targetPage: "home",
+                                    );
+                                  },
+                                );
+                                //),
                             },
                             child: Center(
                               child: Text(
@@ -237,11 +272,12 @@ class _OverviewState extends State<Overview> {
                         ),
                       ],
                     ),
-                  ),
+                  ), 
+
                   // Abstand nach unten
                   SizedBox(
                     height: distanceBoxes,
-                  ),
+                  ), 
                 ],
               ),
             ),

@@ -8,43 +8,46 @@ import 'package:provider/provider.dart';
 import 'package:routenplaner/provider_classes/final_routes.dart';
 import 'package:routenplaner/provider_classes/route_details.dart';
 
-class OveriewConfirmation extends StatefulWidget {
+class FinalConfirmation extends StatefulWidget {
   final String targetPage;
-  OveriewConfirmation({@required this.targetPage});
+  FinalConfirmation({@required this.targetPage});
   @override
-  _OveriewConfirmationState createState() =>
-      _OveriewConfirmationState(targetPage: targetPage);
+  _FinalConfirmationState createState() =>
+      _FinalConfirmationState(targetPage: targetPage);
 }
 
-class _OveriewConfirmationState extends State<OveriewConfirmation> {
+class _FinalConfirmationState extends State<FinalConfirmation> {
   // bool homeButtonPressed = false;
   String targetPage;
-  _OveriewConfirmationState({@required this.targetPage});
+  _FinalConfirmationState({@required this.targetPage});
 
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
       title: Row(
-        //mainAxisAlignment: MainAxisAlignment.spaceBetween, 
+        mainAxisAlignment: MainAxisAlignment.spaceBetween, //spaceBetween
         children: [
           Expanded(
             flex: 10,
             child: Text(
-              "Möchten Sie die Route wirklich verwerfen?",
-              textScaleFactor: 0.9,
+              "Vielen Dank! \nIhre Route wurde gespeichert und steht im Fahrzeug für Sie zur Verfügung.",
               overflow: TextOverflow.ellipsis,
-              maxLines: 3,
+              maxLines: 5,
+              style: TextStyle(
+                  fontSize: 15,
+                  //color: myWhite,
+                ),
             ),
           ),
-          Expanded(
+          /*Expanded(
             flex: 1,
             child: Container(),
-          ),
+          ),*/
         ],
       ),
       content: Row(
-        mainAxisAlignment: MainAxisAlignment.end, //spaceBetween
-        crossAxisAlignment: CrossAxisAlignment.center, //center
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Container(
             decoration: BoxDecoration(
@@ -54,10 +57,10 @@ class _OveriewConfirmationState extends State<OveriewConfirmation> {
             // Abbrechen, schließen des Popups
             child: MaterialButton(
               child: Text(
-                "Nein",
+                "Nochmal ändern",
                 style: TextStyle(
                   fontSize: 15,
-                  color: myMiddleTurquoise, //myDarkGrey
+                  color: myMiddleTurquoise,
                 ),
               ),
               onPressed: () {
@@ -67,15 +70,15 @@ class _OveriewConfirmationState extends State<OveriewConfirmation> {
           ),
           Container(
             decoration: BoxDecoration(
-              //borderRadius: BorderRadius.all(Radius.circular(14)),
-              //color: myMiddleTurquoise,
+              borderRadius: BorderRadius.all(Radius.circular(3)),
+              color: myMiddleTurquoise,
             ),
             child: MaterialButton(
               child: Text(
-                "Ja",
+                "Verstanden",
                 style: TextStyle(
                   fontSize: 15,
-                  color: myMiddleTurquoise, //myWhite
+                  color: myWhite,
                 ),
               ),
               //////////////////// ZURÜCKSETZEN ALLER WICHTIGEN DATEN

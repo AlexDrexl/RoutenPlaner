@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:routenplaner/data/custom_colors.dart';
 import 'package:routenplaner/overview/overview_automation_graphic.dart';
-import 'package:routenplaner/controller/final_routes.dart';
+import 'package:routenplaner/provider_classes/final_routes.dart';
 import 'package:provider/provider.dart';
 
 class AlternativeRoutesList extends StatelessWidget {
@@ -15,22 +15,29 @@ class AlternativeRoutesList extends StatelessWidget {
       widgetList.add(
         MaterialButton(
           child: Container(
-            margin: EdgeInsets.only(top: 30),
-            padding: EdgeInsets.fromLTRB(10, 20, 30, 20),
+            margin: EdgeInsets.only(top: 10, bottom: 10),
+            padding: EdgeInsets.fromLTRB(10, 20, 30, 10), //Abstände innerhalb der Routenvorschlagsboxen
             decoration: BoxDecoration(
-              color: myLightGrey,
+              color: myLightGrey, //myLightGrey
               border: Border.all(
-                  width: i == indexSelectedRoute ? 4 : 1,
+                  width: i == indexSelectedRoute ? 4 : 0, //4:1
                   // Schaue, ob ausgewähltes Element gerade im Loop
                   color:
                       i == indexSelectedRoute ? myMiddleTurquoise : myDarkGrey),
               borderRadius: BorderRadius.all(
-                Radius.circular(14),
+                Radius.circular(10), //14
               ),
+              boxShadow:[
+                BoxShadow(
+                  color: myMiddleGrey,
+                  blurRadius: 4,
+                  )
+              ],
+              
             ),
             // Inhalt einer Karte
             child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start, //.start
               children: [
                 // Erstes Expanded für den Buchstaben
                 Expanded(
@@ -46,11 +53,11 @@ class AlternativeRoutesList extends StatelessWidget {
                 // Zweites Expanded für die Linie und Zeitanzeige
                 // ROUTEINDEX HIER IMMER ULL; MUSS ABER I SEIN
                 Expanded(
-                  flex: 10,
+                  flex: 10, //10
                   child: Column(
                     children: [
                       AutomationGraphic(routeIndex: i),
-                      SizedBox(height: 40),
+                      SizedBox(height: 30), //40
                       Row(
                         children: [
                           Expanded(
@@ -70,11 +77,14 @@ class AlternativeRoutesList extends StatelessWidget {
               ],
             ),
           ),
+
+          
           onPressed: () {
             print("ALTERNATIVE ROUTE SELECTED");
             finalRoutes.selectRoute(i);
             Navigator.pop(context);
           },
+          
         ),
       );
     }
@@ -92,7 +102,7 @@ class AlternativeRoutesList extends StatelessWidget {
     print("BUILD ALTERNATIVE ROUTES");
     return Container(
       constraints: BoxConstraints(
-        maxHeight: MediaQuery.of(context).size.height - 180,
+        maxHeight: MediaQuery.of(context).size.height - 80, //180
       ),
       // height: MediaQuery.of(context).size.height - 240,
       /////////////////////////////////////////////////////////////
@@ -121,7 +131,7 @@ class AlternativeRoutesList extends StatelessWidget {
               }
               // Daten werden noch geladen
               else {
-                print("LOADING ALTERANTIVE ROUTES");
+                print("LOADING ALTERNATIVE ROUTES");
                 child = Align(
                   alignment: Alignment.center,
                   child: SizedBox(

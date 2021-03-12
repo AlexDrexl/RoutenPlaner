@@ -53,6 +53,8 @@ class TravelProfileCollection with ChangeNotifier {
     // Setze das ausgewählte Travel Profil auf 0, als standart
     if (travelProfileCollection.length > 0) {
       selectedTravelProfile = travelProfileCollection[0];
+    } else {
+      selectedTravelProfile = null;
     }
     print("TravelProfiles set");
     notifyListeners();
@@ -170,6 +172,7 @@ class TravelProfileCollection with ChangeNotifier {
       print("NO TRAVEL PROFILE EXISTEND");
       return;
     }
+    // Suche nach dem Richtigen Reiseprofil
     if (name != null) {
       selectedTravelProfile =
           travelProfileCollection.firstWhere((element) => element.name == name);

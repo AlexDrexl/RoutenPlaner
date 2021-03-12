@@ -3,7 +3,7 @@ import 'package:routenplaner/data/custom_colors.dart';
 import 'package:routenplaner/data/layoutData.dart';
 import 'package:routenplaner/overview/autom_segment_pupup.dart';
 import 'package:provider/provider.dart';
-import 'package:routenplaner/controller/desired_Autom_Sections.dart';
+import 'package:routenplaner/provider_classes/desired_Autom_Sections.dart';
 
 class OverviewSegments extends StatefulWidget {
   final Function callback;
@@ -15,7 +15,7 @@ class OverviewSegments extends StatefulWidget {
 class _OverviewSegmentsState extends State<OverviewSegments> {
   int flexFirstColumn = 4;
   int flexSecondColumn = 1;
-  int flexThirdColumn = 8;
+  int flexThirdColumn = 8; //8
   Function myCallback;
   _OverviewSegmentsState(this.myCallback);
 
@@ -23,13 +23,14 @@ class _OverviewSegmentsState extends State<OverviewSegments> {
     // Dauer in int umrechnen(in minuten)
     int automationLength = valueDuration.inMinutes;
     String timedSection;
-    // Wenn timedSection, dann Uhrzeitstring für die ANzeuge berechnen
+    // Wenn timedSection, dann Uhrzeitstring für die Anzeige berechnen
     if (keyWhen != null) {
       var end = keyWhen.add(valueDuration);
       timedSection =
           '${keyWhen.hour.toString().padLeft(2, '0')}:${keyWhen.minute.toString().padLeft(2, '0')} - ${end.hour.toString().padLeft(2, '0')}:${end.minute.toString().padLeft(2, '0')} Uhr';
     }
     return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
       children: <Widget>[
         // Auto Sympol
         Expanded(
@@ -47,8 +48,8 @@ class _OverviewSegmentsState extends State<OverviewSegments> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
-                Expanded(
-                  flex: 2,
+                SizedBox( //Expanded
+                  //flex: 1, //2
                   child: keyWhen != null
                       ? Text(
                           timedSection,
@@ -60,11 +61,16 @@ class _OverviewSegmentsState extends State<OverviewSegments> {
                           style: TextStyle(fontSize: 17, color: myDarkGrey),
                         ),
                 ),
-                Expanded(
-                  flex: 1,
+                SizedBox(
+                  width: 20,
+                  ),
+                SizedBox( //Expanded
+                  width: 25,
+                  //flex: 1,
                   child: RawMaterialButton(
                     shape: CircleBorder(),
-                    highlightColor: myWhite,
+                    elevation: 2.0,
+                    fillColor: myMiddleTurquoise,
                     onPressed: () {
                       // LÖSCHE WIDGET
                       // wenn getimed
@@ -82,11 +88,12 @@ class _OverviewSegmentsState extends State<OverviewSegments> {
                         widget?.callback();
                       }
                     },
+
                     child: Icon(
                       Icons.delete,
-                      color: myMiddleTurquoise,
-                      size: 25,
-                    ),
+                      color: myWhite, //myMiddleTurquoise
+                      size: 18, //25
+                    ), 
                   ),
                 )
               ],
@@ -126,12 +133,14 @@ class _OverviewSegmentsState extends State<OverviewSegments> {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          /*
           // Text
           Expanded(
             flex: flexFirstColumn,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
+              /*
               children: [
                 Text(
                   "Automat.",
@@ -143,8 +152,10 @@ class _OverviewSegmentsState extends State<OverviewSegments> {
                   style: TextStyle(fontSize: 17, color: myDarkGrey),
                 ),
               ],
+              */
             ),
           ),
+          */
           // Alle Elemente plus Hinzufügen
           Expanded(
             flex: flexSecondColumn + flexThirdColumn,
@@ -176,11 +187,25 @@ class _OverviewSegmentsState extends State<OverviewSegments> {
                       child: Align(
                         alignment: Alignment.centerLeft,
                         child: Container(
-                          padding: EdgeInsets.only(left: 10),
-                          height: 35,
-                          width: 35,
-                          child: FloatingActionButton(
-                            // Wenn Button gedrückt, dann Popup Menu um die Länge einzustellen
+                          padding: EdgeInsets.only(left: 10), //padding: EdgeInsets.only(left: 10),
+                          height: 30,
+                          width: 180,
+                          child: OutlineButton( //FloatingActionButton
+                            //minWidth: 150,
+                            //elevation: 0.0,
+                            color: myWhite,
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3)),
+                            borderSide: BorderSide(color: myMiddleTurquoise),
+                            child: Row(
+                              children: [
+                                Text(
+                                  "Abschnitt hinzufügen",
+                                  style: TextStyle(
+                                    color: myMiddleTurquoise),
+                                ),
+                              ],
+                            ),
+                            // Wenn Button gedrückt, dann Popup-Menu um die Länge einzustellen
                             onPressed: () {
                               showDialog(
                                 context: context,
@@ -191,15 +216,24 @@ class _OverviewSegmentsState extends State<OverviewSegments> {
                                     context: context),
                               );
                             },
+                            /*child: Align( 
+                              alignment: Alignment.center,
+                              child: Text(
+                                "Abschnitt hinzufügen",
+                                style: TextStyle(
+                                  color: myMiddleTurquoise,
+                                  ),
+                                ),
+                              ), 
                             child: Icon(
                               Icons.add,
-                              color: myWhite,
-                              size: 20,
-                            ),
+                              color: myMiddleTurquoise,
+                              size: 20, */
+                            ), 
                           ),
                         ),
                       ),
-                    ),
+                    //),
                   ],
                 )
               ],

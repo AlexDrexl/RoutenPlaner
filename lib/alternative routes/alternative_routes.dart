@@ -4,6 +4,8 @@ import 'package:routenplaner/drawer/drawer_home.dart';
 import 'alternative_routes_list.dart';
 
 class AlternativeRoutes extends StatelessWidget {
+  final _scrollController = ScrollController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -19,10 +21,43 @@ class AlternativeRoutes extends StatelessWidget {
       drawer: DrawerHome(
         screen: "overview",
       ),
+
+      body: Container(
+        padding: EdgeInsets.all(0),
+        margin: EdgeInsets.all(0),
+        color: backgroundColor, //backgroundColor
+        child: Scrollbar(
+          controller: _scrollController,
+          child: SingleChildScrollView(
+            controller: _scrollController,
+            child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: <Widget>[
+                  Container(
+                    padding: EdgeInsets.all(0),
+                    decoration: BoxDecoration(boxShadow: [
+                      BoxShadow(
+                        color: myWhite,
+                        blurRadius: 4,
+                      ),
+                    ]),
+
+                    child: AlternativeRoutesList(),
+                    //child: Text("test "),
+                    //child: AlternativeRoutesList(),
+                  ),
+                ]),
+          ),
+        ),
+      ),
+    );
+
+/*
+
       body: Stack(
         children: [
           // Background
-          Container(
+          /*Container(
             decoration: BoxDecoration(
               image: DecorationImage(
                 colorFilter: new ColorFilter.mode(
@@ -32,13 +67,14 @@ class AlternativeRoutes extends StatelessWidget {
               ),
             ),
             // Hintergrund für das Scrollable
-          ),
+          ), */
           Container(
-            margin: EdgeInsets.fromLTRB(20, 20, 20, 20),
+            margin: EdgeInsets.fromLTRB(0, 0, 0, 0),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
+              //crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 // Container für die Überschrift
+                /*
                 Container(
                   padding: EdgeInsets.only(left: 15, top: 1, bottom: 1),
                   decoration: BoxDecoration(
@@ -64,20 +100,20 @@ class AlternativeRoutes extends StatelessWidget {
                       ),
                     ),
                   ),
-                ),
+                ), */
                 // Container für den Body
                 Container(
                   decoration: BoxDecoration(
-                    border: Border.all(width: 1, color: myMiddleGrey),
+                    border: Border.all(width: 0, color: myMiddleGrey),
                     borderRadius: BorderRadius.only(
-                      bottomLeft: Radius.circular(14),
-                      bottomRight: Radius.circular(14),
+                      bottomLeft: Radius.circular(10), //14
+                      bottomRight: Radius.circular(10), //14
                     ),
                     color: myWhite,
                     boxShadow: [
                       BoxShadow(
                         color: myMiddleGrey,
-                        blurRadius: 4,
+                        blurRadius: 40,
                       )
                     ],
                   ),
@@ -87,7 +123,8 @@ class AlternativeRoutes extends StatelessWidget {
             ),
           ),
         ],
-      ),
-    );
+      ), 
+      */
+    //);
   }
 }

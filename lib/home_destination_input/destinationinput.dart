@@ -21,7 +21,7 @@ class _DestinationinputState extends State<Destinationinput> {
       children: [
         // Nach Obenhin Platz Schaffen
         SizedBox(
-          height: 20,
+          height: 0, //20
         ),
         // Container für die Überschrift
         Container(
@@ -47,6 +47,11 @@ class _DestinationinputState extends State<Destinationinput> {
               new Flexible(
                 child: DestinationinputStart(),
               ),
+
+              SizedBox(
+              height: 10, //20
+               ),
+               
               new Flexible(
                 child: DestinationinputDestination(),
               ),

@@ -2,7 +2,7 @@ import 'dart:math';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
-import 'package:routenplaner/controller/travel_profiles_collection.dart';
+import 'package:routenplaner/provider_classes/travel_profiles_collection.dart';
 import 'package:routenplaner/data_structures/TravelProfileData.dart';
 import 'desired_Autom_Sections.dart';
 import 'route_details.dart';
@@ -29,7 +29,7 @@ class FinalRoutes with ChangeNotifier {
   // Mehrere Faktoren, um den Zufallsprozess einzuschränken
   double durationFactor = 0.2; // Varriert dauer um +0 bis +20%
   double automationFactorMin =
-      0.6; // Varriert verhältnismäßige automFahrtdauer minimum
+      0.8; // Varriert verhältnismäßige automFahrtdauer minimum
   double automationFactorMax =
       0.9; // Varriert verhältnismäßige automFahrtdauer maximum
   // MinMax Segmentlänge, kann mit bereits bestehenden Segmenten überlappen
@@ -83,6 +83,7 @@ class FinalRoutes with ChangeNotifier {
     var travelProfile =
         Provider.of<TravelProfileCollection>(context, listen: false)
             .selectedTravelProfile;
+    print(travelProfile);
     // Starte die Berechnung der Maps Daten
     await computePolylines(
         routeDetails.geoCoordStart, routeDetails.geoCoordDestination);
@@ -461,10 +462,9 @@ class FinalRoutes with ChangeNotifier {
     while (true) {
       // Backup Array, falls die max automationsdauer überschritten wurde
       List<int> backupArray = List.from(automMinutes);
-
-      int maxLength = (duration.inMinutes.toDouble() * maxRandomSegment).ceil();
-      int minLength =
-          (duration.inMinutes.toDouble() * minRandomSegment).floor();
+      var minMax = getMinMaxAutomSegment(duration.inMinutes);
+      var minLength = minMax[0].toInt();
+      var maxLength = minMax[1].toInt();
       int randLength = rng.nextInt(maxLength - minLength) + minLength;
       int randStart = rng.nextInt(automMinutes.length - randLength);
       // Setze nur dann 1, wenn diese Stelle noch frei, sonst würden timedSections
@@ -486,6 +486,21 @@ class FinalRoutes with ChangeNotifier {
     return automMinutes;
   }
 
+  // MaxMin eines Segmtentes
+  List<double> getMinMaxAutomSegment(int durationInMin) {
+    //return [7, 12];
+    if (durationInMin > 180) {
+      return [4, 25];
+    }
+    if (durationInMin > 120) {
+      return [4, 12];
+    }
+    if (durationInMin > 60) {
+      return [4, 11];
+    }
+    return [2, 7];
+  }
+
   // Request an google distance api
   Future<Duration> getTravelTime(List<LatLng> polylineCoordinates, LatLng start,
       LatLng destination) async {
@@ -495,20 +510,6 @@ class FinalRoutes with ChangeNotifier {
     var durationInSec = response.data["rows"][0]["elements"][0]["duration"]
         ["value"]; // Reisezeit in Sekunden
     return Duration(seconds: durationInSec);
-    /*
-    double totalDistance = 0;
-    for (int i = 0; i < (polylineCoordinates.length - 1); i++) {
-      totalDistance += coordinateDistance(
-          polylineCoordinates[i].latitude,
-          polylineCoordinates[i].longitude,
-          polylineCoordinates[i + 1].latitude,
-          polylineCoordinates[i + 1].longitude);
-    }
-    // Nehme eine durchschnittsgeschwindigkeit von 50 km/h bzw
-    double durationInMin = 60 * totalDistance / (50);
-    // Variiere die Dauer
-    return Duration(minutes: durationInMin.floor());
-    */
   }
 
   // Einfache Funktion, die die Distanz zwischen zwei geografischen Koordinaten berechnet

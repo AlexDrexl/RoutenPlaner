@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:routenplaner/data/custom_colors.dart';
 import 'package:provider/provider.dart';
-import 'package:routenplaner/overview/overview_segment.dart';
-import 'package:routenplaner/controller/route_details.dart';
-import 'package:routenplaner/controller/travel_profiles_collection.dart';
 import 'package:routenplaner/data_structures/TravelProfileData.dart';
+import 'package:routenplaner/overview/overview_segment.dart';
+import 'package:routenplaner/provider_classes/route_details.dart';
+import 'package:routenplaner/provider_classes/travel_profiles_collection.dart';
 
 // Callback ist notwendig, da ansonsten der FutureBuilder nicht neu gestartet werden kann
 // Overview_route übergribt eine setstate FUnktion an diese Datei. Wenn diese
@@ -38,9 +38,11 @@ class _OverviewRouteInputState extends State<OverviewRouteInput> {
 
   // Modulare Widgets, die immer wieder benötigt werden
   Row informationRow(
-      String firstElement, String secondElement, IconData middleIcon) {
+      /*String firstElement,*/ String secondElement,
+      IconData middleIcon) {
     return Row(
       children: <Widget>[
+        /*
         Expanded(
           flex: flexFirstColumn,
           child: Text(
@@ -48,6 +50,7 @@ class _OverviewRouteInputState extends State<OverviewRouteInput> {
             style: TextStyle(fontSize: 17, color: myDarkGrey),
           ),
         ),
+        */
         Expanded(
           flex: flexSecondColumn,
           child: Icon(
@@ -79,23 +82,25 @@ class _OverviewRouteInputState extends State<OverviewRouteInput> {
           builder: (context, routeDetails, child) => Column(
             children: <Widget>[
               informationRow(
-                  "Start:", routeDetails.startingLocation, Icons.place),
+                  /* "Start", */ routeDetails.startingLocation,
+                  Icons.place),
               SizedBox(height: 10),
-              informationRow("Ziel:", routeDetails.destinationLocation,
+              informationRow(
+                  /*"Ziel", */ routeDetails.destinationLocation,
                   Icons.flag_rounded),
               SizedBox(height: 10),
               informationRow(
-                  "Abfahrt ab:",
+                  /*"Abfahrt ab",*/
                   routeDetails.weekDay() +
                       ", " +
                       "${routeDetails.startDateTime.day.toString().padLeft(2, '0')}.${routeDetails.startDateTime.month.toString().padLeft(2, '0')}.${routeDetails.startDateTime.year.toString()}",
                   Icons.calendar_today),
               SizedBox(height: 10),
               informationRow(
-                  "",
+                  /*"", */
                   "${routeDetails.startDateTime.hour.toString().padLeft(2, '0')}:${routeDetails.startDateTime.minute.toString().padLeft(2, '0')} Uhr",
                   Icons.access_time),
-              SizedBox(height: 10),
+              //SizedBox(height: 10),
             ],
           ),
         ),
@@ -103,13 +108,14 @@ class _OverviewRouteInputState extends State<OverviewRouteInput> {
         // Reiseprofil Eingabe
         Row(
           children: <Widget>[
-            Expanded(
+            /*Expanded(
               flex: flexFirstColumn,
               child: Text(
                 "Reiseprofil",
                 style: TextStyle(fontSize: 17, color: myDarkGrey),
               ),
             ),
+            */
             Expanded(
               flex: flexSecondColumn,
               child: Icon(
@@ -122,7 +128,8 @@ class _OverviewRouteInputState extends State<OverviewRouteInput> {
               flex: flexThirdColumn,
               child: Container(
                 margin: EdgeInsets.only(right: 50),
-                padding: EdgeInsets.only(left: 10),
+                padding: EdgeInsets.fromLTRB(
+                    10, 0, 100, 0), //EdgeInsets.only(left: 10),
                 child: Consumer<TravelProfileCollection>(
                   builder: (context, travelProfiles, _) =>
                       DropdownButton<String>(
@@ -172,7 +179,7 @@ class _OverviewRouteInputState extends State<OverviewRouteInput> {
           ],
         ),
         SizedBox(
-          height: 20,
+          height: 10, //20
         ),
         // Automatisierte Fahrsegmente einfügen
         OverviewSegments(

@@ -9,7 +9,8 @@ class OverviewRouteOptions extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
-      // mainAxisSize: MainAxisSize.max,
+      //mainAxisSize: MainAxisSize.max,
+      //crossAxisAlignment: CrossAxisAlignment.end,
       children: <Widget>[
         // Grau hinterlegte Karte, mit den Routen Daten bzgl Manueller Fahrt
         Container(
@@ -17,29 +18,30 @@ class OverviewRouteOptions extends StatelessWidget {
             color: myLightGrey,
             border: Border.all(width: 0, color: myDarkGrey),
             borderRadius: BorderRadius.all(
-              Radius.circular(14),
+              Radius.circular(0), //14
             ),
           ),
+          padding: EdgeInsets.fromLTRB(10,5,20,10),
           //////////
-          ///// Anzeige von Linie mit automat Segmenten und der propotionales Zeitanzeige
+          ///// Anzeige von Linie mit automat Segmenten und der propotionalen Zeitanzeige
           child: RouteDisplay(),
           //////////
         ),
         SizedBox(height: 10),
-        // Container für die Button unten
+        // Container für die Buttons unten
         Container(
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween, //spaceBetween
             children: <Widget>[
               MaterialButton(
                 child: Container(
-                  width: 150,
-                  height: 50,
+                  width: 150, //150
+                  height: 40,
                   decoration: BoxDecoration(
                     color: myMiddleTurquoise,
-                    border: Border.all(width: 0, color: myDarkGrey),
+                    //border: Border.all(width: 1, color: myMiddleTurquoise),
                     borderRadius: BorderRadius.all(
-                      Radius.circular(14),
+                      Radius.circular(3), //14
                     ),
                   ),
                   child: Align(
@@ -62,12 +64,18 @@ class OverviewRouteOptions extends StatelessWidget {
                   );
                 },
               ),
-              FloatingActionButton(
-                heroTag: null,
+              FlatButton( //FloatingActionButton
+                //heroTag: null,
+                height: 40,
+                splashColor: myWhite,
+                shape: CircleBorder(
+                  side: BorderSide(color: myMiddleTurquoise)
+                ),
+                
                 child: Icon(
                   Icons.map_outlined,
-                  color: myWhite,
-                  size: 40,
+                  color: myMiddleTurquoise,
+                  size: 25,
                 ),
                 onPressed: () {
                   // LINK ZU DEN MAPS
@@ -82,6 +90,9 @@ class OverviewRouteOptions extends StatelessWidget {
             ],
           ),
         ),
+        SizedBox(
+          height: 5,
+         ),
       ],
     );
   }

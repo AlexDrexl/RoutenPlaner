@@ -19,11 +19,11 @@ class _TriangleHelperState extends State<TriangleHelper> {
       insetPadding: EdgeInsets.fromLTRB(20, 80, 20, 120),
       actions: [
         MaterialButton(
-          color: myMiddleTurquoise,
+          //color: myMiddleTurquoise,
           child: Center(
             child: Text(
               "OK",
-              style: TextStyle(color: myWhite, fontSize: 20),
+              style: TextStyle(color: myMiddleTurquoise, fontSize: 20),
             ),
           ),
           onPressed: () {
@@ -39,12 +39,12 @@ class _TriangleHelperState extends State<TriangleHelper> {
             height: 10,
           ),
           // Überschrift
-          Center(
-            child: Text(
-              "Reisedreieck - Erklärung",
-              style: TextStyle(color: myDarkGrey, fontSize: 20),
+          //Center(
+            /*child: */Text(
+              "Reisedreieck",
+              style: TextStyle(color: myDarkGrey, fontSize: 20, fontWeight: FontWeight.bold),
             ),
-          ),
+          //),
           SizedBox(
             height: 10,
           ),
@@ -66,7 +66,7 @@ class _TriangleHelperState extends State<TriangleHelper> {
           ),
           // Allgemeiner Erklärungstext
           Text(
-            "Verschiebe das blaue Icon, um festzulegen, auf was bei der Routenerstellung am meisten Wert gelegt werden soll",
+            "Verschieben Sie das Icon, um festzulegen, auf was bei der Routenerstellung am meisten Wert gelegt werden soll",
             style: usedTextStyle,
           ),
           SizedBox(
@@ -105,7 +105,7 @@ class _TriangleHelperState extends State<TriangleHelper> {
                 color: myDarkGrey, fontSize: 17, fontWeight: FontWeight.bold),
           ),
           Text(
-            "Routen mit einer geringen Anzahl an Wechsel zwischen automatisiertem und manuellem Fahren werden priorisiert.",
+            "Routen mit einer geringen Anzahl an Wechsel zwischen automatisiertem (AD) und manuellem Fahren (MD) werden priorisiert.",
             style: usedTextStyle,
           ),
         ],

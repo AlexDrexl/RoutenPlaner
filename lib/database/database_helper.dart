@@ -34,6 +34,7 @@ class DatabaseHelper {
   // Erstelle eine Datenbank, falls diese nicht exisitiert und öffnet diese
   _initDatabase() async {
     Directory documentsDirectory = await getApplicationDocumentsDirectory();
+    print(documentsDirectory.toString());
     String path = join(documentsDirectory.path, _databaseName);
     print("DATABASE PATH: $path");
     // Öffnen der Datenbank
@@ -80,10 +81,9 @@ class DatabaseHelper {
             NameTrav TEXT,
             MaxDetour INTEGER,
             MinSegment INTEGER,
-            XPosTriangle INTEGER, 
-            YPosTriangle INTEGER,
-            WidthTriangle INTEGER,
-            HeightTriangle INTEGER
+            MaxAutomFactor INTEGER, 
+            MinTravelTimeFactor INTEGER, 
+            MinADMDFactor INTEGER
           )
           ''');
   }
@@ -148,24 +148,23 @@ class DatabaseHelper {
   }
 
   // Travel Profile
-  Future<int> addTravelProfile(
-      {int userID,
-      int maxDetour,
-      int minSegment,
-      double xPosTriangle,
-      double yPosTriangle,
-      String name,
-      @required double widthTriangle,
-      @required double heightTriangle}) async {
+  Future<int> addTravelProfile({
+    int userID,
+    int maxDetour,
+    int minSegment,
+    String name,
+    double factorMaxAutom,
+    double factorMinADMD,
+    double factorMinTravTime,
+  }) async {
     var row = {
       "NameTrav": name,
       "UserID": userID,
       "MaxDetour": maxDetour,
       "MinSegment": minSegment,
-      "XPosTriangle": xPosTriangle,
-      "YPosTriangle": yPosTriangle,
-      "WidthTriangle": widthTriangle,
-      "HeightTriangle": heightTriangle,
+      "MaxAutomFactor": factorMaxAutom,
+      "MinTravelTimeFactor": factorMinTravTime,
+      "MinADMDFactor": factorMinADMD,
     };
     Database db = await instance.database;
     return await db.insert(travelProfileTable, row);

@@ -7,18 +7,18 @@ class TravelProfilesWelcome extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: Container(
-        margin: EdgeInsets.fromLTRB(30, 50, 30, 100),
+        margin: EdgeInsets.fromLTRB(20, 50, 20, 100),
         padding: EdgeInsets.fromLTRB(contentPaddingLR, contentMarginTB,
             contentPaddingLR, contentMarginTB),
         decoration: BoxDecoration(
-          color: myWhite,
-          boxShadow: [
+          color: myLightGrey, //myWhite
+          /*boxShadow: [
             BoxShadow(
               color: myMiddleGrey,
-              blurRadius: 10,
+              blurRadius: 0, //10
             )
           ],
-          border: Border.all(color: myDarkGrey, width: 1),
+          border: Border.all(color: myDarkGrey, width: 0), //1 */
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -26,16 +26,17 @@ class TravelProfilesWelcome extends StatelessWidget {
             SizedBox(
               height: 20,
             ),
-            Icon(
+            /*Icon(
               Icons.card_travel,
               size: 50,
               color: myDarkGrey,
-            ),
+            ), */
             SizedBox(
               height: 20,
             ),
             Text(
-              "Erstelle mit dem Icon am unteren rechten Bildschirmrand ein Reiseprofil, um so deine Routen besser an deine Bedürfnisse anzupassen zu können!",
+              "Erstellen Sie ein Reiseprofil, um Ihre Routen schneller und einfacher an Ihre Bedürfnisse anzupassen zu können!",
+              textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 20,
                 color: myDarkGrey,

@@ -1,16 +1,17 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:routenplaner/controller/addresses.dart';
-import 'package:routenplaner/controller/desired_Autom_Sections.dart';
-import 'package:routenplaner/controller/final_routes.dart';
-import 'package:routenplaner/controller/road_connections.dart';
-import 'package:routenplaner/controller/travel_profiles_collection.dart';
-import 'package:routenplaner/controller/travel_profile_modifier.dart';
-import 'package:routenplaner/controller/user_profile_collection.dart';
+import 'package:routenplaner/provider_classes/addresses.dart';
+import 'package:routenplaner/provider_classes/desired_Autom_Sections.dart';
+import 'package:routenplaner/provider_classes/final_routes.dart';
+import 'package:routenplaner/provider_classes/road_connections.dart';
+import 'package:routenplaner/provider_classes/travel_profiles_collection.dart';
+import 'package:routenplaner/provider_classes/travel_profile_modifier.dart';
+import 'package:routenplaner/provider_classes/user_profile_collection.dart';
 import 'data/custom_colors.dart';
-import 'controller/route_details.dart';
+import 'provider_classes/route_details.dart';
 import 'home/route_planning.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 void main() => runApp(RoutePlaner());
 
@@ -47,6 +48,8 @@ class RoutePlaner extends StatelessWidget {
       ],
       child: MaterialApp(
         //home = Scaffold
+        localizationsDelegates: [GlobalMaterialLocalizations.delegate],
+        supportedLocales: [const Locale('en'), const Locale('de')],
         home: RoutePlanning(), //entweder home: ... oder '/': ...
         theme: ThemeData(
           // Define the default brightness and colors.
@@ -54,6 +57,7 @@ class RoutePlaner extends StatelessWidget {
           primaryColor: myMiddleTurquoise,
           accentColor: myMiddleTurquoise,
           splashColor: myMiddleTurquoise,
+          highlightColor: myMiddleTurquoise,
           fontFamily: 'Tahoma',
 
           // Define the default TextTheme. Use this to specify the default

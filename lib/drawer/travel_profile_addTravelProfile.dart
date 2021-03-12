@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:routenplaner/drawer/travel_detail.dart';
-import 'package:routenplaner/controller/travel_profiles_collection.dart';
+import 'package:routenplaner/data/custom_colors.dart';
+import 'package:routenplaner/provider_classes/travel_profiles_collection.dart';
 
 class AddTravelProfileDialogue extends StatefulWidget {
   final int indexTravelProfile;
@@ -50,7 +51,7 @@ class _AddTravelProfileDialogueState extends State<AddTravelProfileDialogue> {
     }
     return AlertDialog(
       title: Text(
-          modifyMode ? "Ändere den Profilnamen" : "Gebe einen Profilnamen ein"),
+          modifyMode ? "Profilnamen ändern" : "Profilname"),
       content: TextField(
         decoration: InputDecoration(
           hintText: showHint ? "Eingabe erfordert" : name,
@@ -69,6 +70,7 @@ class _AddTravelProfileDialogueState extends State<AddTravelProfileDialogue> {
           children: [
             // Abbrechen, einfach nichts machen, nur den namen aus null setzen
             FlatButton(
+              textColor: myMiddleTurquoise,
               onPressed: () {
                 name = "";
                 Navigator.pop(context);
@@ -81,6 +83,7 @@ class _AddTravelProfileDialogueState extends State<AddTravelProfileDialogue> {
             SizedBox(width: 20),
             // Profil erstellen
             FlatButton(
+              textColor: myMiddleTurquoise,
               onPressed: () async {
                 showHint = (name == "" || name == null);
                 duplicate = check4duplicate(

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:routenplaner/data/custom_colors.dart';
 import 'package:routenplaner/drawer/travel_profile_addTravelProfile.dart';
 import 'package:provider/provider.dart';
-import 'package:routenplaner/controller/user_profile_collection.dart';
+import 'package:routenplaner/provider_classes/user_profile_collection.dart';
 
 class TravelProfileButton extends StatelessWidget {
   @override

@@ -3,12 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:routenplaner/data/layoutData.dart';
 import 'package:routenplaner/drawer/drawer_home.dart';
 import 'package:routenplaner/drawer/input_triangle.dart';
-import 'package:routenplaner/drawer/travel_detail_confirmation.dart';
 import 'package:routenplaner/drawer/travel_profile_addTravelProfile.dart';
 import 'package:routenplaner/drawer/travel_profiles.dart';
 import 'package:routenplaner/drawer/triangle_help.dart';
-import 'package:routenplaner/controller/travel_profile_modifier.dart';
-import 'package:routenplaner/controller/travel_profiles_collection.dart';
+import 'package:routenplaner/provider_classes/travel_profile_modifier.dart';
+import 'package:routenplaner/provider_classes/travel_profiles_collection.dart';
 import 'package:routenplaner/home/route_planning.dart';
 import '../data/custom_colors.dart';
 import 'package:provider/provider.dart';
@@ -37,8 +36,115 @@ class _TravelDetailState extends State<TravelDetail> {
     return showDialog(
       context: context,
       builder: (BuildContext context) {
-        return TravelDetailConirmation(
-            indexProfile: indexProfile, targetPage: "travelprofiles");
+        return AlertDialog(
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Expanded(
+                flex: 8, //6
+                child: Text(
+                  "Möchten Sie Ihre Änderungen speichern?",
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 3,
+                ),
+              ),
+              /*Expanded(
+                flex: 1,
+                child: FloatingActionButton(
+                  elevation: 00,
+                  child: Icon(
+                    Icons.close,
+                    color: myWhite,
+                    size: 20,
+                  ),
+                  onPressed: () {
+                    Navigator.of(context).pop(false);
+                  },
+                ),
+              ),*/
+            ],
+          ),
+          content: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.all(Radius.circular(3)),
+                  //color: myLightGrey,
+                ),
+                child: FlatButton(
+                  //MaterialButton
+                  textColor: myMiddleTurquoise,
+                  child: Text(
+                    "Nicht Speichern",
+                    style: TextStyle(
+                      fontSize: 15,
+                      //color: myDarkGrey,
+                    ),
+                  ),
+                  onPressed: () {
+                    if (homeButtonPressed) {
+                      homeButtonPressed = false;
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute<Widget>(
+                          builder: (BuildContext context) => RoutePlanning(),
+                        ),
+                      );
+                    } else {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute<Widget>(
+                          builder: (BuildContext context) => TravelProfiles(),
+                        ),
+                      );
+                    }
+                  },
+                ),
+              ),
+              Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.all(Radius.circular(3)),
+                  color: myMiddleTurquoise,
+                ),
+                child: MaterialButton(
+                  child: Text(
+                    "Speichern",
+                    style: TextStyle(
+                      fontSize: 15,
+                      color: myWhite,
+                    ),
+                  ),
+                  onPressed: () {
+                    // Wenn gedrückt, dann sollen alle Daten auch wirklich in
+                    // Travel Profile Collection gespeichert werden bzw in der
+                    // Datenbank
+                    Provider.of<TravelProfileDetailModifier>(context,
+                            listen: false)
+                        .safe(indexProfile, context);
+                    if (homeButtonPressed) {
+                      homeButtonPressed = false;
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute<Widget>(
+                          builder: (BuildContext context) => RoutePlanning(),
+                        ),
+                      );
+                    } else {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute<Widget>(
+                          builder: (BuildContext context) => TravelProfiles(),
+                        ),
+                      );
+                    }
+                  },
+                ),
+              )
+            ],
+          ),
+        );
       },
     );
   }
@@ -46,7 +152,7 @@ class _TravelDetailState extends State<TravelDetail> {
   @override
   Widget build(BuildContext context) {
     Provider.of<TravelProfileDetailModifier>(context, listen: false)
-        .init(indexProfile: indexProfile, context: context);
+        .initializeTravelProfile(indexProfile: indexProfile, context: context);
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -60,26 +166,28 @@ class _TravelDetailState extends State<TravelDetail> {
         screen: "travelprofiledetails",
         indexTravelProfile: indexProfile,
       ),
-      floatingActionButton: CircleAvatar(
-        radius: 30,
+      floatingActionButton: FloatingActionButton(
+        //floatingActionButton: CircleAvatar
+        //radius: 30,
+        //heroTag: null,
         backgroundColor: myMiddleTurquoise,
-        child: IconButton(
-          icon: Icon(
-            Icons.save,
-            color: myWhite,
-            size: 30,
-          ),
-          onPressed: () {
-            Provider.of<TravelProfileDetailModifier>(context, listen: false)
-                .safe(indexProfile, context);
-            Navigator.push(
-              context,
-              MaterialPageRoute<Widget>(
-                builder: (BuildContext context) => TravelProfiles(),
-              ),
-            );
-          },
+        //child: IconButton(
+        child: Icon(
+          Icons.save,
+          color: myWhite,
+          size: 30,
         ),
+        onPressed: () {
+          Provider.of<TravelProfileDetailModifier>(context, listen: false)
+              .safe(indexProfile, context);
+          Navigator.push(
+            context,
+            MaterialPageRoute<Widget>(
+              builder: (BuildContext context) => TravelProfiles(),
+            ),
+          );
+        },
+        //),
       ),
       // Eigentliches Reiseprofil
       body: WillPopScope(
@@ -119,7 +227,8 @@ class _TravelDetailState extends State<TravelDetail> {
                         title: Consumer<TravelProfileCollection>(
                           builder: (context, travelProfiles, _) => Container(
                             child: Text(
-                              travelProfiles.travelProfileCollection.length != 0
+                              travelProfiles.travelProfileCollection.length >
+                                      indexProfile
                                   ? travelProfiles
                                       .travelProfileCollection[indexProfile]
                                       .name
@@ -131,7 +240,12 @@ class _TravelDetailState extends State<TravelDetail> {
                             ),
                           ),
                         ),
-                        trailing: MaterialButton(
+                        trailing: FlatButton(
+                          //MaterialButton
+                          splashColor: myWhite,
+                          shape: CircleBorder(
+                              side: BorderSide(color: myMiddleTurquoise)),
+
                           child: Icon(
                             Icons.edit,
                             color: myMiddleTurquoise,
@@ -155,7 +269,7 @@ class _TravelDetailState extends State<TravelDetail> {
                       ),
                     ),
                     SizedBox(
-                      height: distanceBoxes,
+                      height: distanceBoxes, //distanceBoxes
                     ),
                     // Container für das Dreieck
                     Container(
@@ -192,12 +306,18 @@ class _TravelDetailState extends State<TravelDetail> {
                                 ),
                                 Expanded(
                                   flex: 1,
-                                  child: FloatingActionButton(
+                                  child: FlatButton(
+                                    //FloatingActionButton
+                                    //elevation: 0.0,
+                                    color: myMiddleTurquoise,
+                                    shape: CircleBorder(
+                                        side: BorderSide(
+                                            color: myMiddleTurquoise)),
                                     child: Text(
-                                      "?",
+                                      "i", //?
                                       style: TextStyle(
                                         color: myWhite,
-                                        fontSize: 30,
+                                        fontSize: 20,
                                       ),
                                     ),
                                     onPressed: () {
@@ -227,6 +347,7 @@ class _TravelDetailState extends State<TravelDetail> {
                             ),
                           ),
                           // HIER DAS DREIECK
+                          SizedBox(height: 10),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
@@ -235,7 +356,7 @@ class _TravelDetailState extends State<TravelDetail> {
                                 style: TextStyle(fontSize: 17),
                               ),
                               Text(
-                                'Wenig Wechsel\n        AD/MD',
+                                'Wenig Wechsel', //'Wenig Wechsel\n        AD/MD
                                 style: TextStyle(fontSize: 17),
                               ),
                             ],
@@ -266,14 +387,14 @@ class _TravelDetailState extends State<TravelDetail> {
                         children: [
                           Container(
                             child: Text(
-                              'Max. Umweg im Vergleich zur kürzesten Route',
+                              'Maximaler Umweg im Vergleich zur zeitlich kürzesten Route:',
                               style: TextStyle(fontSize: 17),
                             ),
                           ),
                           SizedBox(
                             height: 10,
                           ),
-                          // Anzeige des aktuellen werts
+                          // Anzeige des aktuellen Werts
                           Center(
                             child: Container(
                               padding: EdgeInsets.symmetric(
@@ -285,7 +406,7 @@ class _TravelDetailState extends State<TravelDetail> {
                                 boxShadow: [
                                   BoxShadow(
                                     color: myMiddleGrey,
-                                    blurRadius: 4,
+                                    blurRadius: 0, //4
                                   )
                                 ],
                               ),
@@ -344,7 +465,7 @@ class _TravelDetailState extends State<TravelDetail> {
                           boxShadow: [
                             BoxShadow(
                               color: myMiddleGrey,
-                              blurRadius: 4,
+                              blurRadius: 4, //4
                             )
                           ]),
                       child: Column(
@@ -353,7 +474,7 @@ class _TravelDetailState extends State<TravelDetail> {
                           // Auswahl einselner automatisierter Segmente
                           Container(
                             child: Text(
-                              'Min. Dauer einzelner automatisierter Segmente',
+                              'Angestrebte Mindestdauer einzelner automatisierter Abschnitte:',
                               style: TextStyle(
                                 fontSize: 17,
                               ),
@@ -362,7 +483,7 @@ class _TravelDetailState extends State<TravelDetail> {
                           SizedBox(
                             height: 10,
                           ),
-                          // Anzeige des Eingestellten wertes
+                          // Anzeige des eingestellten Wertes
                           Center(
                             child: Container(
                               padding: EdgeInsets.symmetric(
@@ -374,7 +495,7 @@ class _TravelDetailState extends State<TravelDetail> {
                                 boxShadow: [
                                   BoxShadow(
                                     color: myMiddleGrey,
-                                    blurRadius: 4,
+                                    blurRadius: 0, //4
                                   )
                                 ],
                               ),

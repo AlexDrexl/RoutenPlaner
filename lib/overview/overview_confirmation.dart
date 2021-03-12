@@ -25,13 +25,12 @@ class _OveriewConfirmationState extends State<OveriewConfirmation> {
   Widget build(BuildContext context) {
     return AlertDialog(
       title: Row(
-        //mainAxisAlignment: MainAxisAlignment.spaceBetween, 
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Expanded(
             flex: 10,
             child: Text(
               "Möchten Sie die Route wirklich verwerfen?",
-              textScaleFactor: 0.9,
               overflow: TextOverflow.ellipsis,
               maxLines: 3,
             ),
@@ -43,21 +42,20 @@ class _OveriewConfirmationState extends State<OveriewConfirmation> {
         ],
       ),
       content: Row(
-        mainAxisAlignment: MainAxisAlignment.end, //spaceBetween
-        crossAxisAlignment: CrossAxisAlignment.center, //center
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Container(
             decoration: BoxDecoration(
-              //borderRadius: BorderRadius.all(Radius.circular(14)),
-              //color: myLightGrey,
+              color: myLightGrey,
             ),
             // Abbrechen, schließen des Popups
             child: MaterialButton(
               child: Text(
-                "Nein",
+                "Abbrechen",
                 style: TextStyle(
                   fontSize: 15,
-                  color: myMiddleTurquoise, //myDarkGrey
+                  color: myDarkGrey,
                 ),
               ),
               onPressed: () {
@@ -67,15 +65,14 @@ class _OveriewConfirmationState extends State<OveriewConfirmation> {
           ),
           Container(
             decoration: BoxDecoration(
-              //borderRadius: BorderRadius.all(Radius.circular(14)),
-              //color: myMiddleTurquoise,
+              color: myMiddleTurquoise,
             ),
             child: MaterialButton(
               child: Text(
                 "Ja",
                 style: TextStyle(
                   fontSize: 15,
-                  color: myMiddleTurquoise, //myWhite
+                  color: myWhite,
                 ),
               ),
               //////////////////// ZURÜCKSETZEN ALLER WICHTIGEN DATEN

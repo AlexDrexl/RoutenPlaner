@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:routenplaner/data/custom_colors.dart';
-import 'package:routenplaner/controller/user_profile_collection.dart';
+import 'package:routenplaner/provider_classes/user_profile_collection.dart';
 
 class AddUserProfileDialogue extends StatefulWidget {
   final bool modifyMode;
@@ -114,7 +114,7 @@ class _AddUserProfileDialogueState extends State<AddUserProfileDialogue> {
               },
               child: Text(
                 "Abbrechen",
-                style: TextStyle(fontSize: 15),
+                style: TextStyle(fontSize: 15, color: myMiddleTurquoise),
               ),
             ),
             SizedBox(width: 20),
@@ -148,7 +148,7 @@ class _AddUserProfileDialogueState extends State<AddUserProfileDialogue> {
               },
               child: Text(
                 modify ? "Änderungen speichern" : "Profil erstellen",
-                style: TextStyle(fontSize: 15),
+                style: TextStyle(fontSize: 15, color: myMiddleTurquoise),
               ),
             ),
           ],

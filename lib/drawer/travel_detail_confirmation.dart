@@ -3,7 +3,7 @@ import 'package:routenplaner/data/custom_colors.dart';
 import 'package:routenplaner/drawer/travel_profiles.dart';
 import 'package:routenplaner/drawer/user_profiles.dart';
 import 'package:routenplaner/home/route_planning.dart';
-import 'package:routenplaner/controller/travel_profile_modifier.dart';
+import 'package:routenplaner/provider_classes/travel_profile_modifier.dart';
 import 'package:provider/provider.dart';
 
 class TravelDetailConirmation extends StatelessWidget {
@@ -20,12 +20,12 @@ class TravelDetailConirmation extends StatelessWidget {
           Expanded(
             flex: 6,
             child: Text(
-              "Möchten Sie die Änderungen speichern?",
+              "Möchten Sie Ihre Änderungen speichern?",
               overflow: TextOverflow.ellipsis,
               maxLines: 3,
             ),
           ),
-          Expanded(
+          /*Expanded(
             flex: 1,
             child: FloatingActionButton(
               child: Icon(
@@ -37,7 +37,7 @@ class TravelDetailConirmation extends StatelessWidget {
                 Navigator.of(context).pop(false);
               },
             ),
-          ),
+          ), */
         ],
       ),
       content: Row(
@@ -46,14 +46,14 @@ class TravelDetailConirmation extends StatelessWidget {
         children: [
           Container(
             decoration: BoxDecoration(
-              color: myLightGrey,
+              //color: myLightGrey,
             ),
             child: MaterialButton(
               child: Text(
                 "Nicht Speichern",
                 style: TextStyle(
                   fontSize: 15,
-                  color: myDarkGrey,
+                  color: myMiddleTurquoise, //myDarkGrey
                 ),
               ),
               onPressed: () {
@@ -91,6 +91,7 @@ class TravelDetailConirmation extends StatelessWidget {
           Container(
             decoration: BoxDecoration(
               color: myMiddleTurquoise,
+              borderRadius: BorderRadius.all(Radius.circular(3)),
             ),
             child: MaterialButton(
               child: Text(

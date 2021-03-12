@@ -5,13 +5,10 @@ class RouteData {
   DateTime startDateTime = DateTime(0);
   DateTime arrivalDateTime = DateTime(0);
   Duration duration = Duration();
-  Duration automationDuration;
-  Duration manualDuration;
+  Duration automationDuration, manualDuration;
   // Orte und Zwischenstopps
-  String startLocation;
-  String destinationLocation;
-  LatLng geoCoordStart;
-  LatLng geoCoordDestination;
+  String startLocation, destinationLocation;
+  LatLng geoCoordStart, geoCoordDestination;
   // Weitere Routen Zugaben
   List<int> automMinutes = List<int>();
   String routeLetter;
