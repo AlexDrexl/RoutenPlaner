@@ -16,7 +16,8 @@ class AlternativeRoutesList extends StatelessWidget {
         MaterialButton(
           child: Container(
             margin: EdgeInsets.only(top: 10, bottom: 10),
-            padding: EdgeInsets.fromLTRB(10, 20, 30, 10), //Abstände innerhalb der Routenvorschlagsboxen
+            padding: EdgeInsets.fromLTRB(
+                10, 20, 30, 10), //Abstände innerhalb der Routenvorschlagsboxen
             decoration: BoxDecoration(
               color: myLightGrey, //myLightGrey
               border: Border.all(
@@ -27,13 +28,12 @@ class AlternativeRoutesList extends StatelessWidget {
               borderRadius: BorderRadius.all(
                 Radius.circular(10), //14
               ),
-              boxShadow:[
+              boxShadow: [
                 BoxShadow(
                   color: myMiddleGrey,
                   blurRadius: 4,
-                  )
+                )
               ],
-              
             ),
             // Inhalt einer Karte
             child: Row(
@@ -51,7 +51,6 @@ class AlternativeRoutesList extends StatelessWidget {
                   ),
                 ),
                 // Zweites Expanded für die Linie und Zeitanzeige
-                // ROUTEINDEX HIER IMMER ULL; MUSS ABER I SEIN
                 Expanded(
                   flex: 10, //10
                   child: Column(
@@ -77,14 +76,11 @@ class AlternativeRoutesList extends StatelessWidget {
               ],
             ),
           ),
-
-          
           onPressed: () {
             print("ALTERNATIVE ROUTE SELECTED");
             finalRoutes.selectRoute(i);
             Navigator.pop(context);
           },
-          
         ),
       );
     }
@@ -102,13 +98,11 @@ class AlternativeRoutesList extends StatelessWidget {
     print("BUILD ALTERNATIVE ROUTES");
     return Container(
       constraints: BoxConstraints(
-        maxHeight: MediaQuery.of(context).size.height - 80, //180
+        maxHeight: MediaQuery.of(context).size.height - 80,
       ),
-      // height: MediaQuery.of(context).size.height - 240,
       /////////////////////////////////////////////////////////////
       ///Mache aus printAlternativeRoutes ein Future, zeige dann erst an, wenn
       ///fertig
-      /// drei Stadien: ferig, noch kein Wert, error
       child: Consumer<FinalRoutes>(
         builder: (context, finalRoutes, __) => Container(
           child: FutureBuilder<List<Widget>>(

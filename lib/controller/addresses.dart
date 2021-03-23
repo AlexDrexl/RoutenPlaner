@@ -2,19 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:routenplaner/database/database_helper.dart';
 import 'package:sqflite/sqflite.dart';
 
+// Verarbeitung der eingegeben Adressen, Speicherung der Adressen, Lesen
+// der Adressen aus der Datenbank
 class AddressCollection with ChangeNotifier {
   // Address COllection hat zwei zentrale Attribute,
   // eine liste an letzten Adressen und eine Liste an Favorisierten Adressen
   List<String> favoriteAddress = List<String>();
   List<String> lastAddress = List<String>();
 
-  // Beim Öffnen die Adressen initialisieren, hier schon im Kosnturktor
-  // evtl noch ändern
+  // Beim Öffnen die Adressen initialisieren, hier schon im Konstruktor
   AddressCollection() {
     setAddresses();
   }
 
-  //init Funktion, holt alle Adressen aus der Datenbank, basierend auf der
+  // init Funktion, holt alle Adressen aus der Datenbank, basierend auf der
   // UserID
   Future<bool> setAddresses() async {
     print("SET ADDRESSES");

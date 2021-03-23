@@ -490,13 +490,13 @@ class FinalRoutes with ChangeNotifier {
   List<double> getMinMaxAutomSegment(int durationInMin) {
     //return [7, 12];
     if (durationInMin > 180) {
-      return [4, 25];
+      return [5, 25];
     }
     if (durationInMin > 120) {
-      return [4, 12];
+      return [4, 13];
     }
     if (durationInMin > 60) {
-      return [4, 11];
+      return [3, 11];
     }
     return [2, 7];
   }

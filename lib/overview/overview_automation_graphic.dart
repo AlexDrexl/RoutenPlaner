@@ -3,12 +3,9 @@ import 'package:routenplaner/data/custom_colors.dart';
 import 'package:provider/provider.dart';
 import 'package:routenplaner/provider_classes/final_routes.dart';
 
-// Automationsgrafik, basierend auf den Automationsabschnitten in einer Map
-// start : ende
 // Grafik für die dynamische Übersicht über die Automationslängen
 class AutomationGraphic extends StatefulWidget {
   // Map mit Liste an Start/Ende Zeitabschnitte, und dazugehörig bool ob Autom oder nicht
-  // zeit in Min
   final int routeIndex;
   AutomationGraphic({@required this.routeIndex});
 
@@ -18,20 +15,22 @@ class AutomationGraphic extends StatefulWidget {
 
 class _AutomationGraphicState extends State<AutomationGraphic>
     with TickerProviderStateMixin {
-  final routeLetter = "A";
   bool zoomIn = false;
-  double zoomFactor = 1;
+  int zoomFactor = 1;
+  int maxZoom;
+  double height, width;
   ScrollController scrollController = ScrollController();
 
+  // Bestimmt ob rein oder rausgezoomt werden soll, Regelt Zoom Stufen
   void zoom({Offset targetPosition}) {
     zoomIn = !zoomIn;
     setState(() {
       // Reinzoomen
       if (zoomIn) {
-        zoomFactor = 3;
+        zoomFactor = maxZoom;
         if (targetPosition != null) {
-          // Zielposition *2, Grund nicht ganz klar
-          scrollController.jumpTo(targetPosition.dx * 2);
+          // Zielposition -1, warum nicht ganz klar
+          scrollController.jumpTo(targetPosition.dx * (zoomFactor - 1));
         }
         return;
       }
@@ -59,6 +58,17 @@ class _AutomationGraphicState extends State<AutomationGraphic>
     List<Widget> widgetListGraph = [];
     List<Widget> widgetListTimeTop = [];
     List<Widget> widgetListTimeBottom = [];
+    // Werte für die Höhe der Balken
+    double heightManual = 5;
+    double heightAutom = 6;
+    double heightTermAutom = 7;
+    // Wenn Reingezoomed, dann Balken größer
+    if (zoomIn) {
+      heightManual = 15;
+      heightAutom = 18;
+      heightTermAutom = 20;
+    }
+
     // Liste mit den Start/End Einträgen
     var listOfSections = automationSections.keys.toList();
     // Liste mit Bool, ob autom oder nicht
@@ -103,10 +113,10 @@ class _AutomationGraphicState extends State<AutomationGraphic>
           flex: flexValues[i],
           child: Container(
             height: listOfAutomation[i] == 2
-                ? 7 * zoomFactor
+                ? heightTermAutom
                 : listOfAutomation[i] == 1
-                    ? 6 * zoomFactor
-                    : 5 * zoomFactor,
+                    ? heightAutom
+                    : heightManual,
             color: listOfAutomation[i] == 2
                 ? myDarkTurquoise
                 : listOfAutomation[i] == 1
@@ -167,23 +177,16 @@ class _AutomationGraphicState extends State<AutomationGraphic>
           mainAxisSize: MainAxisSize.min,
           children: [
             Container(
-              height: 20,
-              child: zoomIn
-                  ? Stack(
-                      children: widgetListTimeTop,
-                    )
-                  : Container(),
+              // height: 10,
+              child: zoomIn ? Stack(children: widgetListTimeTop) : Container(),
             ),
             Row(
               children: widgetListGraph,
             ),
             Container(
-              height: 20,
-              child: zoomIn
-                  ? Stack(
-                      children: widgetListTimeBottom,
-                    )
-                  : Container(),
+              // height: 10,
+              child:
+                  zoomIn ? Stack(children: widgetListTimeBottom) : Container(),
             ),
           ],
         ),
@@ -220,14 +223,23 @@ class _AutomationGraphicState extends State<AutomationGraphic>
 
   @override
   Widget build(BuildContext context) {
-    // GEsture Detector benötigt um das Scrollen zu verhindern
-    // dadurch kein Gesture disambiguation
+    var lenghtInHour = Provider.of<FinalRoutes>(context, listen: false)
+        .routes[widget.routeIndex]
+        .duration
+        .inHours;
+    // Zoom Faktor abhängig von der Gesamtzeit, minimal 3
+    maxZoom = 3;
+    if (lenghtInHour > 3) {
+      maxZoom = lenghtInHour;
+    }
+    // GEsture Detector benötigt um Doppeltippen zu erkennen
     return GestureDetector(
-      // NICHT Entfernen, Macht zwar eigentlich nichts, nur funktioniert der
-      // Code nicht mehr, wenn fehlt
       onDoubleTap: () {},
       // Wenn der nutzer nach dem Zweiten Tippen den Finger vom Bildschirm lässt
-      onDoubleTapDown: (details) => zoom(targetPosition: details.localPosition),
+      onDoubleTapDown: (details) {
+        print(details.localPosition);
+        zoom(targetPosition: details.localPosition);
+      },
       child: Stack(
         fit: StackFit.loose,
         children: [
@@ -242,11 +254,12 @@ class _AutomationGraphicState extends State<AutomationGraphic>
             ),
             child: LayoutBuilder(
               builder: (context, constraints) {
+                height = constraints.maxHeight;
+                width = constraints.maxWidth;
                 return Container(
                   height: constraints.maxHeight,
                   width: constraints.maxWidth,
                   child: Scrollbar(
-                    // isAlwaysShown: true,
                     thickness: 8,
                     controller: scrollController,
                     child: ListView.builder(

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 
+// Regelt die Verarbeitung der gewünschten automat. Segmente
 class DesiredAutomSections with ChangeNotifier {
-  // 11.11.2020 um 12:30 : 01:15h lang automatisiert
+  // Terminiert automatisierte Segmente
   Map<DateTime, Duration> timedSections = Map<DateTime, Duration>();
+  // Nicht terminierte automatisierte Segemente
   List<Duration> sections = List<Duration>();
 
   void addSection(Duration duration) {

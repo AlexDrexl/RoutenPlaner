@@ -11,12 +11,8 @@ import 'dart:math' show cos, sqrt, asin;
 import 'package:dio/dio.dart';
 import 'package:routenplaner/data_structures/RouteData.dart';
 
-// Übergestellte Klasse, erhält alle daten aus den verschiedenen provider Klassen
+// Übergestellte Klasse, erhält alle Daten aus den verschiedenen Controller Klassen
 // verwendet sie um finale Routen zu berechnen
-// Hier auch die Nutzerprofile mit einbeziehen
-// Routen werden nach Prio geordnet in einem Array gespeichert
-// zudem gibt es das Attribut selected Route, das die manuell geänderte Route
-// hält
 
 class FinalRoutes with ChangeNotifier {
   // API KEY
@@ -56,18 +52,11 @@ class FinalRoutes with ChangeNotifier {
     print("FINAL_ROUTES CALLED");
   }
 
+  // Route wechseln
   void selectRoute(int index) {
     indexSelectedRoute = index;
     print("SELECT ROUTE ${routes[index].routeLetter}");
     notifyListeners();
-  }
-
-  // Zeitformatierung
-  String getFormattedTime(Duration duration) {
-    int minutes = duration.inMinutes;
-    int hours = (minutes / 60).floor();
-    minutes = minutes - hours * 60;
-    return "$hours:${minutes.toString().padLeft(2, '0')}";
   }
 
   // SIMULATION: Simuliere die automatisierten Segmente
